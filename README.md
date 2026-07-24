@@ -22,7 +22,6 @@ Practical Angular Signal Forms recipes: every flavor of validation, custom `Form
 ## 🧭 Contents
 
 - [Recipes](#-recipes)
-- [Tech stack](#-tech-stack)
 - [Getting started](#-getting-started)
 - [Scripts](#-scripts)
 - [License](#-license)
