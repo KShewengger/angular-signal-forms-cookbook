@@ -2,12 +2,20 @@
 
 # 📖 Angular Signal Forms Cookbook
 
-Practical Angular Signal Forms recipes: every flavor of validation, custom `FormValueControl` controls, Zod integration, and form submission.
+Practical Angular Signal Forms recipes: every flavor of validation, custom `FormValueControl` controls, Zod integration, and form submission. <br/><br/>
+![Nx](https://img.shields.io/badge/-Nx-143055?style=flat-square&logo=nx&logoColor=white)
+![Angular](https://img.shields.io/badge/-Angular-DD0031?style=flat-square&logo=angular&logoColor=white)
+![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/-TailwindCSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
+![Zod](https://img.shields.io/badge/-Zod-3E67B1?style=flat-square&logo=zod&logoColor=white)
+![MIT](https://img.shields.io/badge/-MIT-3DA639?style=flat-square)
+![ng-icons](https://img.shields.io/badge/-ng--icons-6366F1?style=flat-square&logoColor=white)
+![Ng-brutalism](https://img.shields.io/badge/-ng--brutalism-000000?style=flat-square&logoColor=white)
 
-<!-- Drop your collage here. Suggested: 1280x640, PNG, committed at docs/assets/cover.png -->
 ![Angular Signal Forms Cookbook](./docs/assets/cover.png)
 
 </div>
+
 
 ---
 
@@ -37,19 +45,6 @@ Each recipe is a small, runnable example that solves one problem, with a folder-
 | 08 | [Zod schema validation](./src/app/recipes/08-zod) | Driving form validation from a Zod schema |
 | 09 | [Custom control](./src/app/recipes/09-custom-control) | Implementing `FormValueControl` with its own validation |
 | 10 | [Form submission](./src/app/recipes/10-submission) | Submit lifecycle via form root, server error mapping |
-
----
-
-## 🛠️ Tech stack
-
-![Nx](https://img.shields.io/badge/-Nx-143055?style=flat-square&logo=nx&logoColor=white)
-![Angular](https://img.shields.io/badge/-Angular-DD0031?style=flat-square&logo=angular&logoColor=white)
-![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/-TailwindCSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
-![Zod](https://img.shields.io/badge/-Zod-3E67B1?style=flat-square&logo=zod&logoColor=white)
-![MIT](https://img.shields.io/badge/-MIT-3DA639?style=flat-square)
-![ng-icons](https://img.shields.io/badge/-ng--icons-6366F1?style=flat-square&logoColor=white)
-![Ng-brutalism](https://img.shields.io/badge/-ng--brutalism-000000?style=flat-square&logoColor=white)
 
 ---
 
