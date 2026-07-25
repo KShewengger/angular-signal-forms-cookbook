@@ -1,27 +1,52 @@
-# ---------------------------------------------
-# Angular / Node
-# ---------------------------------------------
-node_modules/
-dist/
-tmp/
-out-tsc/
+# See https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
-# Angular CLI cache
-.angular/
+# compiled output
+dist
+tmp
+out-tsc
 
-# ---------------------------------------------
-# JetBrains WebStorm
-# ---------------------------------------------
-.idea/
-*.iml
+# dependencies
+node_modules
+
+# IDEs and editors
+/.idea
 .idea_modules/
+*.iml
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
 
-# ---------------------------------------------
-# Logs
-# ---------------------------------------------
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
 *.log
+/typings
 
-# ---------------------------------------------
-# Misc
-# ---------------------------------------------
+# System Files
+.DS_Store
+Thumbs.db
+
 .nx/cache
+.nx/workspace-data
+.nx/migrate-runs
+.claude/worktrees
+.claude/settings.local.json
+
+.angular
+
+__screenshots__/

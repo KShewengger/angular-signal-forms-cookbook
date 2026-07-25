@@ -49,12 +49,27 @@ Each recipe is a small, runnable example that solves one problem, with a folder-
 
 ## 🚀 Getting started
 
-```bash
-# 1. install
-npm install
+**Prerequisites**
 
-# 2. run
-npm start
+| Requirement | Version |
+|-------------|---------|
+| Node | `>=22.12.0` |
+| pnpm | `>=9` (via Corepack) |
+
+This repo uses pnpm as its package manager. Enable it once via Corepack (bundled with Node):
+
+```bash
+corepack enable pnpm
+```
+
+**Install & run**
+
+```bash
+# 1. install dependencies
+pnpm install
+
+# 2. serve the app
+pnpm start
 ```
 
 The app serves at `http://localhost:4200`.
@@ -65,12 +80,13 @@ The app serves at `http://localhost:4200`.
 
 | Command | What it does |
 |---------|--------------|
-| `npm start` | Serves the app in development mode with HMR |
-| `npm run build` | Production build |
-| `npm test` | Runs the full unit test suite |
-| `npm run lint` | Lints the workspace |
-| `npm run format` | Formats with Prettier |
-| `npx nx graph` | Opens the Nx project dependency graph |
+| `pnpm start` | Serves the app in development mode with HMR |
+| `pnpm build` | Production build |
+| `pnpm test` | Runs the full unit test suite |
+| `pnpm lint` | Lints the workspace |
+| `pnpm format` | Formats with Prettier |
+| `pnpm format:check` | Checks formatting without writing (CI-friendly) |
+| `pnpm graph` | Opens the Nx project dependency graph |
 
 ---
 
