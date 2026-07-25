@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="110"
+     height="76"
+     viewBox="0 0 110 76"
+     role="img"
+     aria-labelledby="title desc">
+  <title id="title">Neo-brutalist pepperoni slice</title>
+  <desc id="desc">A single oval pepperoni slice with a thick black outline, darker side edge, and transparent background.</desc>
+
+  <!-- Hard offset shadow -->
+  <ellipse
+    cx="57"
+    cy="43"
+    rx="39"
+    ry="22"
+    fill="#111111"/>
+
+  <!-- Pepperoni side -->
+  <path
+    d="M16 34
+       C16 21 34 11 55 11
+       C77 11 94 21 94 34
+       L94 43
+       C94 56 77 66 55 66
+       C34 66 16 56 16 43
+       Z"
+    fill="#9E342D"
+    stroke="#111111"
+    stroke-width="5"
+    stroke-linejoin="round"/>
+
+  <!-- Pepperoni top -->
+  <ellipse
+    cx="55"
+    cy="34"
+    rx="39"
+    ry="23"
+    fill="#E85C46"
+    stroke="#111111"
+    stroke-width="5"/>
+
+  <!-- Highlight -->
+  <path
+    d="M27 27
+       C34 19 44 16 55 16
+       C66 16 76 19 83 26"
+    fill="none"
+    stroke="#FF9A78"
+    stroke-width="5"
+    stroke-linecap="round"/>
+
+  <!-- Fat specks -->
+  <ellipse cx="38" cy="31" rx="5" ry="4" fill="#F9B28D" stroke="#111111" stroke-width="3"/>
+  <ellipse cx="62" cy="24" rx="4.5" ry="3.5" fill="#F9B28D" stroke="#111111" stroke-width="3"/>
+  <ellipse cx="73" cy="38" rx="5" ry="4" fill="#F9B28D" stroke="#111111" stroke-width="3"/>
+  <ellipse cx="51" cy="43" rx="4.5" ry="3.5" fill="#F9B28D" stroke="#111111" stroke-width="3"/>
+  <ellipse cx="32" cy="42" rx="3.5" ry="3" fill="#7F2727"/>
+  <ellipse cx="69" cy="31" rx="3.5" ry="3" fill="#7F2727"/>
+</svg>

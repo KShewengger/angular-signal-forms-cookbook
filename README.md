@@ -32,18 +32,18 @@ Practical Angular Signal Forms recipes: every flavor of validation, custom `Form
 
 Each recipe is a small, runnable example that solves one problem, with a folder-level `README.md` explaining the approach and the gotchas.
 
-| #  | Recipe | What it covers |
-|----|--------|----------------|
-| 01 | [Basic form](./src/app/recipes/01-basic-form) | `form()`, `Field`, two-way value flow |
-| 02 | [Validation basics](./src/app/recipes/02-validation) | Built-in validators, error display, touched/dirty state |
-| 03 | [Cross-field validation](./src/app/recipes/03-cross-field) | Validating one field against another |
-| 04 | [Async validation](./src/app/recipes/04-async-validation) | Debounced server checks, pending state |
-| 05 | [Array validation](./src/app/recipes/05-array-validation) | Per-item rules, add/remove rows, array-level errors |
-| 06 | [Conditional validation](./src/app/recipes/06-conditional-validation) | Rules that switch on based on other values |
-| 07 | [Custom validation](./src/app/recipes/07-custom-validation) | Writing your own validators, validating a subtree with `validateTree` |
-| 08 | [Zod schema validation](./src/app/recipes/08-zod) | Driving form validation from a Zod schema |
-| 09 | [Custom control](./src/app/recipes/09-custom-control) | Implementing `FormValueControl` with its own validation |
-| 10 | [Form submission](./src/app/recipes/10-submission) | Submit lifecycle via form root, server error mapping |
+| #  | Recipe                                                                     | What it covers |
+|----|----------------------------------------------------------------------------|----------------|
+| 01 | [Basic form](./apps/cookbook/src/app/recipes/01-basic-form)                | `form()`, `Field`, two-way value flow |
+| 02 | [Built-in Validation](./apps/cookbook/src/app/recipes/02-validation)       | Built-in validators, error display, touched/dirty state |
+| 03 | [Cross-field Validation](./apps/cookbook/src/app/recipes/03-cross-field)   | Validating one field against another |
+| 04 | [Async Validation](./apps/cookbook/src/app/recipes/04-async-validation)    | Debounced server checks, pending state |
+| 05 | [Array Validation](./apps/cookbook/src/app/recipes/05-array-validation)    | Per-item rules, add/remove rows, array-level errors |
+| 06 | [Custom Control](./apps/cookbook/src/app/recipes/09-custom-control)        | Implementing `FormValueControl` with its own validation |
+| 07 | [Custom Validation](./apps/cookbook/src/app/recipes/07-custom-validation)  | Writing your own validators, validating a subtree with `validateTree` |
+| 08 | [Conditional Validation](./apps/cookbook/src/app/recipes/06-conditional-validation) | Rules that switch on based on other values |
+| 09 | [Form submission](./apps/cookbook/src/app/recipes/10-submission)           | Submit lifecycle via form root, server error mapping |
+| 10 | [Zod schema Validation](./apps/cookbook/src/app/recipes/08-zod)            | Driving form validation from a Zod schema |
 
 ---
 

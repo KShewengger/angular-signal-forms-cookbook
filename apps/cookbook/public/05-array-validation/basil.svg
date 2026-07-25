@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="92" height="92" viewBox="0 0 92 92" role="img">
+  <!-- Shadow -->
+  <path d="M49 10C67 13 79 28 75 48C71 66 56 80 39 82C26 83 16 76 13 64C10 50 18 34 31 22C37 17 42 13 49 10Z"
+        fill="#111"/>
+
+  <!-- Leaf -->
+  <path d="M44 6C62 9 74 24 70 44C66 62 51 76 34 78C21 79 11 72 8 60C5 46 13 30 26 18C32 13 37 9 44 6Z"
+        fill="#46B95A" stroke="#111" stroke-width="5" stroke-linejoin="round"/>
+
+  <!-- Mid vein -->
+  <path d="M22 60C33 47 42 33 49 15" fill="none" stroke="#111" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Side veins -->
+  <path d="M31 44L21 39M42 31L32 25M41 52L52 44M30 61L41 56"
+        fill="none" stroke="#111" stroke-width="3.2" stroke-linecap="round"/>
+
+  <!-- Highlight -->
+  <path d="M35 15C47 16 57 22 62 31"
+        fill="none" stroke="#9EF0A7" stroke-width="4" stroke-linecap="round"/>
+</svg>

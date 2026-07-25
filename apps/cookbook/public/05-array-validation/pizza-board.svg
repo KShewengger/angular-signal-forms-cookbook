@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="250"
+     height="180"
+     viewBox="0 0 250 180"
+     role="img"
+     aria-labelledby="title desc">
+  <title id="title">Empty neo-brutalist pizza tray</title>
+  <desc id="desc">A complete round pizza serving tray with a short handle, bold black outlines, and a transparent background.</desc>
+
+  <!-- Hard neo-brutalist shadow -->
+  <path
+    d="M45 105
+       C45 63 87 29 139 29
+       C191 29 233 62 233 104
+       L233 119
+       C233 154 191 178 139 178
+       C103 178 72 166 56 147
+       L31 165
+       C20 173 5 169 0 157
+       L0 137
+       C0 129 4 122 11 118
+       L39 100
+       Z"
+    fill="#111111"/>
+
+  <!-- Lower wooden body -->
+  <path
+    d="M43 96
+       C43 56 85 24 137 24
+       C189 24 231 56 231 96
+       L231 112
+       C231 151 189 176 137 176
+       C101 176 70 164 54 145
+       L30 162
+       C21 169 8 166 3 156
+       L3 139
+       C3 131 7 125 14 121
+       L42 103
+       Z"
+    fill="#A96624"
+    stroke="#111111"
+    stroke-width="6"
+    stroke-linejoin="round"/>
+
+  <!-- Handle side -->
+  <path
+    d="M5 137
+       L5 153
+       C9 164 22 168 31 161
+       L56 143
+       L55 126
+       Z"
+    fill="#B97227"
+    stroke="#111111"
+    stroke-width="5"
+    stroke-linejoin="round"/>
+
+  <!-- Top handle -->
+  <path
+    d="M7 126
+       L44 102
+       C50 98 58 100 62 106
+       L70 118
+       L31 147
+       C22 154 9 151 4 141
+       C1 135 2 130 7 126
+       Z"
+    fill="#D99636"
+    stroke="#111111"
+    stroke-width="6"
+    stroke-linejoin="round"/>
+
+  <!-- Main tray side/rim -->
+  <path
+    d="M42 94
+       C42 54 84 22 137 22
+       C190 22 232 54 232 94
+       L232 109
+       C232 149 190 175 137 175
+       C84 175 42 149 42 109
+       Z"
+    fill="#B96F24"
+    stroke="#111111"
+    stroke-width="6"/>
+
+  <!-- Golden outer top rim -->
+  <ellipse
+    cx="137"
+    cy="91"
+    rx="94"
+    ry="68"
+    fill="#F2BE3C"
+    stroke="#111111"
+    stroke-width="6"/>
+
+  <!-- Inner empty tray surface -->
+  <ellipse
+    cx="137"
+    cy="88"
+    rx="81"
+    ry="56"
+    fill="#FFE38D"
+    stroke="#111111"
+    stroke-width="4"/>
+
+  <!-- Highlight -->
+  <path
+    d="M61 73
+       C72 45 102 31 137 31
+       C172 31 202 45 214 72"
+    fill="none"
+    stroke="#FFF3BE"
+    stroke-width="7"
+    stroke-linecap="round"/>
+
+  <!-- Handle hole -->
+  <ellipse
+    cx="25"
+    cy="129"
+    rx="10"
+    ry="8"
+    fill="#FFE36F"
+    stroke="#111111"
+    stroke-width="5"/>
+</svg>

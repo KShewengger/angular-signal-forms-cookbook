@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="220"
+     height="170"
+     viewBox="0 0 220 170"
+     role="img"
+     aria-labelledby="title desc">
+  <title id="title">Five neo-brutalist mozzarella pieces</title>
+  <desc id="desc">Five irregular mozzarella pieces with bold black outlines, soft cream fills, darker lower edges, and a transparent background.</desc>
+
+  <defs>
+    <g id="mozzarella-piece">
+      <!-- hard shadow -->
+      <path
+        d="M7 25
+           C8 13 18 5 31 6
+           C38 0 50 0 59 6
+           C69 5 79 12 81 22
+           C90 25 94 35 90 43
+           C87 51 78 55 69 53
+           C62 61 50 64 40 59
+           C31 63 19 58 16 49
+           C6 47 1 38 4 30
+           C4 28 5 26 7 25Z"
+        fill="#111111"/>
+
+      <!-- lower edge -->
+      <path
+        d="M8 22
+           C9 12 19 5 31 6
+           C39 1 50 1 58 7
+           C68 6 77 12 79 22
+           C88 25 91 34 87 42
+           C84 49 76 52 68 50
+           C61 58 50 60 40 56
+           C31 60 21 56 17 48
+           C8 46 4 38 6 31
+           C6 27 7 24 8 22Z"
+        fill="#D8CFBA"
+        stroke="#111111"
+        stroke-width="4"
+        stroke-linejoin="round"/>
+
+      <!-- top -->
+      <path
+        d="M8 18
+           C10 9 20 3 31 5
+           C39 0 50 1 58 7
+           C67 5 76 11 78 20
+           C87 22 90 31 86 38
+           C83 45 75 48 67 46
+           C61 53 50 56 40 52
+           C31 56 21 52 18 44
+           C9 43 5 35 7 28
+           C7 24 7 21 8 18Z"
+        fill="#FFF4D8"
+        stroke="#111111"
+        stroke-width="4"
+        stroke-linejoin="round"/>
+
+      <!-- highlights -->
+      <path
+        d="M25 14
+           C32 10 43 10 51 14"
+        fill="none"
+        stroke="#FFFFFF"
+        stroke-width="5"
+        stroke-linecap="round"/>
+
+      <ellipse cx="61" cy="18" rx="4.5" ry="3.5" fill="#FFFFFF"/>
+    </g>
+  </defs>
+
+  <!-- top-left -->
+  <g transform="translate(14 8) scale(.76)">
+    <use href="#mozzarella-piece"/>
+  </g>
+
+  <!-- top-right -->
+  <g transform="translate(117 19) scale(.80)">
+    <use href="#mozzarella-piece"/>
+  </g>
+
+  <!-- middle-left -->
+  <g transform="translate(1 73) scale(.74)">
+    <use href="#mozzarella-piece"/>
+  </g>
+
+  <!-- center -->
+  <g transform="translate(72 76) scale(.86)">
+    <use href="#mozzarella-piece"/>
+  </g>
+
+  <!-- bottom-right -->
+  <g transform="translate(135 102) scale(.74)">
+    <use href="#mozzarella-piece"/>
+  </g>
+</svg>
