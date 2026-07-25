@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import '@ng-brutalism/ui/styles.css';
 
 /* Explicitly scan Angular templates & TS for class names.
    Auto-detection can miss files in an Nx monorepo layout. */
