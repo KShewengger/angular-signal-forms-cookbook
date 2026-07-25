@@ -19,7 +19,10 @@
     "@angular/forms": "~22.0.4",
     "@angular/platform-browser": "~22.0.4",
     "@angular/router": "~22.0.4",
-    "rxjs": "~7.8.0"
+    "@tailwindcss/postcss": "^4.3.3",
+    "postcss": "^8.5.22",
+    "rxjs": "~7.8.0",
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
     "@angular-devkit/core": "~22.0.0",

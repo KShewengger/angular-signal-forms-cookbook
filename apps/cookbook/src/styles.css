@@ -1,1 +1,5 @@
-/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+/* Explicitly scan Angular templates & TS for class names.
+   Auto-detection can miss files in an Nx monorepo layout. */
+@source "./**/*.{html,ts}";
