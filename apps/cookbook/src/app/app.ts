@@ -1,17 +1,30 @@
 import { Component } from '@angular/core';
-import { NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage, DecimalPipe } from '@angular/common';
 import {
+  NbAvatar,
   NbBadge,
-  NbButton, NbCallout,
+  NbButton,
+  NbButtonTrailingIcon,
+  NbCallout,
   NbCard,
   NbCardActions,
   NbCardContent,
   NbCardDescription,
   NbCardHeader,
-  NbCardTitle, NbCluster, NbDisplay, NbHalftone, NbSeparator, NbStack, NbSticker, NbText
+  NbCardTitle,
+  NbCluster,
+  NbDisplay,
+  NbHalftone,
+  NbSeparator,
+  NbSplit,
+  NbStack,
+  NbSticker,
+  NbText,
 } from '@ng-brutalism/ui';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { tablerBrandGithub } from '@ng-icons/tabler-icons';
+import { tablerCircleArrowRightFill } from '@ng-icons/tabler-icons/fill';
+import { SIGNAL_EXAMPLES } from './app.data';
 
 @Component({
   selector: 'app-root',
@@ -34,15 +47,17 @@ import { tablerBrandGithub } from '@ng-icons/tabler-icons';
     NbSeparator,
     NgIcon,
     NbHalftone,
-    NbSticker
+    NbSticker,
+    NbSplit,
+    NbAvatar,
+    DecimalPipe,
+    NbButtonTrailingIcon,
   ],
-  providers: [
-    provideIcons({ tablerBrandGithub })
-  ],
+  providers: [provideIcons({ tablerBrandGithub, tablerCircleArrowRightFill })],
   host: {
-    class: 'mx-auto flex justify-center w-full'
-  }
+    class: 'mx-auto flex flex-col items-center gap-8 justify-center w-full',
+  },
 })
 export class App {
-  protected title = 'cookbook';
+  protected readonly examples = SIGNAL_EXAMPLES;
 }
