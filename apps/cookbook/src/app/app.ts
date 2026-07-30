@@ -27,6 +27,7 @@ import { SIGNAL_EXAMPLES, TONE_RAIL, TONE_TINT, TONE_WAVE } from './app.data';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.html',
+  styleUrl: 'app.css',
   imports: [
     NbCard,
     NbCardHeader,

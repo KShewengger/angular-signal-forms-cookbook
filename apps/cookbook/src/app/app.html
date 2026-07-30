@@ -1,4 +1,4 @@
-<nb-card class="w-7xl max-w-full pb-7 relative">
+<nb-card class="w-7xl max-w-full pb-7 relative hero-card">
   <nb-card-header>
     <nb-card-title nbCluster justify="between">
       <div nbStack gap="lg" class="w-full text-center lg:w-auto lg:text-left">
@@ -30,7 +30,7 @@
               width="120"
               height="120"
               alt="Angular logo"
-              class="max-lg:hidden!"
+              class="mascot max-lg:hidden!"
             />
           </div>
           <h2
@@ -80,9 +80,10 @@
         nbCallout
         tone="black"
         size="sm"
-        class="self-center lg:self-start"
+        class="nb-press self-center lg:self-start"
         href="https://github.com/KShewengger/angular-signal-forms-cookbook"
         target="_blank"
+        rel="noopener"
       >
         <ng-icon name="tablerBrandGithub" size="20" class="text-white" />
         <hr nbSeparator orientation="vertical" class="border-white!" />
@@ -103,11 +104,13 @@
 </nb-card>
 
 <section
-  class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-7xl"
+  class="recipe-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-7xl"
 >
   @for (example of examples; track example.link) {
   <div class="relative">
-    <nb-card class="relative overflow-hidden !py-0 !gap-0">
+    <nb-card
+      class="relative overflow-hidden !py-0 !gap-0 transition-transform duration-200 motion-safe:hover:-translate-x-1 motion-safe:hover:-translate-y-1"
+    >
       <div
         class="absolute left-0 top-0 bottom-0 w-3 border-r-2 border-black"
         [ngClass]="toneRail[example.tone]"
@@ -164,6 +167,7 @@
 
           <a
             nbButton
+            class="group"
             target="_blank"
             rel="noopener"
             radius="md"
@@ -173,7 +177,12 @@
             <span nbText weight="black" transform="uppercase" i18n="@@card.view"
               >View</span
             >
-            <span nbButtonTrailingIcon shape="circle" size="lg">
+            <span
+              nbButtonTrailingIcon
+              shape="circle"
+              size="lg"
+              class="transition-transform motion-safe:group-hover:translate-x-1"
+            >
               <ng-icon size="20" name="tablerCircleArrowRightFill" />
             </span>
           </a>

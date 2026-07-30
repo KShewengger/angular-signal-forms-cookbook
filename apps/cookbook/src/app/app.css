@@ -1,0 +1,98 @@
+@keyframes nb-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes nb-rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes nb-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-card {
+    animation: nb-pop 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .recipe-grid > * {
+    animation: nb-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .recipe-grid > *:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+  .recipe-grid > *:nth-child(2) {
+    animation-delay: 0.16s;
+  }
+  .recipe-grid > *:nth-child(3) {
+    animation-delay: 0.22s;
+  }
+  .recipe-grid > *:nth-child(4) {
+    animation-delay: 0.28s;
+  }
+  .recipe-grid > *:nth-child(5) {
+    animation-delay: 0.34s;
+  }
+  .recipe-grid > *:nth-child(6) {
+    animation-delay: 0.4s;
+  }
+  .recipe-grid > *:nth-child(7) {
+    animation-delay: 0.46s;
+  }
+  .recipe-grid > *:nth-child(8) {
+    animation-delay: 0.52s;
+  }
+  .recipe-grid > *:nth-child(9) {
+    animation-delay: 0.58s;
+  }
+  .recipe-grid > *:nth-child(10) {
+    animation-delay: 0.64s;
+  }
+  .recipe-grid > *:nth-child(11) {
+    animation-delay: 0.7s;
+  }
+  .recipe-grid > *:nth-child(12) {
+    animation-delay: 0.76s;
+  }
+
+  .mascot {
+    animation: nb-float 3.2s ease-in-out infinite;
+  }
+}
+
+.nb-press {
+  transition:
+    transform 0.06s ease,
+    box-shadow 0.06s ease;
+}
+
+.nb-press:active {
+  transform: translate(3px, 3px);
+  box-shadow: 3px 3px 0 0 var(--nb-shadow) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nb-press {
+    transition: none;
+  }
+}
