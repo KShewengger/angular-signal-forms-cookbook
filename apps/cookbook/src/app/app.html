@@ -1,17 +1,27 @@
 <nb-card class="w-7xl max-w-full pb-7 relative">
   <nb-card-header>
     <nb-card-title nbCluster justify="between">
-      <div nbStack gap="lg">
-        <span nbBadge tone="warning" class="self-start"
-          >📖 Recipe Index · 10 apps</span
+      <div nbStack gap="lg" class="w-full text-center lg:w-auto lg:text-left">
+        <span
+          nbBadge
+          tone="warning"
+          class="self-center lg:self-start"
+          i18n="@@hero.recipeIndex"
+          >📖 Recipe Index · 12 apps</span
         >
         <div nbStack gap="xs">
-          <h2 nbDisplay size="xl" class="uppercase">Angular</h2>
-          <div nbCluster gap="xs">
+          <h2
+            nbDisplay
+            size="xl"
+            class="uppercase text-[clamp(2.25rem,6vw,4.75rem)]!"
+          >
+            Angular
+          </h2>
+          <div nbCluster gap="xs" class="max-lg:justify-center!">
             <div
               nbCallout
               size="xl"
-              class="uppercase font-bold self-start text-7xl!"
+              class="uppercase font-bold self-start text-[clamp(2rem,6vw,4.5rem)]!"
             >
               Signal Forms
             </div>
@@ -20,30 +30,45 @@
               width="120"
               height="120"
               alt="Angular logo"
+              class="max-lg:hidden!"
             />
           </div>
-          <h2 nbDisplay size="xl" class="uppercase mt-1">Cookbook</h2>
+          <h2
+            nbDisplay
+            size="xl"
+            class="uppercase mt-1 text-[clamp(2.25rem,6vw,4.75rem)]!"
+            i18n="@@hero.cookbook"
+          >
+            Cookbook
+          </h2>
         </div>
       </div>
 
       <nb-sticker
         shape="burst-wide"
         tone="primary"
+        class="self-start max-lg:hidden!"
         [rotate]="5"
-        class="self-start"
+        i18n="@@hero.testIt"
       >
         TEST<br />
         IT!
       </nb-sticker>
     </nb-card-title>
-    <nb-card-description nbStack gap="lg">
-      <p nbText size="lg" weight="medium" tone="subtle">
-        10 runnable recipes for Angular 22 signal-based forms e.g from a basic
+    <nb-card-description nbStack gap="lg" class="text-center lg:text-left">
+      <p
+        nbText
+        size="lg"
+        weight="medium"
+        tone="subtle"
+        i18n="@@hero.description"
+      >
+        12 runnable recipes for Angular 22 signal-based forms e.g from a basic
         form() to validations, custom controls, and zod. Each recipe is curated
         in a fun and interactive examples!
       </p>
 
-      <div nbCluster gap="sm">
+      <div nbCluster gap="sm" class="max-lg:justify-center!">
         <span nbBadge tone="danger">Angular 22</span>
         <span nbBadge tone="success">Nx 23</span>
         <span nbBadge tone="warning">Tailwind V4</span>
@@ -55,7 +80,7 @@
         nbCallout
         tone="black"
         size="sm"
-        class="self-start"
+        class="self-center lg:self-start"
         href="https://github.com/KShewengger/angular-signal-forms-cookbook"
         target="_blank"
       >
@@ -70,7 +95,7 @@
     <div
       nbHalftone
       shape="rectangle"
-      class="absolute right-0 bottom-0"
+      class="absolute right-0 bottom-0 max-lg:hidden!"
       [rows]="3"
       [columns]="13"
     ></div>
@@ -80,47 +105,81 @@
 <section
   class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-7xl"
 >
-  @for (example of examples; track $index) {
-  <nb-card>
-    <nb-card-header nbStack gap="md">
-      <nb-card-title nbCluster justify="between">
-        <div nbCluster gap="md" align="center">
-          <nb-avatar tone="yellow"
-            >{{ ($index + 1) | number: '2.0-0' }}</nb-avatar
-          >
-          <span class="font-bold text-lg uppercase tracking-wider"
-            >{{ example.title }}</span
-          >
-        </div>
-      </nb-card-title>
+  @for (example of examples; track example.link) {
+  <div class="relative">
+    <nb-card class="relative overflow-hidden !py-0 !gap-0">
+      <div
+        class="absolute left-0 top-0 bottom-0 w-3 border-r-2 border-black"
+        [ngClass]="toneRail[example.tone]"
+      ></div>
 
-      <nb-card-content class="px-0!" nbStack gap="md">
+      <div
+        nbHalftone
+        shape="square"
+        class="pointer-events-none absolute top-0 right-0"
+        [rows]="4"
+        [columns]="5"
+        [color]="'var(--nb-' + example.tone + ')'"
+      ></div>
+
+      <div nbStack gap="md" class="py-6 pr-6 pl-8">
+        <nb-avatar [tone]="example.tone" class="self-start">
+          {{ ($index + 1) | number: '2.0-0' }}
+        </nb-avatar>
+
+        <span
+          class="self-start rounded-lg border-2 border-black px-3 py-1.5 font-mono text-base font-extrabold shadow-[2px_2px_0_#141414]"
+          [ngClass]="toneTint[example.tone]"
+        >
+          {{ example.api }}
+        </span>
+
+        <h3
+          nbTitle
+          class="self-start font-black text-xl uppercase tracking-wider"
+          [ngClass]="toneWave[example.tone]"
+        >
+          {{ example.title }}
+        </h3>
+
         <p class="text-sm font-medium">{{ example.description }}</p>
 
         <div nbCluster gap="sm" align="center">
-          @for(tag of example.tags; track $index) {
+          @for (tag of example.tags; track $index) {
           <span nbBadge>{{ tag }}</span>
           }
         </div>
-      </nb-card-content>
 
-      <nb-card-actions class="px-0! pt-4">
-        <button nbButton tone="lavender" class="w-full" radius="md">
+        <div
+          nbCluster
+          justify="between"
+          align="center"
+          class="mt-1 border-t-2 border-dashed border-black/25 pt-3"
+        >
           <span
-            nbText
-            size="xl"
-            weight="black"
-            transform="uppercase"
-            tracking="wide"
+            class="font-mono text-xs uppercase tracking-widest text-black/55"
           >
-            View Recipe
+            {{ example.app }}
           </span>
-          <span nbButtonTrailingIcon shape="circle" size="lg">
-            <ng-icon size="24" name="tablerCircleArrowRightFill" />
-          </span>
-        </button>
-      </nb-card-actions>
-    </nb-card-header>
-  </nb-card>
+
+          <a
+            nbButton
+            target="_blank"
+            rel="noopener"
+            radius="md"
+            [tone]="example.tone"
+            [href]="example.link"
+          >
+            <span nbText weight="black" transform="uppercase" i18n="@@card.view"
+              >View</span
+            >
+            <span nbButtonTrailingIcon shape="circle" size="lg">
+              <ng-icon size="20" name="tablerCircleArrowRightFill" />
+            </span>
+          </a>
+        </div>
+      </div>
+    </nb-card>
+  </div>
   }
 </section>

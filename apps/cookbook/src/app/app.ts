@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NgOptimizedImage, DecimalPipe } from '@angular/common';
+import { NgOptimizedImage, DecimalPipe, NgClass } from '@angular/common';
 import {
   NbAvatar,
   NbBadge,
@@ -7,8 +7,6 @@ import {
   NbButtonTrailingIcon,
   NbCallout,
   NbCard,
-  NbCardActions,
-  NbCardContent,
   NbCardDescription,
   NbCardHeader,
   NbCardTitle,
@@ -16,15 +14,15 @@ import {
   NbDisplay,
   NbHalftone,
   NbSeparator,
-  NbSplit,
   NbStack,
   NbSticker,
   NbText,
+  NbTitle,
 } from '@ng-brutalism/ui';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { tablerBrandGithub } from '@ng-icons/tabler-icons';
 import { tablerCircleArrowRightFill } from '@ng-icons/tabler-icons/fill';
-import { SIGNAL_EXAMPLES } from './app.data';
+import { SIGNAL_EXAMPLES, TONE_RAIL, TONE_TINT, TONE_WAVE } from './app.data';
 
 @Component({
   selector: 'app-root',
@@ -34,8 +32,6 @@ import { SIGNAL_EXAMPLES } from './app.data';
     NbCardHeader,
     NbCardTitle,
     NbCardDescription,
-    NbCardContent,
-    NbCardActions,
     NbButton,
     NbStack,
     NbBadge,
@@ -48,10 +44,11 @@ import { SIGNAL_EXAMPLES } from './app.data';
     NgIcon,
     NbHalftone,
     NbSticker,
-    NbSplit,
+    NbTitle,
     NbAvatar,
     DecimalPipe,
     NbButtonTrailingIcon,
+    NgClass,
   ],
   providers: [provideIcons({ tablerBrandGithub, tablerCircleArrowRightFill })],
   host: {
@@ -60,4 +57,7 @@ import { SIGNAL_EXAMPLES } from './app.data';
 })
 export class App {
   protected readonly examples = SIGNAL_EXAMPLES;
+  protected readonly toneRail = TONE_RAIL;
+  protected readonly toneTint = TONE_TINT;
+  protected readonly toneWave = TONE_WAVE;
 }
