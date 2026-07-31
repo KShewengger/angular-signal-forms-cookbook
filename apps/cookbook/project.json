@@ -65,7 +65,8 @@
     "test": {
       "executor": "@angular/build:unit-test",
       "options": {
-        "watch": false
+        "watch": false,
+        "setupFiles": ["apps/cookbook/src/test-setup.ts"]
       }
     },
     "serve-static": {
