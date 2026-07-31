@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Angular Signal Forms">
+  <title>Angular Signal Forms</title>
+  <rect x="8" y="8" width="496" height="496" rx="92" fill="#141414"></rect>
+  <rect x="42" y="42" width="428" height="428" rx="62" fill="#B98BF2"></rect>
+  <g clip-path="url(#panel)">
+    <rect x="88" y="398" width="200" height="48" fill="#F582C1" stroke="#141414" stroke-width="22"></rect>
+    <polyline points="88,314 170,314 238,66 288,392 338,236 400,248" fill="none" stroke="#141414" stroke-width="34" stroke-linejoin="miter" stroke-linecap="butt"></polyline>
+    <circle cx="418" cy="250" r="52" fill="#141414"></circle>
+    <circle cx="418" cy="250" r="30" fill="#F5DD3C"></circle>
+  </g>
+  <clipPath id="panel"><rect x="42" y="42" width="428" height="428" rx="62"></rect></clipPath>
+</svg>

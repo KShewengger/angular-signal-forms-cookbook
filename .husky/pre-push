@@ -1,0 +1,6 @@
+if ! pnpm exec nx format:check; then
+  echo ""
+  echo "✖ Formatting issues found (this is what CI checks too)."
+  echo "  Fix with:  pnpm format   then commit and push again."
+  exit 1
+fi

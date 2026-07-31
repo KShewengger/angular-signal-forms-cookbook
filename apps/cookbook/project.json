@@ -8,13 +8,12 @@
   "targets": {
     "build": {
       "executor": "@angular/build:application",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/cookbook",
         "browser": "apps/cookbook/src/main.ts",
+        "polyfills": ["@angular/localize/init"],
         "tsConfig": "apps/cookbook/tsconfig.app.json",
         "assets": [
           {
@@ -22,9 +21,7 @@
             "input": "apps/cookbook/public"
           }
         ],
-        "styles": [
-          "apps/cookbook/src/styles.css"
-        ]
+        "styles": ["apps/cookbook/src/styles.css"]
       },
       "configurations": {
         "production": {
@@ -68,7 +65,8 @@
     "test": {
       "executor": "@angular/build:unit-test",
       "options": {
-        "watch": false
+        "watch": false,
+        "setupFiles": ["apps/cookbook/src/test-setup.ts"]
       }
     },
     "serve-static": {

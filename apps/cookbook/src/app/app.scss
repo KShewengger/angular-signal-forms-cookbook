@@ -1,0 +1,72 @@
+$recipe-count: 12;
+$stagger-step: 0.1s;
+$stagger-base: 0.2s;
+
+@keyframes nb-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes nb-rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes nb-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-card {
+    animation: nb-pop 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .recipe-grid > * {
+    animation: nb-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+    @for $i from 1 through $recipe-count {
+      &:nth-child(#{$i}) {
+        animation-delay: $stagger-base + ($i - 1) * $stagger-step;
+      }
+    }
+  }
+
+  .mascot {
+    animation: nb-float 3.2s ease-in-out infinite;
+  }
+}
+
+.nb-press {
+  transition:
+    transform 0.06s ease,
+    box-shadow 0.06s ease;
+}
+
+.nb-press:active {
+  transform: translate(3px, 3px);
+  box-shadow: 3px 3px 0 0 var(--nb-shadow) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nb-press {
+    transition: none;
+  }
+}
