@@ -68,7 +68,7 @@ Use the `package.json` scripts or `nx` directly. Prefer `affected` targets local
 CI already uses them.
 
 ```bash
-pnpm start                       # nx serve cookbook  (dev server)
+pnpm start                       # nx serve cookbook  (dev server, landing)
 pnpm build                       # nx build cookbook
 pnpm test                        # nx run-many -t test
 pnpm lint                        # nx run-many -t lint
@@ -76,17 +76,27 @@ pnpm format                      # nx format:write   (Prettier, whole workspace)
 pnpm format:check                # nx format:check   (what CI + pre-push run)
 pnpm graph                       # nx graph          (dependency graph)
 
+# Run a specific app (per-app serve scripts, see port scheme below):
+pnpm serve:cookbook              # nx serve cookbook       --port 4200
+pnpm serve:01-basic-form         # nx serve 01-basic-form  --port 4201
+
 # Scoped to what changed (what CI runs):
 pnpm exec nx affected -t lint
 pnpm exec nx affected -t test
 pnpm exec nx affected -t build
 
-# One project:
-pnpm exec nx serve cookbook --port 4300
-pnpm exec nx test cookbook
+# Any project directly:
+pnpm exec nx serve 01-basic-form
+pnpm exec nx build 01-basic-form
+pnpm exec nx test 01-basic-form
 ```
 
-> The dev server is also wired in `.claude/launch.json` (`nx serve cookbook`), so the
+**Port scheme:** cookbook = `4200`, each recipe = `4200 + its number`
+(`01-basic-form` → `4201`, `02-…` → `4202`). Distinct ports let you run the landing
+and a recipe side by side. **When you scaffold a new recipe app, add its
+`serve:NN-name` script** to `package.json` following this pattern.
+
+> The cookbook dev server is also wired in `.claude/launch.json` (port `4300`) so the
 > preview tooling can launch it. **Never** start a dev server with a raw shell command
 > when the preview tooling is available — use it instead.
 
@@ -115,7 +125,10 @@ apps/
     tsconfig.app.json           # includes "@angular/localize" in types
     tsconfig.spec.json          # includes "vitest/globals" + "@angular/localize"
 
-  01-basic-form/                # (planned) a standalone recipe app — same internal shape
+  01-basic-form/                # first recipe app (exists) — standalone, same internal shape
+    public/                     # its OWN assets, e.g. hero-cover.png (flattened, not nested)
+    src/ ...                    # app.ts, app.config.ts, app.routes.ts, styles.css, ...
+    project.json                # name: "01-basic-form" (see naming note below)
   02-validation/                # (planned) ...one per recipe, named NN-name
   ...                           #   each owns its own project.json, public/, README.md
 ```
@@ -123,6 +136,36 @@ apps/
 Every app mirrors the same internal shape and the same conventions below (Tailwind
 setup, signal forms, i18n, testing). Keep recipe apps consistent with `cookbook` so
 there's one mental model across the repo.
+
+**Dependencies & manifests — one root `package.json`, nothing per-project.** This is an
+Nx **integrated** monorepo: all dependencies live in the single root `package.json`,
+projects are configured by their `project.json` (not a manifest), and every app runs on
+the **same** dependency versions (single-version policy — a feature for a cookbook).
+**Do not add a `package.json` to an app or library.** To share code across recipes
+(theme, tone maps, form helpers), create an **internal, non-publishable library**:
+
+```bash
+pnpm exec nx g @nx/angular:library libs/shared-ui
+```
+
+It gets a `project.json` but **no `package.json`** — import it via its TypeScript path
+alias, and Nx tracks the dependency so `affected` rebuilds recipes when it changes. The
+only time a project gets its own `package.json` is if you deliberately decide to
+**publish** it to npm.
+
+**Recipe app naming.** The Nx **generator** rejects a project name starting with a
+digit, but the **runtime** accepts one. So scaffold with a temporary letter name at the
+real directory, then rename in `project.json`:
+
+```bash
+# 1. generate into the numbered directory with a valid temp name
+pnpm exec nx g @nx/angular:application apps/NN-name --name=temp-name --no-interactive
+# 2. in apps/NN-name/project.json: set "name" to "NN-name" AND update every
+#    "temp-name:build..." buildTarget reference to "NN-name:build..."
+# 3. verify: pnpm exec nx build NN-name
+```
+
+This keeps the project name identical to the folder name (e.g. `01-basic-form`).
 
 ---
 
