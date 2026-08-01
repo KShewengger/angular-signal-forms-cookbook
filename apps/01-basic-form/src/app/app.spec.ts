@@ -1,15 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Injector, signal } from '@angular/core';
+import { form, required } from '@angular/forms/signals';
 import { App } from './app';
 import { RegistrationFormModel } from './app.model';
-
-interface FieldState {
-  value(): RegistrationFormModel;
-  valid(): boolean;
-  invalid(): boolean;
-  dirty(): boolean;
-  touched(): boolean;
-}
-type FormRoot = () => FieldState;
 
 const EMPTY_MODEL: RegistrationFormModel = {
   name: '',
@@ -20,151 +13,174 @@ const EMPTY_MODEL: RegistrationFormModel = {
 };
 
 describe('App (01 · Basic Form)', () => {
-  let fixture: ComponentFixture<App>;
-  let host: HTMLElement;
+  describe('form schema (isolated)', () => {
+    beforeEach(() => TestBed.configureTestingModule({}));
 
-  const form = (): FormRoot =>
-    (fixture.componentInstance as unknown as { userForm: FormRoot }).userForm;
-  const state = (): FieldState => form()();
+    const buildRegistrationForm = (
+      initial: Partial<RegistrationFormModel> = {},
+    ) => {
+      const model = signal<RegistrationFormModel>({
+        ...EMPTY_MODEL,
+        ...initial,
+      });
+      return form(
+        model,
+        (path) => {
+          required(path.name);
+        },
+        { injector: TestBed.inject(Injector) },
+      );
+    };
 
-  const byId = <T extends HTMLElement>(id: string): T =>
-    host.querySelector<T>(`#${id}`) as T;
+    it('starts pristine, untouched, and empty', () => {
+      const registrationForm = buildRegistrationForm();
+      expect(registrationForm().value()).toEqual(EMPTY_MODEL);
+      expect(registrationForm().dirty()).toBe(false);
+      expect(registrationForm().touched()).toBe(false);
+    });
 
-  const buttonByText = (text: string): HTMLButtonElement =>
-    Array.from(host.querySelectorAll('button')).find((b) =>
-      b.textContent?.trim().startsWith(text),
-    ) as HTMLButtonElement;
+    it('is invalid while the required Name is empty', () => {
+      const registrationForm = buildRegistrationForm();
+      expect(registrationForm.name().valid()).toBe(false);
+      expect(registrationForm().valid()).toBe(false);
+      expect(registrationForm().invalid()).toBe(true);
+    });
 
-  /** Act on a native control, then wait for the zoneless update to settle. */
-  const setValue = async (
-    el: HTMLInputElement | HTMLTextAreaElement,
-    value: string,
-  ): Promise<void> => {
-    el.value = value;
-    el.dispatchEvent(new Event('input', { bubbles: true }));
-    await fixture.whenStable();
-  };
+    it('reports a required error on Name', () => {
+      const registrationForm = buildRegistrationForm();
+      expect(registrationForm.name().errors().length).toBeGreaterThan(0);
+    });
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [App],
-    }).compileComponents();
-    fixture = TestBed.createComponent(App);
-    host = fixture.nativeElement as HTMLElement;
-    await fixture.whenStable();
+    it('becomes valid once Name has a value', () => {
+      const registrationForm = buildRegistrationForm();
+      registrationForm.name().value.set('Ada Lovelace');
+      expect(registrationForm.name().valid()).toBe(true);
+      expect(registrationForm().valid()).toBe(true);
+    });
+
+    it('returns to invalid when Name is cleared again', () => {
+      const registrationForm = buildRegistrationForm({ name: 'Ada' });
+      expect(registrationForm().valid()).toBe(true);
+
+      registrationForm.name().value.set('');
+      expect(registrationForm().valid()).toBe(false);
+    });
   });
 
-  it('creates the component', () => {
-    expect(fixture.componentInstance).toBeTruthy();
-  });
+  describe('component (DOM)', () => {
+    let fixture: ComponentFixture<App>;
+    let host: HTMLElement;
 
-  describe('initial state', () => {
+    const formState = (): {
+      value(): RegistrationFormModel;
+      dirty(): boolean;
+    } =>
+      (
+        fixture.componentInstance as unknown as {
+          userForm: () => { value(): RegistrationFormModel; dirty(): boolean };
+        }
+      ).userForm();
+
+    const controlById = <T extends HTMLElement>(id: string): T =>
+      host.querySelector<T>(`#${id}`) as T;
+
+    const buttonByText = (text: string): HTMLButtonElement =>
+      Array.from(host.querySelectorAll('button')).find((button) =>
+        button.textContent?.trim().startsWith(text),
+      ) as HTMLButtonElement;
+
+    const typeInto = async (
+      control: HTMLInputElement | HTMLTextAreaElement,
+      value: string,
+    ): Promise<void> => {
+      control.value = value;
+      control.dispatchEvent(new Event('input', { bubbles: true }));
+      await fixture.whenStable();
+    };
+
+    beforeEach(async () => {
+      await TestBed.configureTestingModule({
+        imports: [App],
+      }).compileComponents();
+      fixture = TestBed.createComponent(App);
+      host = fixture.nativeElement as HTMLElement;
+      await fixture.whenStable();
+    });
+
+    it('creates the component', () => {
+      expect(fixture.componentInstance).toBeTruthy();
+    });
+
     it('renders the registration form and all five controls', () => {
       expect(host.querySelector('#registration-title')?.textContent).toContain(
         'Registration',
       );
-      expect(byId('name')).toBeTruthy();
-      expect(byId('age')).toBeTruthy();
-      expect(byId('role')).toBeTruthy();
-      expect(byId('bio')).toBeTruthy();
-      expect(byId('beginner')).toBeTruthy();
+      expect(controlById('name')).toBeTruthy();
+      expect(controlById('age')).toBeTruthy();
+      expect(controlById('role')).toBeTruthy();
+      expect(controlById('bio')).toBeTruthy();
+      expect(controlById('beginner')).toBeTruthy();
       expect(buttonByText('Save')).toBeTruthy();
       expect(buttonByText('Clear')).toBeTruthy();
-    });
-
-    it('starts empty, pristine, and untouched', () => {
-      expect(state().value()).toEqual(EMPTY_MODEL);
-      expect(state().dirty()).toBe(false);
-      expect(state().touched()).toBe(false);
-    });
-
-    it('is invalid while the required Name is empty', () => {
-      expect(state().valid()).toBe(false);
-      expect(state().invalid()).toBe(true);
     });
 
     it('disables Save and Clear on a pristine form', () => {
       expect(buttonByText('Save').disabled).toBe(true);
       expect(buttonByText('Clear').disabled).toBe(true);
     });
-  });
 
-  describe('required validation on Name', () => {
-    it('becomes valid once Name has a value', async () => {
-      await setValue(byId<HTMLInputElement>('name'), 'Ada Lovelace');
-      expect(state().valid()).toBe(true);
-      expect(state().invalid()).toBe(false);
-    });
-
-    it('returns to invalid when Name is cleared again', async () => {
-      const name = byId<HTMLInputElement>('name');
-      await setValue(name, 'Ada');
-      expect(state().valid()).toBe(true);
-
-      await setValue(name, '');
-      expect(state().valid()).toBe(false);
-    });
-  });
-
-  describe('interaction state', () => {
     it('marks the form dirty and enables Save/Clear after editing', async () => {
-      await setValue(byId<HTMLInputElement>('name'), 'Ada');
+      await typeInto(controlById<HTMLInputElement>('name'), 'Ada');
 
-      expect(state().dirty()).toBe(true);
+      expect(formState().dirty()).toBe(true);
       expect(buttonByText('Save').disabled).toBe(false);
       expect(buttonByText('Clear').disabled).toBe(false);
     });
-  });
 
-  describe('two-way binding', () => {
     it('flows typed values into the form model', async () => {
-      await setValue(byId<HTMLInputElement>('name'), 'Ada');
-      await setValue(byId<HTMLInputElement>('age'), '30');
-      await setValue(
-        byId<HTMLTextAreaElement>('bio'),
+      await typeInto(controlById<HTMLInputElement>('name'), 'Ada');
+      await typeInto(controlById<HTMLInputElement>('age'), '30');
+      await typeInto(
+        controlById<HTMLTextAreaElement>('bio'),
         'Enchantress of numbers',
       );
 
-      const value = state().value();
+      const value = formState().value();
       expect(value.name).toBe('Ada');
       expect(value.age).toBe(30);
       expect(value.bio).toBe('Enchantress of numbers');
     });
 
     it('toggles the beginner flag from the checkbox', async () => {
-      const checkbox = byId<HTMLInputElement>('beginner');
-      checkbox.click();
+      const beginnerCheckbox = controlById<HTMLInputElement>('beginner');
+      beginnerCheckbox.click();
       await fixture.whenStable();
 
-      expect(state().value().beginner).toBe(true);
+      expect(formState().value().beginner).toBe(true);
     });
-  });
 
-  describe('submit', () => {
     it('surfaces the captured values after submitting', async () => {
-      await setValue(byId<HTMLInputElement>('name'), 'Ada');
+      await typeInto(controlById<HTMLInputElement>('name'), 'Ada');
 
       buttonByText('Save').click();
       await fixture.whenStable();
 
-      const shown = Array.from(document.querySelectorAll('dd')).map((d) =>
-        d.textContent?.trim(),
+      const shownValues = Array.from(document.querySelectorAll('dd')).map(
+        (valueCell) => valueCell.textContent?.trim(),
       );
-      expect(shown).toContain('Ada');
+      expect(shownValues).toContain('Ada');
     });
-  });
 
-  describe('reset', () => {
     it('clears the form back to its initial state', async () => {
-      await setValue(byId<HTMLInputElement>('name'), 'Ada');
-      expect(state().dirty()).toBe(true);
+      await typeInto(controlById<HTMLInputElement>('name'), 'Ada');
+      expect(formState().dirty()).toBe(true);
 
       buttonByText('Clear').click();
       await fixture.whenStable();
 
-      expect(state().value()).toEqual(EMPTY_MODEL);
-      expect(state().dirty()).toBe(false);
-      expect(byId<HTMLInputElement>('name').value).toBe('');
+      expect(formState().value()).toEqual(EMPTY_MODEL);
+      expect(formState().dirty()).toBe(false);
+      expect(controlById<HTMLInputElement>('name').value).toBe('');
     });
   });
 });

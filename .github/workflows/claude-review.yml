@@ -18,7 +18,10 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Advisory review: never block a PR. A turn-cap or any run error is reported
+      # but does not fail the check.
       - uses: anthropics/claude-code-action@v1
+        continue-on-error: true
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           plugin_marketplaces: 'https://github.com/anthropics/claude-code.git'
