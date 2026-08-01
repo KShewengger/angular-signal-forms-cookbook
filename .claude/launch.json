@@ -6,6 +6,12 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["nx", "serve", "cookbook", "--port", "4300"],
       "port": 4300
+    },
+    {
+      "name": "01-basic-form",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["nx", "serve", "01-basic-form", "--port", "4301"],
+      "port": 4301
     }
   ]
 }

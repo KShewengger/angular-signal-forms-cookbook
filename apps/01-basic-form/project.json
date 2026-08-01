@@ -13,6 +13,7 @@
       "options": {
         "outputPath": "dist/apps/01-basic-form",
         "browser": "apps/01-basic-form/src/main.ts",
+        "polyfills": ["@angular/localize/init"],
         "tsConfig": "apps/01-basic-form/tsconfig.app.json",
         "assets": [
           {
@@ -64,7 +65,8 @@
     "test": {
       "executor": "@angular/build:unit-test",
       "options": {
-        "watch": false
+        "watch": false,
+        "setupFiles": ["apps/01-basic-form/src/test-setup.ts"]
       }
     },
     "serve-static": {
