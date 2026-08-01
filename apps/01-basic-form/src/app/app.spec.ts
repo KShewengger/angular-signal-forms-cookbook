@@ -13,12 +13,6 @@ const EMPTY_MODEL: RegistrationFormModel = {
 };
 
 describe('App (01 · Basic Form)', () => {
-  /**
-   * Isolated logic tests. Angular recommends testing form logic (validation and
-   * state) against the schema directly, without rendering a component. This block
-   * mirrors the component's schema (`required(path.name)`); form creation needs an
-   * injection context, supplied via `{ injector }`.
-   */
   describe('form schema (isolated)', () => {
     beforeEach(() => TestBed.configureTestingModule({}));
 
@@ -73,10 +67,6 @@ describe('App (01 · Basic Form)', () => {
     });
   });
 
-  /**
-   * Component-bound tests. These exercise what only the rendered component can:
-   * DOM binding, the disabled/dirty wiring on the buttons, submit, and reset.
-   */
   describe('component (DOM)', () => {
     let fixture: ComponentFixture<App>;
     let host: HTMLElement;
@@ -99,7 +89,6 @@ describe('App (01 · Basic Form)', () => {
         button.textContent?.trim().startsWith(text),
       ) as HTMLButtonElement;
 
-    /** Act on a native control, then wait for the zoneless update to settle. */
     const typeInto = async (
       control: HTMLInputElement | HTMLTextAreaElement,
       value: string,
