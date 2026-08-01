@@ -16,7 +16,6 @@ Practical Angular Signal Forms recipes: every flavor of validation, custom `Form
 
 </div>
 
-
 ---
 
 ## 🧭 Contents
@@ -32,18 +31,18 @@ Practical Angular Signal Forms recipes: every flavor of validation, custom `Form
 
 Each recipe is a small, runnable example that solves one problem, with a folder-level `README.md` explaining the approach and the gotchas.
 
-| #  | Recipe                                                                     | What it covers |
-|----|----------------------------------------------------------------------------|----------------|
-| 01 | [Basic form](./apps/cookbook/src/app/recipes/01-basic-form)                | `form()`, `Field`, two-way value flow |
-| 02 | [Built-in Validation](./apps/cookbook/src/app/recipes/02-validation)       | Built-in validators, error display, touched/dirty state |
-| 03 | [Cross-field Validation](./apps/cookbook/src/app/recipes/03-cross-field)   | Validating one field against another |
-| 04 | [Async Validation](./apps/cookbook/src/app/recipes/04-async-validation)    | Debounced server checks, pending state |
-| 05 | [Array Validation](./apps/cookbook/src/app/recipes/05-array-validation)    | Per-item rules, add/remove rows, array-level errors |
-| 06 | [Custom Control](./apps/cookbook/src/app/recipes/09-custom-control)        | Implementing `FormValueControl` with its own validation |
-| 07 | [Custom Validation](./apps/cookbook/src/app/recipes/07-custom-validation)  | Writing your own validators, validating a subtree with `validateTree` |
-| 08 | [Conditional Validation](./apps/cookbook/src/app/recipes/06-conditional-validation) | Rules that switch on based on other values |
-| 09 | [Form submission](./apps/cookbook/src/app/recipes/10-submission)           | Submit lifecycle via form root, server error mapping |
-| 10 | [Zod schema Validation](./apps/cookbook/src/app/recipes/08-zod)            | Driving form validation from a Zod schema |
+| #   | Recipe                                                     | What it covers                                                        |
+| --- | ---------------------------------------------------------- | --------------------------------------------------------------------- |
+| 01  | [Basic form](./apps/01-basic-form)                         | `form()`, `[formField]` binding, live `touched`/`dirty`/`valid` state |
+| 02  | [Built-in Validation](./apps/02-validation)                | Built-in validators, error display, touched/dirty state               |
+| 03  | [Cross-field Validation](./apps/03-cross-field)            | Validating one field against another                                  |
+| 04  | [Async Validation](./apps/04-async-validation)             | Debounced server checks, pending state                                |
+| 05  | [Array Validation](./apps/05-array-validation)             | Per-item rules, add/remove rows, array-level errors                   |
+| 06  | [Custom Control](./apps/09-custom-control)                 | Implementing `FormValueControl` with its own validation               |
+| 07  | [Custom Validation](./apps/07-custom-validation)           | Writing your own validators, validating a subtree with `validateTree` |
+| 08  | [Conditional Validation](./apps/06-conditional-validation) | Rules that switch on based on other values                            |
+| 09  | [Form submission](./apps/10-submission)                    | Submit lifecycle via form root, server error mapping                  |
+| 10  | [Zod schema Validation](./apps/08-zod)                     | Driving form validation from a Zod schema                             |
 
 ---
 
@@ -51,10 +50,10 @@ Each recipe is a small, runnable example that solves one problem, with a folder-
 
 **Prerequisites**
 
-| Requirement | Version |
-|-------------|---------|
-| Node | `>=22.12.0` |
-| pnpm | `>=9` (via Corepack) |
+| Requirement | Version              |
+| ----------- | -------------------- |
+| Node        | `>=22.12.0`          |
+| pnpm        | `>=9` (via Corepack) |
 
 This repo uses pnpm as its package manager. Enable it once via Corepack (bundled with Node):
 
@@ -78,15 +77,15 @@ The app serves at `http://localhost:4200`.
 
 ## ⚡ Scripts
 
-| Command | What it does |
-|---------|--------------|
-| `pnpm start` | Serves the app in development mode with HMR |
-| `pnpm build` | Production build |
-| `pnpm test` | Runs the full unit test suite |
-| `pnpm lint` | Lints the workspace |
-| `pnpm format` | Formats with Prettier |
+| Command             | What it does                                    |
+| ------------------- | ----------------------------------------------- |
+| `pnpm start`        | Serves the app in development mode with HMR     |
+| `pnpm build`        | Production build                                |
+| `pnpm test`         | Runs the full unit test suite                   |
+| `pnpm lint`         | Lints the workspace                             |
+| `pnpm format`       | Formats with Prettier                           |
 | `pnpm format:check` | Checks formatting without writing (CI-friendly) |
-| `pnpm graph` | Opens the Nx project dependency graph |
+| `pnpm graph`        | Opens the Nx project dependency graph           |
 
 ---
 
