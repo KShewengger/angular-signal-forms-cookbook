@@ -65,10 +65,6 @@ describe('App (01 · Basic Form)', () => {
     });
   });
 
-  /**
-   * Component-bound tests. These exercise what only the rendered component can:
-   * DOM binding, the disabled/dirty wiring on the buttons, submit, and reset.
-   */
   describe('component (DOM)', () => {
     let fixture: ComponentFixture<App>;
     let host: HTMLElement;
@@ -88,7 +84,6 @@ describe('App (01 · Basic Form)', () => {
         b.textContent?.trim().startsWith(text),
       ) as HTMLButtonElement;
 
-    /** Act on a native control, then wait for the zoneless update to settle. */
     const setValue = async (
       el: HTMLInputElement | HTMLTextAreaElement,
       value: string,
