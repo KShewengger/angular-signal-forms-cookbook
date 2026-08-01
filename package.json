@@ -8,6 +8,8 @@
     "serve:01-basic-form": "nx serve 01-basic-form --port 4201",
     "build": "nx build cookbook",
     "test": "nx run-many -t test",
+    "test:01-basic-form": "nx test 01-basic-form",
+    "test:watch:01-basic-form": "nx test 01-basic-form --watch",
     "lint": "nx run-many -t lint",
     "format": "nx format:write",
     "format:check": "nx format:check",

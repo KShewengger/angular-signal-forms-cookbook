@@ -212,12 +212,15 @@ Recipes use Angular's **signal forms** API (`@angular/forms/signals`), not the l
 `ReactiveFormsModule` / `FormBuilder`. Baseline pattern:
 
 - Model the form's data as a **signal**, build the form with **`form()`**, and bind
-  fields in the template with the **`Field`** directive (`[field]="..."`).
+  fields in the template with the **`FormField`** directive
+  (`[formField]="userForm.name"`).
 - Validation lives in the schema passed to `form()` - built-in validators
   (`required`, `email`, `min`, …), custom validators, cross-field rules, and
   `validateTree` for subtrees. Async/debounced checks expose **pending** state.
-- Read state off the field/form signals (`.value()`, `.errors()`, `.touched()`,
-  `.dirty()`, `.valid()`, submit/pending state) - drive the UI from those.
+- **Fields are functions:** call a field to get its state, then read its signals, e.g.
+  `userForm().valid()`, `userForm.name().touched()`, `userForm().value()`. Drive the UI
+  from those (`.value()`, `.errors()`, `.touched()`, `.dirty()`, `.valid()`,
+  submit/pending state).
 - Custom controls implement **`FormValueControl`** with their own validation.
 - Zod recipe: derive validation from a Zod v4 schema rather than hand-writing rules.
 
@@ -263,13 +266,26 @@ recipe focused on **one** concept with a clear `README.md`.
 ## 9. Testing
 
 - **Vitest** via `@angular/build:unit-test`. Spec files are `*.spec.ts`.
+- **Run specs with `nx test <app>`** (or `nx test <app> --watch`), never a bare
+  `vitest` command. There is no standalone `vitest.config`; the Angular builder wires
+  jsdom, the compiler, and `setupFiles`. Running `vitest --run app.spec.ts` directly
+  (e.g. from an IDE runner) compiles nothing and exits 1 with no output - point IDE
+  test runners at `nx test <app>` instead.
+- Follow the zoneless testing pattern: **Act, then `await fixture.whenStable()`, then
+  Assert.** Do not call `fixture.detectChanges()`.
 - Tests that touch `$localize`-wrapped data need `@angular/localize/init` - already
   wired through `test-setup.ts` (`setupFiles` in the test target) and the spec
   tsconfig `types`. Note: `polyfills` is **not** valid on the unit-test builder - use
   `setupFiles`.
+- **ng-brutalism `NbDialog` under jsdom:** jsdom does not implement the native
+  `<dialog>` methods (`show` / `showModal` / `close`) that `NbDialog` calls, so any
+  test that opens or closes a dialog throws. `test-setup.ts` stubs them; reuse that
+  setup for any dialog-driven recipe.
 - Every recipe should ship at least a smoke test (renders, core validation behaves).
   Keep data-driven config (like `SIGNAL_EXAMPLES`) covered as in `app.data.spec.ts`.
 - Prefer testing behavior via the component's public surface / DOM over internals.
+  Signal-form state that has no DOM readout may be read through a narrow typed accessor
+  on the component instance (fields are `protected`).
 
 ---
 
