@@ -13,10 +13,18 @@ const EMPTY_MODEL: RegistrationFormModel = {
 };
 
 describe('App (01 · Basic Form)', () => {
+  /**
+   * Isolated logic tests. Angular recommends testing form logic (validation and
+   * state) against the schema directly, without rendering a component. This block
+   * mirrors the component's schema (`required(path.name)`); form creation needs an
+   * injection context, supplied via `{ injector }`.
+   */
   describe('form schema (isolated)', () => {
     beforeEach(() => TestBed.configureTestingModule({}));
 
-    const buildForm = (initial: Partial<RegistrationFormModel> = {}) => {
+    const buildRegistrationForm = (
+      initial: Partial<RegistrationFormModel> = {},
+    ) => {
       const model = signal<RegistrationFormModel>({
         ...EMPTY_MODEL,
         ...initial,
@@ -31,65 +39,73 @@ describe('App (01 · Basic Form)', () => {
     };
 
     it('starts pristine, untouched, and empty', () => {
-      const f = buildForm();
-      expect(f().value()).toEqual(EMPTY_MODEL);
-      expect(f().dirty()).toBe(false);
-      expect(f().touched()).toBe(false);
+      const registrationForm = buildRegistrationForm();
+      expect(registrationForm().value()).toEqual(EMPTY_MODEL);
+      expect(registrationForm().dirty()).toBe(false);
+      expect(registrationForm().touched()).toBe(false);
     });
 
     it('is invalid while the required Name is empty', () => {
-      const f = buildForm();
-      expect(f.name().valid()).toBe(false);
-      expect(f().valid()).toBe(false);
-      expect(f().invalid()).toBe(true);
+      const registrationForm = buildRegistrationForm();
+      expect(registrationForm.name().valid()).toBe(false);
+      expect(registrationForm().valid()).toBe(false);
+      expect(registrationForm().invalid()).toBe(true);
     });
 
     it('reports a required error on Name', () => {
-      const f = buildForm();
-      expect(f.name().errors().length).toBeGreaterThan(0);
+      const registrationForm = buildRegistrationForm();
+      expect(registrationForm.name().errors().length).toBeGreaterThan(0);
     });
 
     it('becomes valid once Name has a value', () => {
-      const f = buildForm();
-      f.name().value.set('Ada Lovelace');
-      expect(f.name().valid()).toBe(true);
-      expect(f().valid()).toBe(true);
+      const registrationForm = buildRegistrationForm();
+      registrationForm.name().value.set('Ada Lovelace');
+      expect(registrationForm.name().valid()).toBe(true);
+      expect(registrationForm().valid()).toBe(true);
     });
 
     it('returns to invalid when Name is cleared again', () => {
-      const f = buildForm({ name: 'Ada' });
-      expect(f().valid()).toBe(true);
+      const registrationForm = buildRegistrationForm({ name: 'Ada' });
+      expect(registrationForm().valid()).toBe(true);
 
-      f.name().value.set('');
-      expect(f().valid()).toBe(false);
+      registrationForm.name().value.set('');
+      expect(registrationForm().valid()).toBe(false);
     });
   });
 
+  /**
+   * Component-bound tests. These exercise what only the rendered component can:
+   * DOM binding, the disabled/dirty wiring on the buttons, submit, and reset.
+   */
   describe('component (DOM)', () => {
     let fixture: ComponentFixture<App>;
     let host: HTMLElement;
 
-    const state = (): { value(): RegistrationFormModel; dirty(): boolean } =>
+    const formState = (): {
+      value(): RegistrationFormModel;
+      dirty(): boolean;
+    } =>
       (
         fixture.componentInstance as unknown as {
           userForm: () => { value(): RegistrationFormModel; dirty(): boolean };
         }
       ).userForm();
 
-    const byId = <T extends HTMLElement>(id: string): T =>
+    const controlById = <T extends HTMLElement>(id: string): T =>
       host.querySelector<T>(`#${id}`) as T;
 
     const buttonByText = (text: string): HTMLButtonElement =>
-      Array.from(host.querySelectorAll('button')).find((b) =>
-        b.textContent?.trim().startsWith(text),
+      Array.from(host.querySelectorAll('button')).find((button) =>
+        button.textContent?.trim().startsWith(text),
       ) as HTMLButtonElement;
 
-    const setValue = async (
-      el: HTMLInputElement | HTMLTextAreaElement,
+    /** Act on a native control, then wait for the zoneless update to settle. */
+    const typeInto = async (
+      control: HTMLInputElement | HTMLTextAreaElement,
       value: string,
     ): Promise<void> => {
-      el.value = value;
-      el.dispatchEvent(new Event('input', { bubbles: true }));
+      control.value = value;
+      control.dispatchEvent(new Event('input', { bubbles: true }));
       await fixture.whenStable();
     };
 
@@ -110,11 +126,11 @@ describe('App (01 · Basic Form)', () => {
       expect(host.querySelector('#registration-title')?.textContent).toContain(
         'Registration',
       );
-      expect(byId('name')).toBeTruthy();
-      expect(byId('age')).toBeTruthy();
-      expect(byId('role')).toBeTruthy();
-      expect(byId('bio')).toBeTruthy();
-      expect(byId('beginner')).toBeTruthy();
+      expect(controlById('name')).toBeTruthy();
+      expect(controlById('age')).toBeTruthy();
+      expect(controlById('role')).toBeTruthy();
+      expect(controlById('bio')).toBeTruthy();
+      expect(controlById('beginner')).toBeTruthy();
       expect(buttonByText('Save')).toBeTruthy();
       expect(buttonByText('Clear')).toBeTruthy();
     });
@@ -125,57 +141,57 @@ describe('App (01 · Basic Form)', () => {
     });
 
     it('marks the form dirty and enables Save/Clear after editing', async () => {
-      await setValue(byId<HTMLInputElement>('name'), 'Ada');
+      await typeInto(controlById<HTMLInputElement>('name'), 'Ada');
 
-      expect(state().dirty()).toBe(true);
+      expect(formState().dirty()).toBe(true);
       expect(buttonByText('Save').disabled).toBe(false);
       expect(buttonByText('Clear').disabled).toBe(false);
     });
 
     it('flows typed values into the form model', async () => {
-      await setValue(byId<HTMLInputElement>('name'), 'Ada');
-      await setValue(byId<HTMLInputElement>('age'), '30');
-      await setValue(
-        byId<HTMLTextAreaElement>('bio'),
+      await typeInto(controlById<HTMLInputElement>('name'), 'Ada');
+      await typeInto(controlById<HTMLInputElement>('age'), '30');
+      await typeInto(
+        controlById<HTMLTextAreaElement>('bio'),
         'Enchantress of numbers',
       );
 
-      const value = state().value();
+      const value = formState().value();
       expect(value.name).toBe('Ada');
       expect(value.age).toBe(30);
       expect(value.bio).toBe('Enchantress of numbers');
     });
 
     it('toggles the beginner flag from the checkbox', async () => {
-      const checkbox = byId<HTMLInputElement>('beginner');
-      checkbox.click();
+      const beginnerCheckbox = controlById<HTMLInputElement>('beginner');
+      beginnerCheckbox.click();
       await fixture.whenStable();
 
-      expect(state().value().beginner).toBe(true);
+      expect(formState().value().beginner).toBe(true);
     });
 
     it('surfaces the captured values after submitting', async () => {
-      await setValue(byId<HTMLInputElement>('name'), 'Ada');
+      await typeInto(controlById<HTMLInputElement>('name'), 'Ada');
 
       buttonByText('Save').click();
       await fixture.whenStable();
 
-      const shown = Array.from(document.querySelectorAll('dd')).map((d) =>
-        d.textContent?.trim(),
+      const shownValues = Array.from(document.querySelectorAll('dd')).map(
+        (valueCell) => valueCell.textContent?.trim(),
       );
-      expect(shown).toContain('Ada');
+      expect(shownValues).toContain('Ada');
     });
 
     it('clears the form back to its initial state', async () => {
-      await setValue(byId<HTMLInputElement>('name'), 'Ada');
-      expect(state().dirty()).toBe(true);
+      await typeInto(controlById<HTMLInputElement>('name'), 'Ada');
+      expect(formState().dirty()).toBe(true);
 
       buttonByText('Clear').click();
       await fixture.whenStable();
 
-      expect(state().value()).toEqual(EMPTY_MODEL);
-      expect(state().dirty()).toBe(false);
-      expect(byId<HTMLInputElement>('name').value).toBe('');
+      expect(formState().value()).toEqual(EMPTY_MODEL);
+      expect(formState().dirty()).toBe(false);
+      expect(controlById<HTMLInputElement>('name').value).toBe('');
     });
   });
 });
