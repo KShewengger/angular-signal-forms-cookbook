@@ -14,8 +14,8 @@
           <img
             priority
             ngSrc="hero-cover.png"
-            width="3240"
-            height="1980"
+            width="2048"
+            height="1251"
             class="h-full w-full object-cover"
             alt="Illustration of a developer studying Angular"
           />
@@ -27,13 +27,13 @@
             tone="lavender"
             size="md"
             class="w-fit"
-            aria-label="Lesson 1: Basic form"
+            aria-label="Lesson 2: Validations"
           >
-            <span aria-hidden="true">01</span>
+            <span aria-hidden="true">02</span>
 
             <hr nbSeparator orientation="vertical" aria-hidden="true" />
 
-            <span class="text-sm">Basic Form</span>
+            <span class="text-sm">Validation</span>
           </div>
 
           <nb-card-title>
@@ -54,7 +54,7 @@
             align="center"
             aria-label="Lesson topics"
           >
-            <span nbChip tone="danger" i18n="@@angular22Label">
+            <span nbChip tone="danger" i18n="@@angular21Label">
               Angular 22
             </span>
 
@@ -70,7 +70,7 @@
       <hr nbSeparator variant="dashed" aria-hidden="true" />
 
       <!-- FORM -->
-      <form [formRoot]="userForm" nbStack gap="md">
+      <form [formRoot]="userForm" nbStack gap="none" class="mb-4">
         <nb-card-content>
           <fieldset nbStack gap="md">
             <legend class="sr-only" i18n="@@registrationLabel">
@@ -78,16 +78,35 @@
             </legend>
 
             <div nbStack gap="sm" align="stretch">
-              <label nbLabel for="name" i18n="@@nameLabel"> Name </label>
+              <label nbLabel for="username" i18n="@@usernameLabel">
+                Username
+              </label>
 
               <input
                 nbInput
-                id="name"
+                id="username"
                 type="text"
-                autocomplete="name"
-                placeholder="Enter your name"
-                [formField]="userForm.name"
+                placeholder="Enter your username"
+                [formField]="userForm.username"
               />
+
+              <app-validation-errors [field]="userForm.username" />
+            </div>
+
+            <div nbStack gap="sm" align="stretch">
+              <label nbLabel for="email" i18n="@@emailLabel"> Email </label>
+
+              <input
+                nbInput
+                id="email"
+                type="email"
+                inputmode="email"
+                autocomplete="email"
+                placeholder="Enter your email"
+                [formField]="userForm.email"
+              />
+
+              <app-validation-errors [field]="userForm.email" />
             </div>
 
             <div nbStack gap="sm" align="stretch">
@@ -101,6 +120,8 @@
                 placeholder="Enter your age"
                 [formField]="userForm.age"
               />
+
+              <app-validation-errors [field]="userForm.age" />
             </div>
 
             <div nbStack gap="sm" align="stretch">
@@ -126,6 +147,8 @@
                   User
                 </nb-select-option>
               </nb-select>
+
+              <app-validation-errors [field]="userForm.role" />
             </div>
 
             <div nbStack gap="sm" align="stretch">
@@ -138,6 +161,8 @@
                 placeholder="Tell us a little about yourself"
                 [formField]="userForm.bio"
               ></textarea>
+
+              <app-validation-errors [field]="userForm.bio" />
             </div>
 
             <div nbCluster gap="sm" align="center" wrap="nowrap">
@@ -149,9 +174,7 @@
               />
 
               <label nbLabel for="beginner">
-                <span i18n="@@angularBeginnerLabel">
-                  I am an Angular beginner
-                </span>
+                <span i18n="@@beginnerLabel"> I am an Angular beginner </span>
 
                 <span aria-hidden="true">⭐</span>
               </label>
@@ -160,65 +183,32 @@
         </nb-card-content>
 
         <!-- ACTIONS -->
-        <div nbCluster gap="md" justify="end" class="mt-6">
-          <div nbCluster gap="md" class="pl-6">
-            <div nbCluster gap="xs">
-              <span
-                nbStatusDot
-                [state]="userForm().touched() ? 'online' : 'offline'"
-              ></span>
-              <span>Touched</span>
-            </div>
+        <nb-card-actions align="end" class="mt-4">
+          <button
+            nbButton
+            type="button"
+            size="sm"
+            tone="background"
+            i18n="@@clearLabel"
+            [disabled]="!userForm().dirty()"
+            (click)="clear()"
+          >
+            Clear
+          </button>
 
-            <div nbCluster gap="xs">
-              <span
-                nbStatusDot
-                [state]="userForm().dirty() ? 'online' : 'offline'"
-              ></span>
-              <span>Dirty</span>
-            </div>
-
-            <div nbCluster gap="xs">
-              <span
-                nbStatusDot
-                [state]="userForm().valid() ? 'online' : 'offline'"
-              ></span>
-              <span>Valid</span>
-            </div>
-
-            <div nbCluster gap="xs">
-              <span
-                nbStatusDot
-                [state]="userForm().dirty() && userForm().invalid() ? 'live' : 'offline'"
-              ></span>
-              <span>Invalid</span>
-            </div>
-          </div>
-
-          <nb-card-actions align="end">
-            <button
-              nbButton
-              type="button"
-              size="sm"
-              tone="background"
-              i18n="@@clearLabel"
-              [disabled]="!userForm().dirty()"
-              (click)="clear()"
-            >
-              Clear
-            </button>
-
-            <button
-              nbButton
-              type="submit"
-              size="sm"
-              i18n="@@saveLabel"
-              [disabled]="!userForm().dirty()"
-            >
-              Save
-            </button>
-          </nb-card-actions>
-        </div>
+          <button
+            nbButton
+            type="submit"
+            size="sm"
+            i18n="@@saveLabel"
+            [disabled]="
+              !userForm().dirty() ||
+              userForm().invalid()
+            "
+          >
+            Save
+          </button>
+        </nb-card-actions>
       </form>
 
       <!-- DECORATIONS -->
@@ -233,6 +223,14 @@
         TEST<br />
         IT!
       </nb-sticker>
+
+      <div
+        nbHalftone
+        class="pointer-events-none absolute bottom-0 left-0"
+        aria-hidden="true"
+        [rows]="5"
+        [columns]="20"
+      ></div>
     </nb-card>
   </article>
 
@@ -241,10 +239,40 @@
     nbCluster
     gap="md"
     align="center"
-    justify="end"
-    class="mb-16"
+    justify="between"
+    class="mb-10"
     aria-label="Lesson navigation"
   >
+    <a
+      nbButton
+      tone="warning"
+      size="md"
+      radius="md"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Go to the previous lesson"
+      href="https://stackblitz.com/edit/stackblitz-starters-thvq25lb"
+    >
+      <span nbButtonTrailingIcon shape="circle" class="grid place-items-center">
+        <ng-icon
+          aria-hidden="true"
+          size="20"
+          name="tablerCircleArrowLeftFill"
+        />
+      </span>
+
+      <span
+        nbText
+        size="md"
+        weight="black"
+        transform="uppercase"
+        tracking="wide"
+        i18n="@@basicForm"
+      >
+        Prev: Basic Form
+      </span>
+    </a>
+
     <a
       nbButton
       tone="success"
@@ -252,8 +280,8 @@
       radius="md"
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Go to the validations lesson"
-      href="https://stackblitz.com/edit/stackblitz-starters-yndv5tff"
+      aria-label="Go to the next lesson"
+      href="https://stackblitz.com/edit/stackblitz-starters-3upj2xex"
     >
       <span
         nbText
@@ -261,17 +289,12 @@
         weight="black"
         transform="uppercase"
         tracking="wide"
-        i18n="@@nextLabel"
+        i18n="@@asyncValidation"
       >
-        Next: Validations
+        Next: Custom Validation
       </span>
 
-      <span
-        nbButtonTrailingIcon
-        shape="circle"
-        tone="inverse"
-        class="grid place-items-center"
-      >
+      <span nbButtonTrailingIcon shape="circle" class="grid place-items-center">
         <ng-icon
           aria-hidden="true"
           size="20"
@@ -303,7 +326,7 @@
     <hr nbSeparator orientation="vertical" />
 
     <a
-      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/01-basic-form"
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/02-built-in-validations"
       nbText
       tone="danger"
       size="xs"
@@ -333,7 +356,7 @@
     <h2
       nbTitle
       id="registration-dialog-title"
-      class="min-w-0 font-mono text-4xl font-black uppercase leading-tight"
+      class="font-mono text-4xl font-black uppercase leading-tight"
       i18n="@@registrationLabel"
     >
       Registration
@@ -348,7 +371,7 @@
       class="shrink-0 text-xl leading-none"
       aria-label="Close registration dialog"
     >
-      <span aria-hidden="true">&times;</span>
+      <span aria-hidden="true">×</span>
     </button>
   </header>
 

@@ -1,16 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Injector, signal } from '@angular/core';
-import { form, required } from '@angular/forms/signals';
+import { form } from '@angular/forms/signals';
 import { App } from './app';
-import { RegistrationFormModel } from './app.model';
-
-const EMPTY_MODEL: RegistrationFormModel = {
-  name: '',
-  age: null,
-  role: null,
-  bio: '',
-  beginner: false,
-};
+import {
+  INITIAL_REGISTRATION,
+  RegistrationFormModel,
+  registrationSchema,
+} from './app.model';
 
 describe('App (01 · Basic Form)', () => {
   describe('form schema (isolated)', () => {
@@ -20,21 +16,17 @@ describe('App (01 · Basic Form)', () => {
       initial: Partial<RegistrationFormModel> = {},
     ) => {
       const model = signal<RegistrationFormModel>({
-        ...EMPTY_MODEL,
+        ...INITIAL_REGISTRATION,
         ...initial,
       });
-      return form(
-        model,
-        (path) => {
-          required(path.name);
-        },
-        { injector: TestBed.inject(Injector) },
-      );
+      return form(model, registrationSchema, {
+        injector: TestBed.inject(Injector),
+      });
     };
 
     it('starts pristine, untouched, and empty', () => {
       const registrationForm = buildRegistrationForm();
-      expect(registrationForm().value()).toEqual(EMPTY_MODEL);
+      expect(registrationForm().value()).toEqual(INITIAL_REGISTRATION);
       expect(registrationForm().dirty()).toBe(false);
       expect(registrationForm().touched()).toBe(false);
     });
@@ -178,7 +170,7 @@ describe('App (01 · Basic Form)', () => {
       buttonByText('Clear').click();
       await fixture.whenStable();
 
-      expect(formState().value()).toEqual(EMPTY_MODEL);
+      expect(formState().value()).toEqual(INITIAL_REGISTRATION);
       expect(formState().dirty()).toBe(false);
       expect(controlById<HTMLInputElement>('name').value).toBe('');
     });

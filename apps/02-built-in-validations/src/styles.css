@@ -1,0 +1,59 @@
+@import 'tailwindcss';
+@import '@ng-brutalism/ui/styles.css';
+
+@source "./**/*.{html,ts}";
+
+@theme {
+  --background-grid:
+    linear-gradient(rgba(0, 0, 0, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.08) 1px, transparent 1px);
+}
+
+/* `inline` references the existing ng-brutalism vars directly in the generated
+   utilities, so no duplicate `--color-nb-*` variables are emitted to :root. */
+@theme inline {
+  --color-nb-yellow: var(--nb-yellow);
+  --color-nb-pink: var(--nb-pink);
+  --color-nb-mint: var(--nb-mint);
+  --color-nb-lavender: var(--nb-lavender);
+  --color-nb-blue: var(--nb-blue);
+}
+
+:root {
+  --font-weight-medium: 700;
+  --nb-card-bg: #fffaf0;
+  --nb-dialog-bg: #ffd24a;
+}
+
+body {
+  @apply flex min-h-screen flex-col bg-amber-50;
+  background-image: var(--background-grid);
+  background-size: 24px 24px;
+  font-family: var(--nb-font-mono);
+}
+
+/*
+* ⚠️ IGNORE
+* TODO: To be removed once package release 1.0.0
+* Temporary once stable as some styles seems not reflecting the same as docs */
+nb-select > button {
+  background: white;
+  padding-left: 12px;
+  padding-right: 12px;
+  font-size: 13px;
+  height: 36px;
+}
+
+input,
+select,
+textarea {
+  background: white;
+}
+
+.shadow-nb {
+  --tw-shadow: var(--nb-shadow-offset-x) var(--nb-shadow-offset-y) 0 0
+    var(--nb-shadow);
+  box-shadow:
+    var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+    var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}

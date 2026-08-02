@@ -9,7 +9,6 @@ import {
   NbCardContent,
   NbButton,
   NbInput,
-  NbStatusDot,
   NbDisplay,
   NbSelect,
   NbSelectOption,
@@ -25,9 +24,13 @@ import {
   NbTitle,
   NbText,
   NbCallout,
-  NbCluster,
+  NbHalftone,
   NbMediaFrame,
   NbStack,
+  NbCluster,
+  NbLabel,
+  NbCheckbox,
+  NbButtonTrailingIcon,
 } from '@ng-brutalism/ui';
 import {
   INITIAL_REGISTRATION,
@@ -36,7 +39,11 @@ import {
 } from './app.model';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { tablerUserCheck, tablerCopyright } from '@ng-icons/tabler-icons';
-import { tablerCircleArrowRightFill } from '@ng-icons/tabler-icons/fill';
+import {
+  tablerCircleArrowRightFill,
+  tablerCircleArrowLeftFill,
+} from '@ng-icons/tabler-icons/fill';
+import { ValidationErrors } from './validation-errors';
 
 @Component({
   selector: 'app-root',
@@ -49,10 +56,10 @@ import { tablerCircleArrowRightFill } from '@ng-icons/tabler-icons/fill';
     NbCard,
     NbCardHeader,
     NbCardTitle,
+    NbCluster,
     NbCardActions,
     NbCardContent,
     NbInput,
-    NbStack,
     NbDisplay,
     NbSelect,
     NbSelectOption,
@@ -61,25 +68,30 @@ import { tablerCircleArrowRightFill } from '@ng-icons/tabler-icons/fill';
     NbChipGroup,
     NbSticker,
     NbSeparator,
+    NbStack,
     FormField,
     FormRoot,
     NbDialogClose,
     NbDialogContent,
-    NbStatusDot,
     NbIconButton,
-    NbCluster,
     NbCallout,
     NbTitle,
     NgIcon,
     NbText,
+    NbHalftone,
     KeyValuePipe,
     NbMediaFrame,
+    NbLabel,
+    NbCheckbox,
+    NbButtonTrailingIcon,
+    ValidationErrors,
   ],
   providers: [
     provideIcons({
       tablerUserCheck,
       tablerCopyright,
       tablerCircleArrowRightFill,
+      tablerCircleArrowLeftFill,
     }),
   ],
   host: {
