@@ -24,14 +24,14 @@ export const SIGNAL_EXAMPLES: {
     tone: 'yellow',
   },
   {
-    title: $localize`:@@recipe.02.title:Validation Basics`,
+    title: $localize`:@@recipe.02.title:Built-in Validations`,
     category: 'Validation',
     app: $localize`:@@app.registrationForm:Registration Form`,
-    description: $localize`:@@recipe.02.desc:Built-in validators with error display and touched / dirty state.`,
+    description: $localize`:@@recipe.02.desc:Built-in validators (required, email, minLength, pattern, min) with inline error messages and touched / dirty gating.`,
     api: 'required()',
     level: 'Core',
-    tags: ['required', 'email', 'errors()'],
-    link: '02-validation/',
+    tags: ['required', 'email', 'pattern'],
+    link: '02-built-in-validations/',
     tone: 'lavender',
   },
   {

@@ -31,18 +31,18 @@ Practical Angular Signal Forms recipes: every flavor of validation, custom `Form
 
 Each recipe is a small, runnable example that solves one problem, with a folder-level `README.md` explaining the approach and the gotchas.
 
-| #   | Recipe                                                     | What it covers                                                        |
-| --- | ---------------------------------------------------------- | --------------------------------------------------------------------- |
-| 01  | [Basic form](./apps/01-basic-form)                         | `form()`, `[formField]` binding, live `touched`/`dirty`/`valid` state |
-| 02  | [Built-in Validation](./apps/02-validation)                | Built-in validators, error display, touched/dirty state               |
-| 03  | [Cross-field Validation](./apps/03-cross-field)            | Validating one field against another                                  |
-| 04  | [Async Validation](./apps/04-async-validation)             | Debounced server checks, pending state                                |
-| 05  | [Array Validation](./apps/05-array-validation)             | Per-item rules, add/remove rows, array-level errors                   |
-| 06  | [Custom Control](./apps/09-custom-control)                 | Implementing `FormValueControl` with its own validation               |
-| 07  | [Custom Validation](./apps/07-custom-validation)           | Writing your own validators, validating a subtree with `validateTree` |
-| 08  | [Conditional Validation](./apps/06-conditional-validation) | Rules that switch on based on other values                            |
-| 09  | [Form submission](./apps/10-submission)                    | Submit lifecycle via form root, server error mapping                  |
-| 10  | [Zod schema Validation](./apps/08-zod)                     | Driving form validation from a Zod schema                             |
+| #   | Recipe                                                     | What it covers                                                                                                        |
+| --- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| 01  | [Basic form](./apps/01-basic-form)                         | `form()`, `[formField]` binding, live `touched`/`dirty`/`valid` state                                                 |
+| 02  | [Built-in Validations](./apps/02-built-in-validations)     | Built-in validators (`required`, `email`, `minLength`, `pattern`, `min`), inline error messages, touched/dirty gating |
+| 03  | [Cross-field Validation](./apps/03-cross-field)            | Validating one field against another                                                                                  |
+| 04  | [Async Validation](./apps/04-async-validation)             | Debounced server checks, pending state                                                                                |
+| 05  | [Array Validation](./apps/05-array-validation)             | Per-item rules, add/remove rows, array-level errors                                                                   |
+| 06  | [Custom Control](./apps/09-custom-control)                 | Implementing `FormValueControl` with its own validation                                                               |
+| 07  | [Custom Validation](./apps/07-custom-validation)           | Writing your own validators, validating a subtree with `validateTree`                                                 |
+| 08  | [Conditional Validation](./apps/06-conditional-validation) | Rules that switch on based on other values                                                                            |
+| 09  | [Form submission](./apps/10-submission)                    | Submit lifecycle via form root, server error mapping                                                                  |
+| 10  | [Zod schema Validation](./apps/08-zod)                     | Driving form validation from a Zod schema                                                                             |
 
 ---
 
