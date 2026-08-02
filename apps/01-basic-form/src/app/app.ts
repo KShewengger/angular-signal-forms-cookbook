@@ -1,6 +1,6 @@
 import { Component, computed, signal, viewChild } from '@angular/core';
 import { KeyValuePipe, NgOptimizedImage } from '@angular/common';
-import { form, FormField, required } from '@angular/forms/signals';
+import { form, FormField, FormRoot } from '@angular/forms/signals';
 import {
   NbCard,
   NbCardHeader,
@@ -29,7 +29,11 @@ import {
   NbMediaFrame,
   NbStack,
 } from '@ng-brutalism/ui';
-import { RegistrationFormModel } from './app.model';
+import {
+  INITIAL_REGISTRATION,
+  RegistrationFormModel,
+  registrationSchema,
+} from './app.model';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { tablerUserCheck, tablerCopyright } from '@ng-icons/tabler-icons';
 import { tablerCircleArrowRightFill } from '@ng-icons/tabler-icons/fill';
@@ -58,6 +62,7 @@ import { tablerCircleArrowRightFill } from '@ng-icons/tabler-icons/fill';
     NbSticker,
     NbSeparator,
     FormField,
+    FormRoot,
     NbDialogClose,
     NbDialogContent,
     NbStatusDot,
@@ -82,30 +87,24 @@ import { tablerCircleArrowRightFill } from '@ng-icons/tabler-icons/fill';
   },
 })
 export class App {
-  private dialog = viewChild.required<NbDialog>('dialog');
+  private readonly dialog = viewChild.required<NbDialog>('dialog');
 
-  private userModel = signal<RegistrationFormModel>({
-    name: '',
-    age: null,
-    role: null,
-    bio: '',
-    beginner: false,
+  private readonly userModel = signal<RegistrationFormModel>({
+    ...INITIAL_REGISTRATION,
   });
 
-  protected userForm = form(this.userModel, (path) => {
-    required(path.name);
+  protected readonly userForm = form(this.userModel, registrationSchema, {
+    submission: {
+      action: async () => {
+        this.dialog().open();
+      },
+    },
   });
 
-  protected value = computed(() => this.userForm().value());
+  protected readonly value = computed(() => this.userForm().value());
 
-  protected clear() {
+  protected clear(): void {
     this.dialog().close();
-    this.userForm().reset({
-      name: '',
-      age: null,
-      role: null,
-      bio: '',
-      beginner: false,
-    });
+    this.userForm().reset({ ...INITIAL_REGISTRATION });
   }
 }

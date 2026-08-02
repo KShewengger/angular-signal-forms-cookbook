@@ -70,12 +70,7 @@
       <hr nbSeparator variant="dashed" aria-hidden="true" />
 
       <!-- FORM -->
-      <form
-        novalidate
-        nbStack
-        gap="md"
-        (submit)="dialog.open(); $event.preventDefault()"
-      >
+      <form [formRoot]="userForm" nbStack gap="md">
         <nb-card-content>
           <fieldset nbStack gap="md">
             <legend class="sr-only" i18n="@@registrationLabel">
