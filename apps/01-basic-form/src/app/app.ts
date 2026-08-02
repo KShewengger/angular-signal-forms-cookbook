@@ -28,6 +28,9 @@ import {
   NbCluster,
   NbMediaFrame,
   NbStack,
+  NbLabel,
+  NbCheckbox,
+  NbButtonTrailingIcon,
 } from '@ng-brutalism/ui';
 import {
   INITIAL_REGISTRATION,
@@ -74,6 +77,9 @@ import { tablerCircleArrowRightFill } from '@ng-icons/tabler-icons/fill';
     NbText,
     KeyValuePipe,
     NbMediaFrame,
+    NbLabel,
+    NbCheckbox,
+    NbButtonTrailingIcon,
   ],
   providers: [
     provideIcons({
@@ -102,6 +108,8 @@ export class App {
   });
 
   protected readonly value = computed(() => this.userForm().value());
+
+  protected readonly keepOrder = (): number => 0;
 
   protected clear(): void {
     this.dialog().close();

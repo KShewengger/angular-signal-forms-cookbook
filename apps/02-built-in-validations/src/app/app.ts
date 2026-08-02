@@ -115,6 +115,8 @@ export class App {
 
   protected readonly value = computed(() => this.userForm().value());
 
+  protected readonly keepOrder = (): number => 0;
+
   protected clear(): void {
     this.dialog().close();
     this.userForm().reset({ ...INITIAL_REGISTRATION });
