@@ -1,4 +1,9 @@
+/* The closed dialog host still renders a hairline border box and, as a flex
+   child of the app shell, adds the shell's row gap below the footer. Take the
+   closed host out of flow so it contributes no height or gap; the open modal is
+   promoted to the top layer by `showModal()`, so it is unaffected. */
 nb-dialog {
+  position: absolute;
   opacity: 0;
 }
 

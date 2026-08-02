@@ -1,15 +1,6 @@
 import { Component, computed, signal, viewChild } from '@angular/core';
 import { KeyValuePipe, NgOptimizedImage } from '@angular/common';
-import {
-  email,
-  form,
-  FormField,
-  maxLength,
-  min,
-  minLength,
-  pattern,
-  required,
-} from '@angular/forms/signals';
+import { form, FormField, FormRoot } from '@angular/forms/signals';
 import {
   NbCard,
   NbCardHeader,
@@ -41,7 +32,11 @@ import {
   NbCheckbox,
   NbButtonTrailingIcon,
 } from '@ng-brutalism/ui';
-import { RegistrationFormModel } from './app.model';
+import {
+  INITIAL_REGISTRATION,
+  RegistrationFormModel,
+  registrationSchema,
+} from './app.model';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { tablerUserCheck, tablerCopyright } from '@ng-icons/tabler-icons';
 import {
@@ -75,6 +70,7 @@ import { ValidationErrors } from './validation-errors';
     NbSeparator,
     NbStack,
     FormField,
+    FormRoot,
     NbDialogClose,
     NbDialogContent,
     NbIconButton,
@@ -103,68 +99,24 @@ import { ValidationErrors } from './validation-errors';
   },
 })
 export class App {
-  private dialog = viewChild.required<NbDialog>('dialog');
+  private readonly dialog = viewChild.required<NbDialog>('dialog');
 
-  private userModel = signal<RegistrationFormModel>({
-    username: '',
-    email: '',
-    age: null,
-    role: null,
-    bio: '',
-    beginner: false,
+  private readonly userModel = signal<RegistrationFormModel>({
+    ...INITIAL_REGISTRATION,
   });
 
-  protected userForm = form(this.userModel, (path) => {
-    required(path.username, {
-      message: 'Please enter a username.',
-    });
-    minLength(path.username, 5, {
-      message: 'Username must be at least 5 characters long.',
-    });
-    maxLength(path.username, 20, {
-      message: 'Username cannot exceed 20 characters.',
-    });
-    pattern(path.username, /^USER-\d{3}$/, {
-      message: 'Username must follow the format USER-123.',
-    });
-
-    required(path.email, {
-      message: 'Please enter your email address.',
-    });
-    email(path.email, {
-      message: 'Please enter a valid email address.',
-    });
-
-    required(path.age, {
-      message: 'Please enter your age.',
-    });
-    min(path.age, 10, {
-      message: 'You must be at least 10 years old.',
-    });
-
-    required(path.role, {
-      message: 'Please select a role.',
-    });
-
-    required(path.bio, {
-      message: 'Please enter a short bio.',
-    });
-    minLength(path.bio, 5, {
-      message: 'Bio must be at least 5 characters long.',
-    });
+  protected readonly userForm = form(this.userModel, registrationSchema, {
+    submission: {
+      action: async () => {
+        this.dialog().open();
+      },
+    },
   });
 
-  protected value = computed(() => this.userForm().value());
+  protected readonly value = computed(() => this.userForm().value());
 
-  protected clear() {
+  protected clear(): void {
     this.dialog().close();
-    this.userForm().reset({
-      username: '',
-      email: '',
-      age: null,
-      role: null,
-      bio: '',
-      beginner: false,
-    });
+    this.userForm().reset({ ...INITIAL_REGISTRATION });
   }
 }
