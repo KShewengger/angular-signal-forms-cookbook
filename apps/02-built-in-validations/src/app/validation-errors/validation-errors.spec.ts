@@ -140,8 +140,10 @@ describe('ValidationErrors', () => {
       await showErrorsFor(usernameField);
 
       const list = errorList();
+      // `role="alert"` already implies an assertive live region, so we do not
+      // also set `aria-live` (the two would conflict).
       expect(list?.getAttribute('role')).toBe('alert');
-      expect(list?.getAttribute('aria-live')).toBe('polite');
+      expect(list?.getAttribute('aria-live')).toBeNull();
     });
   });
 });

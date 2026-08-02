@@ -161,35 +161,29 @@
 
         <!-- ACTIONS -->
         <div nbCluster gap="md" justify="end" class="mt-6">
+          @let touched = userForm().touched(); @let dirty = userForm().dirty();
+          @let valid = userForm().valid(); @let invalid = userForm().invalid();
+
           <div nbCluster gap="md" class="pl-6">
             <div nbCluster gap="xs">
-              <span
-                nbStatusDot
-                [state]="userForm().touched() ? 'online' : 'offline'"
-              ></span>
+              <span nbStatusDot [state]="touched ? 'online' : 'offline'"></span>
               <span>Touched</span>
             </div>
 
             <div nbCluster gap="xs">
-              <span
-                nbStatusDot
-                [state]="userForm().dirty() ? 'online' : 'offline'"
-              ></span>
+              <span nbStatusDot [state]="dirty ? 'online' : 'offline'"></span>
               <span>Dirty</span>
             </div>
 
             <div nbCluster gap="xs">
-              <span
-                nbStatusDot
-                [state]="userForm().valid() ? 'online' : 'offline'"
-              ></span>
+              <span nbStatusDot [state]="valid ? 'online' : 'offline'"></span>
               <span>Valid</span>
             </div>
 
             <div nbCluster gap="xs">
               <span
                 nbStatusDot
-                [state]="userForm().dirty() && userForm().invalid() ? 'live' : 'offline'"
+                [state]="dirty && invalid ? 'live' : 'offline'"
               ></span>
               <span>Invalid</span>
             </div>
@@ -202,7 +196,7 @@
               size="sm"
               tone="background"
               i18n="@@clearLabel"
-              [disabled]="!userForm().dirty()"
+              [disabled]="!dirty"
               (click)="clear()"
             >
               Clear
@@ -213,7 +207,7 @@
               type="submit"
               size="sm"
               i18n="@@saveLabel"
-              [disabled]="!userForm().dirty()"
+              [disabled]="!dirty || invalid"
             >
               Save
             </button>
@@ -300,7 +294,7 @@
       Kristy Mae Almuete
     </small>
 
-    <hr nbSeparator orientation="vertical" />
+    <hr nbSeparator orientation="vertical" aria-hidden="true" />
 
     <a
       href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/01-basic-form"
@@ -382,8 +376,7 @@
     <nb-card class="w-full">
       <nb-card-content>
         <dl nbStack gap="md">
-          @for ( record of userForm().value() | keyvalue: () => 0; track
-          record.key ) {
+          @for (record of value() | keyvalue: keepOrder; track record.key) {
           <div
             nbCluster
             gap="md"

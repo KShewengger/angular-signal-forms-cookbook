@@ -54,7 +54,7 @@
             align="center"
             aria-label="Lesson topics"
           >
-            <span nbChip tone="danger" i18n="@@angular21Label">
+            <span nbChip tone="danger" i18n="@@angular22Label">
               Angular 22
             </span>
 
@@ -88,9 +88,16 @@
                 type="text"
                 placeholder="Enter your username"
                 [formField]="userForm.username"
+                [attr.aria-invalid]="
+                  userForm.username().touched() && userForm.username().invalid()
+                "
+                aria-describedby="username-errors"
               />
 
-              <app-validation-errors [field]="userForm.username" />
+              <app-validation-errors
+                [field]="userForm.username"
+                messageId="username-errors"
+              />
             </div>
 
             <div nbStack gap="sm" align="stretch">
@@ -104,9 +111,16 @@
                 autocomplete="email"
                 placeholder="Enter your email"
                 [formField]="userForm.email"
+                [attr.aria-invalid]="
+                  userForm.email().touched() && userForm.email().invalid()
+                "
+                aria-describedby="email-errors"
               />
 
-              <app-validation-errors [field]="userForm.email" />
+              <app-validation-errors
+                [field]="userForm.email"
+                messageId="email-errors"
+              />
             </div>
 
             <div nbStack gap="sm" align="stretch">
@@ -119,9 +133,16 @@
                 inputmode="numeric"
                 placeholder="Enter your age"
                 [formField]="userForm.age"
+                [attr.aria-invalid]="
+                  userForm.age().touched() && userForm.age().invalid()
+                "
+                aria-describedby="age-errors"
               />
 
-              <app-validation-errors [field]="userForm.age" />
+              <app-validation-errors
+                [field]="userForm.age"
+                messageId="age-errors"
+              />
             </div>
 
             <div nbStack gap="sm" align="stretch">
@@ -132,6 +153,10 @@
               <nb-select
                 id="role"
                 aria-labelledby="role-label"
+                aria-describedby="role-errors"
+                [attr.aria-invalid]="
+                  userForm.role().touched() && userForm.role().invalid()
+                "
                 placeholder="Select a role"
                 [formField]="userForm.role"
               >
@@ -148,7 +173,10 @@
                 </nb-select-option>
               </nb-select>
 
-              <app-validation-errors [field]="userForm.role" />
+              <app-validation-errors
+                [field]="userForm.role"
+                messageId="role-errors"
+              />
             </div>
 
             <div nbStack gap="sm" align="stretch">
@@ -160,9 +188,16 @@
                 rows="4"
                 placeholder="Tell us a little about yourself"
                 [formField]="userForm.bio"
+                [attr.aria-invalid]="
+                  userForm.bio().touched() && userForm.bio().invalid()
+                "
+                aria-describedby="bio-errors"
               ></textarea>
 
-              <app-validation-errors [field]="userForm.bio" />
+              <app-validation-errors
+                [field]="userForm.bio"
+                messageId="bio-errors"
+              />
             </div>
 
             <div nbCluster gap="sm" align="center" wrap="nowrap">
@@ -174,7 +209,9 @@
               />
 
               <label nbLabel for="beginner">
-                <span i18n="@@beginnerLabel"> I am an Angular beginner </span>
+                <span i18n="@@angularBeginnerLabel">
+                  I am an Angular beginner
+                </span>
 
                 <span aria-hidden="true">⭐</span>
               </label>
@@ -184,13 +221,15 @@
 
         <!-- ACTIONS -->
         <nb-card-actions align="end" class="mt-4">
+          @let dirty = userForm().dirty(); @let invalid = userForm().invalid();
+
           <button
             nbButton
             type="button"
             size="sm"
             tone="background"
             i18n="@@clearLabel"
-            [disabled]="!userForm().dirty()"
+            [disabled]="!dirty"
             (click)="clear()"
           >
             Clear
@@ -201,10 +240,7 @@
             type="submit"
             size="sm"
             i18n="@@saveLabel"
-            [disabled]="
-              !userForm().dirty() ||
-              userForm().invalid()
-            "
+            [disabled]="!dirty || invalid"
           >
             Save
           </button>
@@ -323,7 +359,7 @@
       Kristy Mae Almuete
     </small>
 
-    <hr nbSeparator orientation="vertical" />
+    <hr nbSeparator orientation="vertical" aria-hidden="true" />
 
     <a
       href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/02-built-in-validations"
@@ -405,8 +441,7 @@
     <nb-card class="w-full">
       <nb-card-content>
         <dl nbStack gap="md">
-          @for ( record of userForm().value() | keyvalue: () => 0; track
-          record.key ) {
+          @for (record of value() | keyvalue: keepOrder; track record.key) {
           <div
             nbCluster
             gap="md"
