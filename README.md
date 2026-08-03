@@ -23,6 +23,7 @@ Practical Angular Signal Forms recipes: every flavor of validation, custom `Form
 - [Recipes](#-recipes)
 - [Getting started](#-getting-started)
 - [Scripts](#-scripts)
+- [Nx commands reference](./docs/nx-commands.md)
 - [License](#-license)
 
 ---

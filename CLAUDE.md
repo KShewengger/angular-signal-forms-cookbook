@@ -32,7 +32,7 @@ examples, and it lets `nx affected` rebuild only the recipe you touched.
 Scaffold a new recipe app with the Nx Angular generator (don't hand-roll the folder):
 
 ```bash
-pnpm exec nx g @nx/angular:application apps/NN-name --standalone --style=css --unitTestRunner=vitest --e2eTestRunner=none
+pnpm exec nx g @nx/angular:application apps/NN-name --standalone --style=css --unitTestRunner=vitest-angular --e2eTestRunner=none
 ```
 
 The landing grid is data-driven from `apps/cookbook/src/app/app.data.ts`
