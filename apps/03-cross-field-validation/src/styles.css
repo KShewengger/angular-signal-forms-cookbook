@@ -25,7 +25,7 @@
 }
 
 body {
-  @apply flex min-h-screen flex-col bg-amber-50;
+  @apply flex min-h-screen justify-center items-center flex-col bg-amber-50;
   background-image: var(--background-grid);
   background-size: 24px 24px;
   font-family: var(--nb-font-mono);

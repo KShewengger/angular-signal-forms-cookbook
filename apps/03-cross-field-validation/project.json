@@ -13,6 +13,7 @@
       "options": {
         "outputPath": "dist/apps/03-cross-field-validation",
         "browser": "apps/03-cross-field-validation/src/main.ts",
+        "polyfills": ["@angular/localize/init"],
         "tsConfig": "apps/03-cross-field-validation/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
@@ -65,7 +66,8 @@
     "test": {
       "executor": "@angular/build:unit-test",
       "options": {
-        "watch": false
+        "watch": false,
+        "setupFiles": ["apps/03-cross-field-validation/src/test-setup.ts"]
       }
     },
     "serve-static": {
