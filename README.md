@@ -23,6 +23,7 @@ Practical Angular Signal Forms recipes: every flavor of validation, custom `Form
 - [Recipes](#-recipes)
 - [Getting started](#-getting-started)
 - [Scripts](#-scripts)
+- [Nx commands reference](./docs/nx-commands.md)
 - [License](#-license)
 
 ---
@@ -35,7 +36,7 @@ Each recipe is a small, runnable example that solves one problem, with a folder-
 | --- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | 01  | [Basic form](./apps/01-basic-form)                         | `form()`, `[formField]` binding, live `touched`/`dirty`/`valid` state                                                 |
 | 02  | [Built-in Validations](./apps/02-built-in-validations)     | Built-in validators (`required`, `email`, `minLength`, `pattern`, `min`), inline error messages, touched/dirty gating |
-| 03  | [Cross-field Validation](./apps/03-cross-field)            | Validating one field against another                                                                                  |
+| 03  | [Cross-field Validation](./apps/03-cross-field-validation) | Validating one field against another                                                                                  |
 | 04  | [Async Validation](./apps/04-async-validation)             | Debounced server checks, pending state                                                                                |
 | 05  | [Array Validation](./apps/05-array-validation)             | Per-item rules, add/remove rows, array-level errors                                                                   |
 | 06  | [Custom Control](./apps/09-custom-control)                 | Implementing `FormValueControl` with its own validation                                                               |
