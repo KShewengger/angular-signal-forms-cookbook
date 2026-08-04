@@ -1,15 +1,6 @@
 import { Component, computed, signal } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
-import {
-  form,
-  FormField,
-  required,
-  schema,
-  validate,
-  email,
-  apply,
-  debounce,
-} from '@angular/forms/signals';
+import { form, FormField } from '@angular/forms/signals';
 import {
   NbCard,
   NbCardHeader,
@@ -42,7 +33,7 @@ import {
   tablerUserCheck,
   tablerCheck,
 } from '@ng-icons/tabler-icons';
-import { UserFormModel } from './app.model';
+import { INITIAL_USER, UserFormModel, userSchema } from './app.model';
 import { ValidationErrors } from './validation-errors';
 import {
   tablerCircleArrowLeftFill,
@@ -96,41 +87,9 @@ import {
   },
 })
 export class App {
-  private userModel = signal<UserFormModel>({
-    email: '',
-    confirmEmail: '',
-  });
+  private userModel = signal<UserFormModel>({ ...INITIAL_USER });
 
-  private emailSchema = schema<string>((path) => {
-    required(path, {
-      message: 'Please enter your email.',
-    });
-    email(path, {
-      message: 'Please enter a valid email address',
-    });
-    debounce(path, 250);
-  });
-
-  protected userForm = form(this.userModel, (path) => {
-    apply(path.email, this.emailSchema);
-
-    apply(path.confirmEmail, this.emailSchema);
-
-    validate(path.confirmEmail, ({ value, valueOf }) => {
-      const email = valueOf(path.email);
-
-      if (!email || !value()) return null;
-
-      if (email.trim().toLowerCase() !== value().trim().toLowerCase()) {
-        return {
-          kind: 'emailMismatch',
-          message: 'Email addresses do not match.',
-        };
-      }
-
-      return null;
-    });
-  });
+  protected userForm = form(this.userModel, userSchema);
 
   protected value = computed(() => this.userForm().value());
   protected valid = computed(
@@ -138,9 +97,6 @@ export class App {
   );
 
   protected clear() {
-    this.userForm().reset({
-      email: '',
-      confirmEmail: '',
-    });
+    this.userForm().reset({ ...INITIAL_USER });
   }
 }
