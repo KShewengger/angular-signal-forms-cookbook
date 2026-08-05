@@ -37,13 +37,13 @@ Each recipe is a small, runnable example that solves one problem, with a folder-
 | 01  | [Basic form](./apps/01-basic-form)                         | `form()`, `[formField]` binding, live `touched`/`dirty`/`valid` state                                                 |
 | 02  | [Built-in Validations](./apps/02-built-in-validations)     | Built-in validators (`required`, `email`, `minLength`, `pattern`, `min`), inline error messages, touched/dirty gating |
 | 03  | [Cross-field Validation](./apps/03-cross-field-validation) | Validate one field against another with `validate()` + `valueOf()`                                                    |
-| 04  | [Async Validation](./apps/06-async-validation)             | Debounced server checks with a pending state                                                                          |
-| 05  | [Array Validation](./apps/08-array-validation)             | Per-item rules, add/remove rows, and array-level errors                                                               |
-| 06  | [Custom Control](./apps/11-custom-control)                 | Implement `FormValueControl` with its own validation                                                                  |
+| 04  | [Async Validation](./apps/04-async-validation)             | Debounced server checks with a pending state, verified with `validateHttp`                                            |
+| 05  | [Array Validation](./apps/05-array-validation)             | Per-item rules, add/remove rows, and array-level errors                                                               |
+| 06  | [Custom Control](./apps/06-custom-control)                 | Implement `FormValueControl` with its own validation                                                                  |
 | 07  | [Debounced Input](./apps/07-debounce)                      | Delay model updates until the user pauses typing                                                                      |
-| 08  | [Conditional Validation](./apps/04-conditional-validation) | Rules that switch on based on other field values                                                                      |
-| 09  | [Zod schema Validation](./apps/10-zod)                     | Drive validation straight from a Zod schema                                                                           |
-| 10  | [Dynamic Forms](./apps/12-dynamic-forms)                   | Build the model, schema, and fields at runtime from a JSON config                                                     |
+| 08  | [Conditional Validation](./apps/08-conditional-validation) | Rules that switch on based on other field values                                                                      |
+| 09  | [Zod schema Validation](./apps/09-zod)                     | Drive validation straight from a Zod schema                                                                           |
+| 10  | [Dynamic Forms](./apps/10-dynamic-forms)                   | Build the model, schema, and fields at runtime from a JSON config                                                     |
 
 ---
 

@@ -9,7 +9,7 @@
 
 <p align="center">
   <img
-    src="./public/hero-cover.png"
+    src="./public/preview-app.png"
     alt="Cross-field validation Confirm Email form built with Angular Signal Forms"
     width="420"
   />

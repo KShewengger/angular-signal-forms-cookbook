@@ -1,13 +1,7 @@
 import { Component, computed, signal } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
-import {
-  form,
-  FormField,
-  required,
-  validateHttp,
-  debounce,
-} from '@angular/forms/signals';
+import { form, FormField } from '@angular/forms/signals';
 import {
   NbCard,
   NbCardHeader,
@@ -31,7 +25,7 @@ import {
   NbProgress,
   NbButtonTrailingIcon,
 } from '@ng-brutalism/ui';
-import { BookingFormModel } from './app.model';
+import { BookingFormModel, INITIAL_BOOKING, bookingSchema } from './app.model';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   tablerUserCheck,
@@ -106,36 +100,9 @@ import { ValidationErrors } from './validation-errors';
 export class App {
   protected payload = signal<BookingFormModel | undefined>(undefined);
 
-  private userModel = signal<BookingFormModel>({
-    reference: '',
-    lastName: '',
-  });
+  private userModel = signal<BookingFormModel>({ ...INITIAL_BOOKING });
 
-  protected bookingForm = form(this.userModel, (path) => {
-    required(path.reference, {
-      message: 'Please enter your booking reference.',
-    });
-    debounce(path.reference, 500);
-    validateHttp(path.reference, {
-      request: ({ value }) => `/api/bookings/${value().trim()}`,
-
-      onSuccess: (response: { exists: boolean }) =>
-        response.exists
-          ? null
-          : {
-              kind: 'bookingNotFound',
-              message: 'Booking does not exist.',
-            },
-
-      onError: () => ({
-        kind: 'networkError',
-        message: 'Could not verify the booking.',
-      }),
-    });
-    required(path.lastName, {
-      message: 'Please enter your last name.',
-    });
-  });
+  protected bookingForm = form(this.userModel, bookingSchema);
 
   protected value = computed(() => this.bookingForm().value());
 
@@ -154,9 +121,6 @@ export class App {
 
   protected clear() {
     this.payload.set(undefined);
-    this.bookingForm().reset({
-      reference: '',
-      lastName: '',
-    });
+    this.bookingForm().reset({ ...INITIAL_BOOKING });
   }
 }
