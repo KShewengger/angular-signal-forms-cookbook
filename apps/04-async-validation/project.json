@@ -1,5 +1,5 @@
 {
-  "name": "async-validation",
+  "name": "04-async-validation",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",
@@ -22,7 +22,7 @@
             "input": "apps/04-async-validation/public"
           }
         ],
-        "styles": ["apps/04-async-validation/src/styles.scss"]
+        "styles": ["apps/04-async-validation/src/styles.css"]
       },
       "configurations": {
         "production": {
@@ -53,10 +53,10 @@
       "defaultConfiguration": "development",
       "configurations": {
         "production": {
-          "buildTarget": "async-validation:build:production"
+          "buildTarget": "04-async-validation:build:production"
         },
         "development": {
-          "buildTarget": "async-validation:build:development"
+          "buildTarget": "04-async-validation:build:development"
         }
       }
     },
@@ -66,14 +66,15 @@
     "test": {
       "executor": "@angular/build:unit-test",
       "options": {
-        "watch": false
+        "watch": false,
+        "setupFiles": ["apps/04-async-validation/src/test-setup.ts"]
       }
     },
     "serve-static": {
       "continuous": true,
       "executor": "@nx/web:file-server",
       "options": {
-        "buildTarget": "async-validation:build",
+        "buildTarget": "04-async-validation:build",
         "staticFilePath": "dist/apps/04-async-validation/browser",
         "spa": true
       }

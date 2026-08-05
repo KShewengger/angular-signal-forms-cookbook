@@ -33,7 +33,9 @@
 
             <hr nbSeparator orientation="vertical" aria-hidden="true" />
 
-            <span class="text-sm">Validation</span>
+            <span class="text-sm" i18n="@@lessonValidationLabel"
+              >Validation</span
+            >
           </div>
 
           <nb-card-title>
@@ -160,15 +162,27 @@
                 placeholder="Select a role"
                 [formField]="userForm.role"
               >
-                <nb-select-option value="admin" label="Admin">
+                <nb-select-option
+                  value="admin"
+                  label="Admin"
+                  i18n="@@roleAdminOption"
+                >
                   Admin
                 </nb-select-option>
 
-                <nb-select-option value="moderator" label="Moderator">
+                <nb-select-option
+                  value="moderator"
+                  label="Moderator"
+                  i18n="@@roleModeratorOption"
+                >
                   Moderator
                 </nb-select-option>
 
-                <nb-select-option value="user" label="User">
+                <nb-select-option
+                  value="user"
+                  label="User"
+                  i18n="@@roleUserOption"
+                >
                   User
                 </nb-select-option>
               </nb-select>

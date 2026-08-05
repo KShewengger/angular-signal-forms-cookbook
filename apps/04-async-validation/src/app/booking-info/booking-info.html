@@ -1,0 +1,96 @@
+<div nbStack gap="lg" class="px-6">
+  <div nbCluster gap="md" align="start" justify="between">
+    <div nbStack gap="none" align="start">
+      <span nbText size="sm" weight="extrabold" i18n="@@bookingReferenceLabel">
+        Booking Reference
+      </span>
+
+      <span nbText size="lg" tone="warning" weight="bold"
+        >{{ booking().reference }}</span
+      >
+    </div>
+
+    <div
+      nbChip
+      nbCluster
+      gap="xs"
+      tone="mint"
+      radius="md"
+      class="font-bold uppercase"
+    >
+      <span nbStatusDot state="online"></span>
+      <span i18n>{{ booking().status }}</span>
+    </div>
+  </div>
+
+  <div nbSplit ratio="1:1" gap="xl" collapse="sm" align="start">
+    <div
+      nbMediaFrame
+      ratio="3/4"
+      tone="pink"
+      border="strong"
+      radius="lg"
+      shadow="none"
+    >
+      <img src="user.png" alt="User" />
+    </div>
+
+    <div nbStack gap="none" align="start">
+      @let passenger = booking().passenger;
+      <h2 nbTitle class="font-mono text-5xl font-black leading-tight uppercase">
+        {{ passenger.firstName }} {{passenger.lastName }}
+      </h2>
+
+      <div
+        nbHalftone
+        shape="rectangle"
+        [rows]="3"
+        [columns]="9"
+        class="mt-6"
+      ></div>
+    </div>
+  </div>
+
+  <div nbSection divider="all" padding="lg">
+    @let flight = booking().flight;
+
+    <div nbCluster gap="xl" align="center" separator="dashed">
+      <div nbCluster gap="lg" align="center" wrap="nowrap" class="pr-4!">
+        <ng-icon aria-hidden="true" size="20" name="tablerPlaneDeparture" />
+
+        <div nbStack gap="sm" align="start">
+          <span nbText size="xs" weight="bold" i18n="@@departureLabel">
+            Departure
+          </span>
+
+          <div nbStack gap="none" align="start">
+            <span nbText size="xs"> {{ flight.origin }} </span>
+
+            <span nbText size="xs"> {{ flight.departureAt }} </span>
+          </div>
+        </div>
+      </div>
+
+      <div nbCluster gap="lg" align="center" wrap="nowrap" class="pr-4!">
+        <ng-icon aria-hidden="true" size="20" name="tablerPlaneArrival" />
+
+        <div nbStack gap="sm" align="start">
+          <span nbText size="xs" weight="bold" i18n="@@arrivalLabel">
+            Arrival
+          </span>
+
+          <div nbStack gap="none" align="start">
+            <span nbText size="xs"> {{ flight.destination }} </span>
+
+            <span nbText size="xs"> {{ flight.arrivalAt }} </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button nbButton fullWidth tone="background" (click)="back.emit()">
+    <ng-icon aria-hidden="true" size="20" name="tablerArrowLeft" />
+    <span i18n="@@backLabel">Back</span>
+  </button>
+</div>
