@@ -10,13 +10,16 @@
 }
 
 /* `inline` references the existing ng-brutalism vars directly in the generated
-   utilities, so no duplicate `--color-nb-*` variables are emitted to :root. */
+   utilities, so no duplicate `--color-nb-*` variables are emitted to :root.
+   `warning` (orange) and `danger` (red) are two warm tones the pastel set lacks. */
 @theme inline {
   --color-nb-yellow: var(--nb-yellow);
   --color-nb-pink: var(--nb-pink);
   --color-nb-mint: var(--nb-mint);
   --color-nb-lavender: var(--nb-lavender);
   --color-nb-blue: var(--nb-blue);
+  --color-nb-warning: var(--nb-warning);
+  --color-nb-danger: var(--nb-danger);
 }
 
 body {

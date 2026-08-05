@@ -1,8 +1,8 @@
 import { SIGNAL_EXAMPLES, TONE_RAIL, TONE_TINT, TONE_WAVE } from './app.data';
 
 describe('SIGNAL_EXAMPLES', () => {
-  it('defines all 12 recipes', () => {
-    expect(SIGNAL_EXAMPLES).toHaveLength(12);
+  it('defines all 10 recipes', () => {
+    expect(SIGNAL_EXAMPLES).toHaveLength(10);
   });
 
   it('every recipe has the required fields', () => {

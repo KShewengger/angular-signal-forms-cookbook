@@ -1,4 +1,11 @@
-type Tone = 'yellow' | 'pink' | 'mint' | 'lavender' | 'blue';
+type Tone =
+  | 'yellow'
+  | 'pink'
+  | 'mint'
+  | 'lavender'
+  | 'blue'
+  | 'warning'
+  | 'danger';
 type Level = 'Core' | 'Pro';
 
 export const SIGNAL_EXAMPLES: {
@@ -32,7 +39,7 @@ export const SIGNAL_EXAMPLES: {
     level: 'Core',
     tags: ['required', 'email', 'pattern'],
     link: '02-built-in-validations/',
-    tone: 'lavender',
+    tone: 'pink',
   },
   {
     title: $localize`:@@recipe.03.title:Cross-field Validation`,
@@ -43,28 +50,6 @@ export const SIGNAL_EXAMPLES: {
     level: 'Core',
     tags: ['validate()', 'apply()', 'valueOf'],
     link: '03-cross-field-validation/',
-    tone: 'mint',
-  },
-  {
-    title: $localize`:@@recipe.04.title:Conditional Validation`,
-    category: 'Logic',
-    app: $localize`:@@app.bookingForm:Booking Form`,
-    description: $localize`:@@recipe.04.desc:Rules that switch on based on other field values.`,
-    api: 'when',
-    level: 'Core',
-    tags: ['when', 'required()'],
-    link: '04-conditional-validation/',
-    tone: 'pink',
-  },
-  {
-    title: $localize`:@@recipe.05.title:Field State`,
-    category: 'Logic',
-    app: $localize`:@@app.pizzaApp:Pizza App`,
-    description: $localize`:@@recipe.05.desc:Toggle field state - disabled, readonly, and hidden logic.`,
-    api: 'disabled()',
-    level: 'Core',
-    tags: ['disabled()', 'readonly()', 'hidden()'],
-    link: '05-field-logic/',
     tone: 'blue',
   },
   {
@@ -76,18 +61,7 @@ export const SIGNAL_EXAMPLES: {
     level: 'Pro',
     tags: ['validateAsync', 'pending'],
     link: '06-async-validation/',
-    tone: 'yellow',
-  },
-  {
-    title: $localize`:@@recipe.07.title:Debounced Input`,
-    category: 'Async',
-    app: $localize`:@@app.liveSearch:Live Search`,
-    description: $localize`:@@recipe.07.desc:Delay model updates until the user pauses typing.`,
-    api: 'debounce()',
-    level: 'Pro',
-    tags: ['debounce', 'blur'],
-    link: '07-debounce/',
-    tone: 'lavender',
+    tone: 'warning',
   },
   {
     title: $localize`:@@recipe.08.title:Array Validation`,
@@ -101,15 +75,37 @@ export const SIGNAL_EXAMPLES: {
     tone: 'mint',
   },
   {
-    title: $localize`:@@recipe.09.title:Custom Validation`,
-    category: 'Custom',
-    app: $localize`:@@app.passwordSetup:Password Setup`,
-    description: $localize`:@@recipe.09.desc:Write your own validators; validate a subtree with validateTree.`,
-    api: 'validateTree()',
+    title: $localize`:@@recipe.11.title:Custom Control`,
+    category: 'Control',
+    app: $localize`:@@app.pizzaBuilder:Pizza Builder`,
+    description: $localize`:@@recipe.11.desc:Implement FormValueControl with its own validation.`,
+    api: 'FormValueControl',
     level: 'Pro',
-    tags: ['validate', 'validateTree'],
-    link: '09-custom-validation/',
-    tone: 'pink',
+    tags: ['FormValueControl'],
+    link: '11-custom-control/',
+    tone: 'danger',
+  },
+  {
+    title: $localize`:@@recipe.07.title:Debounced Input`,
+    category: 'Async',
+    app: $localize`:@@app.liveSearch:Live Search`,
+    description: $localize`:@@recipe.07.desc:Delay model updates until the user pauses typing.`,
+    api: 'debounce()',
+    level: 'Pro',
+    tags: ['debounce', 'blur'],
+    link: '07-debounce/',
+    tone: 'lavender',
+  },
+  {
+    title: $localize`:@@recipe.04.title:Conditional Validation`,
+    category: 'Logic',
+    app: $localize`:@@app.bookingForm:Booking Form`,
+    description: $localize`:@@recipe.04.desc:Rules that switch on based on other field values.`,
+    api: 'when',
+    level: 'Core',
+    tags: ['when', 'required()'],
+    link: '04-conditional-validation/',
+    tone: 'yellow',
   },
   {
     title: $localize`:@@recipe.10.title:Zod Schema Validation`,
@@ -120,29 +116,18 @@ export const SIGNAL_EXAMPLES: {
     level: 'Pro',
     tags: ['zod', 'standardSchema'],
     link: '10-zod/',
-    tone: 'blue',
+    tone: 'warning',
   },
   {
-    title: $localize`:@@recipe.11.title:Custom Control`,
-    category: 'Control',
-    app: $localize`:@@app.pizzaBuilder:Pizza Builder`,
-    description: $localize`:@@recipe.11.desc:Implement FormValueControl with its own validation.`,
-    api: 'FormValueControl',
+    title: $localize`:@@recipe.12.title:Dynamic Forms`,
+    category: 'Dynamic',
+    app: $localize`:@@app.dynamicForm:Dynamic Form`,
+    description: $localize`:@@recipe.12.desc:Build the model, schema, and fields at runtime from a JSON config.`,
+    api: 'schema()',
     level: 'Pro',
-    tags: ['FormValueControl'],
-    link: '11-custom-control/',
-    tone: 'yellow',
-  },
-  {
-    title: $localize`:@@recipe.12.title:Form Submission`,
-    category: 'Submit',
-    app: $localize`:@@app.checkout:Checkout`,
-    description: $localize`:@@recipe.12.desc:Submit lifecycle via form root with server error mapping.`,
-    api: 'submit()',
-    level: 'Core',
-    tags: ['submit()', 'server errors'],
-    link: '12-submission/',
-    tone: 'lavender',
+    tags: ['json', 'runtime', 'dynamic'],
+    link: '12-dynamic-forms/',
+    tone: 'blue',
   },
 ];
 
@@ -152,6 +137,8 @@ export const TONE_RAIL: Record<Tone, string> = {
   mint: 'bg-nb-mint',
   lavender: 'bg-nb-lavender',
   blue: 'bg-nb-blue',
+  warning: 'bg-nb-warning',
+  danger: 'bg-nb-danger',
 };
 
 export const TONE_TINT: Record<Tone, string> = {
@@ -160,6 +147,8 @@ export const TONE_TINT: Record<Tone, string> = {
   mint: 'bg-nb-mint/30',
   lavender: 'bg-nb-lavender/30',
   blue: 'bg-nb-blue/30',
+  warning: 'bg-nb-warning/30',
+  danger: 'bg-nb-danger/30',
 };
 
 export const TONE_WAVE: Record<Tone, string> = {
@@ -168,4 +157,6 @@ export const TONE_WAVE: Record<Tone, string> = {
   mint: '[--nb-title-wave-color:var(--nb-mint)]',
   lavender: '[--nb-title-wave-color:var(--nb-lavender)]',
   blue: '[--nb-title-wave-color:var(--nb-blue)]',
+  warning: '[--nb-title-wave-color:var(--nb-warning)]',
+  danger: '[--nb-title-wave-color:var(--nb-danger)]',
 };
