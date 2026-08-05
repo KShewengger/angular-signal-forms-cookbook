@@ -78,7 +78,7 @@ import { ValidationErrors } from './validation-errors';
     ValidationErrors,
     NbButtonTrailingIcon,
   ],
-  providers: [
+  viewProviders: [
     provideIcons({
       tablerUserCheck,
       tablerCopyright,

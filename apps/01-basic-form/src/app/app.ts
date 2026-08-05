@@ -81,7 +81,7 @@ import { tablerCircleArrowRightFill } from '@ng-icons/tabler-icons/fill';
     NbCheckbox,
     NbButtonTrailingIcon,
   ],
-  providers: [
+  viewProviders: [
     provideIcons({
       tablerUserCheck,
       tablerCopyright,
