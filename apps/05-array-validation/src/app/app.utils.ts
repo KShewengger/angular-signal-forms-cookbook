@@ -1,5 +1,11 @@
-import { min, SchemaPathTree, validate } from '@angular/forms/signals';
-import { PizzaFormModelItem } from './app.model';
+import {
+  applyEach,
+  min,
+  schema,
+  SchemaPathTree,
+  validate,
+} from '@angular/forms/signals';
+import { PizzaFormModel, PizzaFormModelItem } from './app.model';
 import { PIZZA_TOPPINGS_MAP } from './app.data';
 
 export function pizzaToppingItemSchema(
@@ -20,3 +26,7 @@ export function pizzaToppingItemSchema(
     return null;
   });
 }
+
+export const pizzaMakerSchema = schema<PizzaFormModel>((path) => {
+  applyEach(path.toppings, pizzaToppingItemSchema);
+});

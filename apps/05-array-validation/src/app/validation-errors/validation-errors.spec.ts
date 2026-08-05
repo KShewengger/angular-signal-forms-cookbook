@@ -1,27 +1,44 @@
-import { ApplicationRef, Injector, signal } from '@angular/core';
+import { Injector, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { form, type FieldTree } from '@angular/forms/signals';
-import { BookingFormModel, INITIAL_BOOKING, bookingSchema } from '../app.model';
-import { mockHttpInterceptor } from '../../mock.interceptor';
+import {
+  PizzaFormModel,
+  PizzaFormModelItem,
+  PizzaToppingId,
+} from '../app.model';
+import { PIZZA_TOPPINGS } from '../app.data';
+import { pizzaMakerSchema } from '../app.utils';
 import { ValidationErrors } from './validation-errors';
 
-describe('ValidationErrors (04 · Async Validation)', () => {
+describe('ValidationErrors (05 · Array Validation)', () => {
   let fixture: ComponentFixture<ValidationErrors>;
   let host: HTMLElement;
 
-  const buildBookingForm = (
-    initial: Partial<BookingFormModel> = {},
-  ): FieldTree<BookingFormModel> => {
-    const model = signal<BookingFormModel>({ ...INITIAL_BOOKING, ...initial });
-    return form(model, bookingSchema, { injector: TestBed.inject(Injector) });
+  const buildPizzaForm = (
+    counts: Partial<Record<PizzaToppingId, number>> = {},
+  ): FieldTree<PizzaFormModel> => {
+    const model = signal<PizzaFormModel>({
+      toppings: PIZZA_TOPPINGS.map((topping) => ({
+        id: topping.id,
+        count: counts[topping.id] ?? 0,
+      })),
+    });
+    return form(model, pizzaMakerSchema, {
+      injector: TestBed.inject(Injector),
+    });
   };
 
-  // Let the async `validateHttp` check settle before asserting.
-  const settle = (): Promise<void> =>
-    TestBed.inject(ApplicationRef).whenStable();
+  const itemOf = (
+    pizzaForm: FieldTree<PizzaFormModel>,
+    id: PizzaToppingId,
+  ): FieldTree<PizzaFormModelItem> => {
+    const index = PIZZA_TOPPINGS.findIndex((topping) => topping.id === id);
+    return pizzaForm.toppings[index];
+  };
 
-  const showErrorsFor = async (field: FieldTree<unknown>): Promise<void> => {
+  const showErrorsFor = async (
+    field: FieldTree<PizzaFormModelItem>,
+  ): Promise<void> => {
     fixture.componentRef.setInput('field', field);
     await fixture.whenStable();
   };
@@ -29,85 +46,64 @@ describe('ValidationErrors (04 · Async Validation)', () => {
   const errorList = (): HTMLUListElement | null => host.querySelector('ul');
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [ValidationErrors],
-      providers: [provideHttpClient(withInterceptors([mockHttpInterceptor]))],
-    });
+    TestBed.configureTestingModule({ imports: [ValidationErrors] });
     fixture = TestBed.createComponent(ValidationErrors);
     host = fixture.nativeElement as HTMLElement;
   });
 
   describe('visibility', () => {
-    it('renders nothing while the field is pristine and untouched', async () => {
-      await showErrorsFor(buildBookingForm().reference);
+    it('renders nothing while the item is pristine and untouched', async () => {
+      await showErrorsFor(itemOf(buildPizzaForm(), 'pepperoni'));
 
       expect(errorList()).toBeNull();
     });
 
-    it('renders nothing for a valid field, even after it is touched', async () => {
-      const referenceField = buildBookingForm({
-        reference: 'ABC1234',
-      }).reference;
-      referenceField().markAsTouched();
-      await showErrorsFor(referenceField);
-      await settle();
-      await fixture.whenStable();
+    it('renders nothing for a valid item, even after it is touched', async () => {
+      const item = itemOf(buildPizzaForm({ pepperoni: 3 }), 'pepperoni');
+      item.count().markAsTouched();
+      await showErrorsFor(item);
 
       expect(errorList()).toBeNull();
     });
 
-    it('shows the errors once an invalid field is touched', async () => {
-      const referenceField = buildBookingForm().reference;
-      referenceField().markAsTouched();
-      await showErrorsFor(referenceField);
+    it('shows the errors once an invalid item is touched', async () => {
+      const item = itemOf(buildPizzaForm({ pepperoni: 6 }), 'pepperoni');
+      item.count().markAsTouched();
+      await showErrorsFor(item);
 
       expect(errorList()).not.toBeNull();
     });
 
-    it('shows the errors once an invalid field is dirty', async () => {
-      const lastNameField = buildBookingForm().lastName;
-      lastNameField().markAsDirty();
-      await showErrorsFor(lastNameField);
+    it('shows the errors once an invalid item is dirty', async () => {
+      const item = itemOf(buildPizzaForm({ pepperoni: 6 }), 'pepperoni');
+      item.count().markAsDirty();
+      await showErrorsFor(item);
 
       expect(errorList()).not.toBeNull();
     });
   });
 
   describe('rendering the real recipe errors', () => {
-    it("surfaces the reference 'required' message", async () => {
-      const referenceField = buildBookingForm().reference;
-      referenceField().markAsTouched();
-      await showErrorsFor(referenceField);
+    it('surfaces the per-topping max message (aggregated via errorSummary)', async () => {
+      const item = itemOf(buildPizzaForm({ pepperoni: 6 }), 'pepperoni');
+      item.count().markAsTouched();
+      await showErrorsFor(item);
 
-      expect(host.textContent).toContain(
-        'Please enter your booking reference.',
-      );
+      expect(host.textContent).toContain('Max 5');
     });
 
-    it('surfaces the async bookingNotFound message for an unknown reference', async () => {
-      const referenceField = buildBookingForm({
-        reference: 'ZZZ0000',
-      }).reference;
-      referenceField().markAsTouched();
-      await showErrorsFor(referenceField);
-      await settle();
-      await fixture.whenStable();
+    it('surfaces the negative-count message', async () => {
+      const item = itemOf(buildPizzaForm({ pepperoni: -1 }), 'pepperoni');
+      item.count().markAsTouched();
+      await showErrorsFor(item);
 
-      expect(host.textContent).toContain('Booking does not exist.');
-    });
-
-    it("surfaces the last-name 'required' message", async () => {
-      const lastNameField = buildBookingForm().lastName;
-      lastNameField().markAsTouched();
-      await showErrorsFor(lastNameField);
-
-      expect(host.textContent).toContain('Please enter your last name.');
+      expect(host.textContent).toContain('Count cannot be negative');
     });
 
     it('renders a flat list for a single error', async () => {
-      const referenceField = buildBookingForm().reference;
-      referenceField().markAsTouched();
-      await showErrorsFor(referenceField);
+      const item = itemOf(buildPizzaForm({ mozzarella: 2 }), 'mozzarella');
+      item.count().markAsTouched();
+      await showErrorsFor(item);
 
       const list = errorList();
       expect(list?.classList.contains('list-disc')).toBe(false);
@@ -117,12 +113,13 @@ describe('ValidationErrors (04 · Async Validation)', () => {
 
   describe('accessibility', () => {
     it('exposes the errors to assistive technology', async () => {
-      const referenceField = buildBookingForm().reference;
-      referenceField().markAsTouched();
-      await showErrorsFor(referenceField);
+      const item = itemOf(buildPizzaForm({ pepperoni: 6 }), 'pepperoni');
+      item.count().markAsTouched();
+      await showErrorsFor(item);
 
       const list = errorList();
       expect(list?.getAttribute('role')).toBe('alert');
+      expect(list?.getAttribute('aria-live')).toBe('polite');
     });
   });
 });
