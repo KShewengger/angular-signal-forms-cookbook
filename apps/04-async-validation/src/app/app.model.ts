@@ -15,17 +15,13 @@ export const INITIAL_BOOKING: BookingFormModel = {
   lastName: '',
 };
 
-// Extracting the schema keeps it reusable: the component builds its form from it,
-// and the tests build the same form in isolation without rendering a component.
 export const bookingSchema = schema<BookingFormModel>((path) => {
   required(path.reference, {
     message: 'Please enter your booking reference.',
   });
 
-  // Wait for the user to pause typing before syncing (and hitting the server).
   debounce(path.reference, 500);
 
-  // Async, server-backed validation: check the reference actually exists.
   validateHttp(path.reference, {
     request: ({ value }) => `/api/bookings/${value().trim()}`,
 

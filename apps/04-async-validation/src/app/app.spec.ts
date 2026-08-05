@@ -33,7 +33,6 @@ const buildBookingForm = (
   return form(model, bookingSchema, { injector: TestBed.inject(Injector) });
 };
 
-// Async `validateHttp` resolves through a resource, so wait for app stability.
 const settle = (): Promise<void> => TestBed.inject(ApplicationRef).whenStable();
 
 describe('App (04 · Async Validation)', () => {
@@ -190,13 +189,13 @@ describe('App (04 · Async Validation)', () => {
       bookingForm().reference().value.set('ABC1234');
       bookingForm().lastName().value.set('Almuete');
       bookingForm().reference().markAsDirty();
-      await fixture.whenStable(); // async reference check passes → form valid
+      await fixture.whenStable();
 
       const submit = buttonByText('Find my booking');
       expect(submit.disabled).toBe(false);
 
       submit.click();
-      await fixture.whenStable(); // rxResource resolves the mock booking
+      await fixture.whenStable();
 
       expect(host.textContent).toContain('ABC1234');
       expect(host.textContent).toContain('Kristy Mae');
