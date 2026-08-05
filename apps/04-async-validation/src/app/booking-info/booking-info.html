@@ -1,7 +1,9 @@
 <div nbStack gap="lg" class="px-6">
   <div nbCluster gap="md" align="start" justify="between">
     <div nbStack gap="none" align="start">
-      <span nbText size="sm" weight="extrabold" i18n> Booking Reference </span>
+      <span nbText size="sm" weight="extrabold" i18n="@@bookingReferenceLabel">
+        Booking Reference
+      </span>
 
       <span nbText size="lg" tone="warning" weight="bold"
         >{{ booking().reference }}</span
@@ -57,7 +59,9 @@
         <ng-icon aria-hidden="true" size="20" name="tablerPlaneDeparture" />
 
         <div nbStack gap="sm" align="start">
-          <span nbText size="xs" weight="bold"> Departure </span>
+          <span nbText size="xs" weight="bold" i18n="@@departureLabel">
+            Departure
+          </span>
 
           <div nbStack gap="none" align="start">
             <span nbText size="xs"> {{ flight.origin }} </span>
@@ -71,7 +75,9 @@
         <ng-icon aria-hidden="true" size="20" name="tablerPlaneArrival" />
 
         <div nbStack gap="sm" align="start">
-          <span nbText size="xs" weight="bold"> Arrival </span>
+          <span nbText size="xs" weight="bold" i18n="@@arrivalLabel">
+            Arrival
+          </span>
 
           <div nbStack gap="none" align="start">
             <span nbText size="xs"> {{ flight.destination }} </span>
@@ -85,6 +91,6 @@
 
   <button nbButton fullWidth tone="background" (click)="back.emit()">
     <ng-icon aria-hidden="true" size="20" name="tablerArrowLeft" />
-    <span i18n>Back</span>
+    <span i18n="@@backLabel">Back</span>
   </button>
 </div>

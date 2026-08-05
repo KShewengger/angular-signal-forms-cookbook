@@ -30,13 +30,15 @@
           >
             <span aria-hidden="true">04</span>
             <hr nbSeparator orientation="vertical" aria-hidden="true" />
-            <span class="text-sm">Async Validation</span>
+            <span class="text-sm" i18n="@@lessonAsyncLabel"
+              >Async Validation</span
+            >
           </div>
 
           <div nbCluster gap="lg" align="start" justify="between" wrap="nowrap">
             <nb-card-title>
               <h1
-                i18n
+                i18n="@@manageBookingTitle"
                 id="registration-title"
                 nbDisplay
                 size="lg"
@@ -89,6 +91,7 @@
           transform="uppercase"
           tracking="tight"
           tone="subtle"
+          i18n="@@fetchingLabel"
         >
           Fetching...
         </span>
@@ -171,7 +174,7 @@
                 bookingForm().invalid()
               "
           >
-            <span i18n>Find my booking</span>
+            <span i18n="@@findBookingLabel">Find my booking</span>
 
             <span nbButtonTrailingIcon class="grid place-items-center">
               <ng-icon aria-hidden="true" size="20" name="tablerArrowRight" />
@@ -229,6 +232,7 @@
         weight="black"
         transform="uppercase"
         tracking="wide"
+        i18n="@@prevCrossField"
       >
         Prev: Cross-Field Validation
       </span>
@@ -250,6 +254,7 @@
         weight="black"
         transform="uppercase"
         tracking="wide"
+        i18n="@@nextArrayValidation"
       >
         Next: Array Validation
       </span>

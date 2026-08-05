@@ -33,7 +33,9 @@
 
             <hr nbSeparator orientation="vertical" aria-hidden="true" />
 
-            <span class="text-sm">Basic Form</span>
+            <span class="text-sm" i18n="@@lessonBasicFormLabel"
+              >Basic Form</span
+            >
           </div>
 
           <nb-card-title>
@@ -114,15 +116,27 @@
                 placeholder="Select a role"
                 [formField]="userForm.role"
               >
-                <nb-select-option value="admin" label="Admin">
+                <nb-select-option
+                  value="admin"
+                  label="Admin"
+                  i18n="@@roleAdminOption"
+                >
                   Admin
                 </nb-select-option>
 
-                <nb-select-option value="moderator" label="Moderator">
+                <nb-select-option
+                  value="moderator"
+                  label="Moderator"
+                  i18n="@@roleModeratorOption"
+                >
                   Moderator
                 </nb-select-option>
 
-                <nb-select-option value="user" label="User">
+                <nb-select-option
+                  value="user"
+                  label="User"
+                  i18n="@@roleUserOption"
+                >
                   User
                 </nb-select-option>
               </nb-select>
@@ -167,17 +181,17 @@
           <div nbCluster gap="md" class="pl-6">
             <div nbCluster gap="xs">
               <span nbStatusDot [state]="touched ? 'online' : 'offline'"></span>
-              <span>Touched</span>
+              <span i18n="@@stateTouchedLabel">Touched</span>
             </div>
 
             <div nbCluster gap="xs">
               <span nbStatusDot [state]="dirty ? 'online' : 'offline'"></span>
-              <span>Dirty</span>
+              <span i18n="@@stateDirtyLabel">Dirty</span>
             </div>
 
             <div nbCluster gap="xs">
               <span nbStatusDot [state]="valid ? 'online' : 'offline'"></span>
-              <span>Valid</span>
+              <span i18n="@@stateValidLabel">Valid</span>
             </div>
 
             <div nbCluster gap="xs">
@@ -185,7 +199,7 @@
                 nbStatusDot
                 [state]="dirty && invalid ? 'live' : 'offline'"
               ></span>
-              <span>Invalid</span>
+              <span i18n="@@stateInvalidLabel">Invalid</span>
             </div>
           </div>
 

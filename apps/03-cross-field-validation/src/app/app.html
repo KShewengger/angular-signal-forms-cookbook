@@ -31,13 +31,15 @@
           >
             <span aria-hidden="true">03</span>
             <hr nbSeparator orientation="vertical" aria-hidden="true" />
-            <span class="text-sm">Cross-Field Validation</span>
+            <span class="text-sm" i18n="@@lessonCrossFieldLabel"
+              >Cross-Field Validation</span
+            >
           </div>
 
           <div nbCluster gap="sm" align="start" justify="between" wrap="nowrap">
             <nb-card-title>
               <h1
-                i18n
+                i18n="@@confirmEmailTitle"
                 id="registration-title"
                 nbDisplay
                 size="lg"
@@ -89,7 +91,7 @@
 
           <form novalidate nbStack gap="lg" class="mb-4 z-50">
             <div class="grid w-full w-96 gap-2">
-              <label nbLabel for="email">Email</label>
+              <label nbLabel for="email" i18n="@@emailLabel">Email</label>
               <nb-input-group>
                 <span nbInputPrefix>@</span>
                 <input
@@ -113,7 +115,9 @@
             </div>
 
             <div class="grid w-full w-96 gap-2">
-              <label nbLabel for="confirm-email">Confirm Email</label>
+              <label nbLabel for="confirm-email" i18n="@@confirmEmailLabel"
+                >Confirm Email</label
+              >
               <nb-input-group>
                 <span nbInputPrefix>@</span>
                 <input
@@ -195,6 +199,7 @@
         weight="black"
         transform="uppercase"
         tracking="wide"
+        i18n="@@prevValidations"
       >
         Prev: Validations
       </span>
@@ -216,6 +221,7 @@
         weight="black"
         transform="uppercase"
         tracking="wide"
+        i18n="@@nextAsyncValidation"
       >
         Next: Async Validation
       </span>
