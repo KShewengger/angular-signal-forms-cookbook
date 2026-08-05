@@ -1,6 +1,6 @@
 import { Component, computed, signal } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
-import { form, FormField } from '@angular/forms/signals';
+import { form, FormField, applyEach } from '@angular/forms/signals';
 import {
   NbCard,
   NbCardHeader,
@@ -15,26 +15,15 @@ import {
   NbSeparator,
   NbCluster,
   NbCallout,
-  NbMediaFrame,
   NbStack,
-  NbInputSuffix,
   NbHalftone,
-  NbSplit,
   NbText,
-  NbButtonTrailingIcon,
-  NbButton,
-  NbLabel,
 } from '@ng-brutalism/ui';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import {
-  tablerCopyright,
-  tablerArrowRight,
-  tablerUserX,
-  tablerUserCheck,
-  tablerCheck,
-} from '@ng-icons/tabler-icons';
-import { INITIAL_USER, UserFormModel, userSchema } from './app.model';
+import { PIZZA_TOPPINGS } from './app.data';
+import { PizzaFormModel } from './app.model';
+import { pizzaToppingItemSchema } from './app.utils';
 import { ValidationErrors } from './validation-errors';
+import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   tablerCircleArrowLeftFill,
   tablerCircleArrowRightFill,
@@ -43,15 +32,14 @@ import {
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
+  styleUrl: './app.css',
   imports: [
     NgOptimizedImage,
-    NbSplit,
     NbChip,
     NbChipGroup,
     NbCard,
     NbInputGroup,
     NbInputPrefix,
-    NbInputSuffix,
     NbCluster,
     NbCardHeader,
     NbCardTitle,
@@ -63,23 +51,14 @@ import {
     NbSeparator,
     FormField,
     NbCallout,
-    NgIcon,
-    NbMediaFrame,
     ValidationErrors,
     NbText,
-    NbButtonTrailingIcon,
-    NbButton,
-    NbLabel,
+    NgIcon,
   ],
   viewProviders: [
     provideIcons({
-      tablerCopyright,
-      tablerArrowRight,
-      tablerUserX,
-      tablerUserCheck,
-      tablerCheck,
-      tablerCircleArrowLeftFill,
       tablerCircleArrowRightFill,
+      tablerCircleArrowLeftFill,
     }),
   ],
   host: {
@@ -87,16 +66,25 @@ import {
   },
 })
 export class App {
-  private userModel = signal<UserFormModel>({ ...INITIAL_USER });
+  protected readonly pizzaToppings = PIZZA_TOPPINGS;
 
-  protected userForm = form(this.userModel, userSchema);
+  protected pizzaMakerModel = signal<PizzaFormModel>({
+    toppings: PIZZA_TOPPINGS.map((topping) => ({
+      id: topping.id,
+      count: 0,
+    })),
+  });
 
-  protected value = computed(() => this.userForm().value());
-  protected valid = computed(
-    () => this.userForm().dirty() && this.userForm().valid(),
-  );
+  protected pizzaMakerForm = form(this.pizzaMakerModel, (path) => {
+    applyEach(path.toppings, pizzaToppingItemSchema);
+  });
 
-  protected clear() {
-    this.userForm().reset({ ...INITIAL_USER });
-  }
+  protected visibleCounts = computed(() => {
+    return new Map(
+      this.pizzaMakerModel().toppings.map((topping) => [
+        topping.id,
+        topping.count,
+      ]),
+    );
+  });
 }
