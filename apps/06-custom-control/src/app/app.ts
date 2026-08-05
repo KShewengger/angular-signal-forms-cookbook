@@ -1,30 +1,27 @@
 import { Component, computed, signal } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
-import { form, FormField } from '@angular/forms/signals';
+import { form, FormField, applyEach } from '@angular/forms/signals';
 import {
   NbCard,
   NbCardHeader,
   NbCardTitle,
-  NbInput,
   NbDisplay,
   NbChip,
   NbChipGroup,
   NbSticker,
-  NbInputGroup,
-  NbInputPrefix,
   NbSeparator,
   NbCluster,
   NbCallout,
   NbStack,
   NbHalftone,
-  NbText,
-  NbButton,
   NbButtonTrailingIcon,
+  NbButton,
+  NbText,
 } from '@ng-brutalism/ui';
 import { PIZZA_TOPPINGS } from './app.data';
 import { PizzaFormModel } from './app.model';
-import { pizzaMakerSchema } from './app.utils';
-import { ValidationErrors } from './validation-errors';
+import { pizzaToppingItemSchema } from './app.utils';
+import { Topping } from './topping/topping';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   tablerCircleArrowLeftFill,
@@ -33,19 +30,16 @@ import {
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.html',
-  styleUrl: './app.css',
+  templateUrl: 'app.html',
+  styleUrl: 'app.css',
   imports: [
     NgOptimizedImage,
     NbChip,
     NbChipGroup,
     NbCard,
-    NbInputGroup,
-    NbInputPrefix,
     NbCluster,
     NbCardHeader,
     NbCardTitle,
-    NbInput,
     NbStack,
     NbDisplay,
     NbHalftone,
@@ -53,11 +47,11 @@ import {
     NbSeparator,
     FormField,
     NbCallout,
-    ValidationErrors,
+    Topping,
+    NbButtonTrailingIcon,
+    NbButton,
     NbText,
     NgIcon,
-    NbButton,
-    NbButtonTrailingIcon,
   ],
   viewProviders: [
     provideIcons({
@@ -79,7 +73,9 @@ export class App {
     })),
   });
 
-  protected pizzaMakerForm = form(this.pizzaMakerModel, pizzaMakerSchema);
+  protected pizzaMakerForm = form(this.pizzaMakerModel, (path) => {
+    applyEach(path.toppings, pizzaToppingItemSchema);
+  });
 
   protected visibleCounts = computed(() => {
     return new Map(
