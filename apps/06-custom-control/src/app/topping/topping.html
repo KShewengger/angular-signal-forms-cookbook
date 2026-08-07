@@ -3,7 +3,6 @@
     class="w-32!"
     [class.error]="dirty() && invalid()"
     [class.touched]="touched()"
-    [class.disabled]="disabled()"
     [class.readonly]="readonly()"
   >
     <div nbInputPrefix>
@@ -23,7 +22,6 @@
       #inputRef
       class="min-w-10"
       [value]="value()"
-      [disabled]="disabled()"
       [readOnly]="readonly()"
       [attr.aria-invalid]="invalid()"
       (input)="update(inputRef)"
@@ -31,7 +29,12 @@
     />
 
     <div nbInputSuffix class="flex flex-col w-auto!">
-      <button nbIconButton class="size-5!" (click)="increment()">
+      <button
+        nbIconButton
+        class="size-5! disabled:opacity-100! disabled:[--nb-surface:var(--color-gray-50)]! disabled:[--nb-border:var(--color-gray-200)]! disabled:[--nb-shadow:transparent]! [&:disabled_ng-icon]:text-gray-300!"
+        [disabled]="disabled()"
+        (click)="increment()"
+      >
         <ng-icon size="16" name="tablerChevronUp" />
       </button>
       <button nbIconButton class="size-5!" (click)="decrement()">

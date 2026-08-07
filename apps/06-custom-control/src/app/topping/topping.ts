@@ -65,12 +65,10 @@ export class Topping implements FormValueControl<number | undefined> {
   }
 
   protected increment() {
-    if (this.disabled()) return;
     this.value.update((num) => (num ?? 0) + 1);
   }
 
   protected decrement() {
-    if (this.disabled()) return;
     this.value.update((num) => (num ?? 0) - 1);
   }
 }
