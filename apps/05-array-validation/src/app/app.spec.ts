@@ -6,9 +6,9 @@ import {
   PizzaFormModel,
   PizzaFormModelItem,
   PizzaToppingId,
+  pizzaMakerSchema,
 } from './app.model';
 import { PIZZA_TOPPINGS } from './app.data';
-import { pizzaMakerSchema } from './app.utils';
 
 type ErrorReader = () => {
   errors(): ReadonlyArray<{ kind: string; message?: string }>;

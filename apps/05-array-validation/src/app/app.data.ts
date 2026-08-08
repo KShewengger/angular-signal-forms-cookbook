@@ -1,4 +1,4 @@
-import { PizzaTopping, RenderPizzaTopping } from './app.model';
+import type { PizzaTopping, RenderPizzaTopping } from './app.model';
 
 export const PIZZA_TOPPINGS_MAP: Record<string, PizzaTopping> = {
   mozzarella: {

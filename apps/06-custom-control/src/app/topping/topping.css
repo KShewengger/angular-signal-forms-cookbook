@@ -15,10 +15,6 @@ input[type='number'] {
   --nb-border: red;
 }
 
-.touched {
-  --nb-border: blue;
-}
-
 .readonly {
   opacity: 0.5;
   cursor: not-allowed;

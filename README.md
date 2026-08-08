@@ -39,7 +39,7 @@ Each recipe is a small, runnable example that solves one problem, with a folder-
 | 03  | [Cross-field Validation](./apps/03-cross-field-validation) | Validate one field against another with `validate()` + `valueOf()`                                                    |
 | 04  | [Async Validation](./apps/04-async-validation)             | Debounced server checks with a pending state, verified with `validateHttp`                                            |
 | 05  | [Array Validation](./apps/05-array-validation)             | Validate every item in an array with `applyEach` and per-item rules                                                   |
-| 06  | [Custom Control](./apps/06-custom-control)                 | Implement `FormValueControl` with its own validation                                                                  |
+| 06  | [Custom Control](./apps/06-custom-control)                 | Build a custom `FormValueControl` the framework binds value and state to                                              |
 | 07  | [Debounced Input](./apps/07-debounce)                      | Delay model updates until the user pauses typing                                                                      |
 | 08  | [Conditional Validation](./apps/08-conditional-validation) | Rules that switch on based on other field values                                                                      |
 | 09  | [Zod schema Validation](./apps/09-zod)                     | Drive validation straight from a Zod schema                                                                           |

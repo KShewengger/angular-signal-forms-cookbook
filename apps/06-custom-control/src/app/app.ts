@@ -1,6 +1,6 @@
 import { Component, computed, signal } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
-import { form, FormField, applyEach, hidden } from '@angular/forms/signals';
+import { form, FormField } from '@angular/forms/signals';
 import {
   NbCard,
   NbCardHeader,
@@ -19,8 +19,7 @@ import {
   NbText,
 } from '@ng-brutalism/ui';
 import { PIZZA_TOPPINGS } from './app.data';
-import { PizzaFormModel } from './app.model';
-import { pizzaToppingItemSchema } from './app.utils';
+import { PizzaFormModel, pizzaMakerSchema } from './app.model';
 import { Topping } from './topping/topping';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -73,21 +72,7 @@ export class App {
     })),
   });
 
-  protected pizzaMakerForm = form(this.pizzaMakerModel, (path) => {
-    applyEach(path.toppings, (topping) => {
-      pizzaToppingItemSchema(topping);
-
-      hidden(topping.count, {
-        when: ({ valueOf }) => {
-          if (valueOf(topping.id) !== 'pepperoni') return false;
-
-          const tomato = valueOf(path.toppings).find((t) => t.id === 'tomato');
-
-          return (tomato?.count ?? 0) > 1;
-        },
-      });
-    });
-  });
+  protected pizzaMakerForm = form(this.pizzaMakerModel, pizzaMakerSchema);
 
   protected visibleCounts = computed(() => {
     return new Map(
