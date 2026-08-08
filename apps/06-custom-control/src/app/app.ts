@@ -1,6 +1,6 @@
 import { Component, computed, signal } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
-import { form, FormField, applyEach } from '@angular/forms/signals';
+import { form, FormField, applyEach, hidden } from '@angular/forms/signals';
 import {
   NbCard,
   NbCardHeader,
@@ -74,7 +74,19 @@ export class App {
   });
 
   protected pizzaMakerForm = form(this.pizzaMakerModel, (path) => {
-    applyEach(path.toppings, pizzaToppingItemSchema);
+    applyEach(path.toppings, (topping) => {
+      pizzaToppingItemSchema(topping);
+
+      hidden(topping.count, {
+        when: ({ valueOf }) => {
+          if (valueOf(topping.id) !== 'pepperoni') return false;
+
+          const tomato = valueOf(path.toppings).find((t) => t.id === 'tomato');
+
+          return (tomato?.count ?? 0) > 1;
+        },
+      });
+    });
   });
 
   protected visibleCounts = computed(() => {
