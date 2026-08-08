@@ -1,0 +1,50 @@
+<div nbStack gap="xs">
+  <nb-input-group
+    class="w-32!"
+    [class.error]="dirty() && invalid()"
+    [class.readonly]="readonly()"
+  >
+    <div nbInputPrefix>
+      <img
+        width="32"
+        height="32"
+        class="size-8"
+        [ngSrc]="topping().imgUrl"
+        [alt]="topping().label"
+      />
+    </div>
+
+    <input
+      nbInput
+      type="number"
+      placeholder="0"
+      #inputRef
+      class="min-w-10"
+      [value]="value()"
+      [readOnly]="readonly()"
+      [attr.aria-invalid]="invalid()"
+      (input)="update(inputRef)"
+      (blur)="touch.emit()"
+    />
+
+    <div nbInputSuffix class="flex flex-col w-auto!">
+      <button
+        nbIconButton
+        class="size-5! disabled:opacity-100! disabled:[--nb-surface:var(--color-gray-50)]! disabled:[--nb-border:var(--color-gray-200)]! disabled:[--nb-shadow:transparent]! [&:disabled_ng-icon]:text-gray-300!"
+        [disabled]="disabled()"
+        (click)="increment()"
+      >
+        <ng-icon size="16" name="tablerChevronUp" />
+      </button>
+      <button nbIconButton class="size-5!" (click)="decrement()">
+        <ng-icon size="16" name="tablerChevronDown" />
+      </button>
+    </div>
+  </nb-input-group>
+
+  <app-validation-errors
+    class="min-h-5"
+    [errors]="errors()"
+    [visible]="invalid() && (dirty() || touched())"
+  />
+</div>

@@ -1,4 +1,4 @@
-<main nbStack gap="md" justify="center" class="relative min-h-screen p-8 pt-20">
+<main nbStack gap="md" class="relative min-h-screen p-8 pt-20">
   <!-- PIZZA MAKER CARD -->
   <article aria-labelledby="registration-title">
     <nb-card class="relative">
@@ -10,18 +10,18 @@
             tone="lavender"
             size="md"
             class="w-fit"
-            aria-label="Lesson 5: Array Validation"
+            aria-label="Lesson 6: Custom Control"
           >
-            <span aria-hidden="true">05</span>
+            <span aria-hidden="true">06</span>
             <hr nbSeparator orientation="vertical" aria-hidden="true" />
-            <span class="text-sm" i18n="@@lessonArrayLabel"
-              >Array Validation</span
+            <span class="text-sm" i18n="@@lessonCustomControlLabel"
+              >Custom Control</span
             >
           </div>
 
           <div nbChipGroup nbCluster gap="md" aria-label="Lesson topics">
             <span nbChip tone="danger" i18n="@@angular21Label">
-              Angular 22
+              Angular 21
             </span>
 
             <span nbChip tone="accent" i18n="@@signalFormsLabel">
@@ -58,29 +58,10 @@
 
       <div nbCluster gap="lg" justify="center" class="px-5">
         @for(topping of pizzaToppings; track topping.id) {
-        <div nbStack gap="xs">
-          <nb-input-group class="w-32!">
-            <div nbInputPrefix>
-              <img
-                width="32"
-                height="32"
-                class="w-8 h-8"
-                [ngSrc]="topping.imgUrl"
-                [alt]="topping.label"
-              />
-            </div>
-            <input
-              nbInput
-              placeholder="0"
-              type="number"
-              [formField]="pizzaMakerForm.toppings[$index].count"
-            />
-          </nb-input-group>
-          <app-validation-errors
-            class="min-h-5"
-            [field]="pizzaMakerForm.toppings[$index]"
-          />
-        </div>
+        <app-topping
+          [topping]="topping"
+          [formField]="pizzaMakerForm.toppings[$index].count"
+        />
         }
       </div>
 
@@ -131,7 +112,7 @@
     gap="md"
     align="center"
     justify="between"
-    class="mb-16"
+    class="mb-8"
     aria-label="Lesson navigation"
   >
     <a
@@ -142,7 +123,7 @@
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Go to the previous lesson"
-      href="https://stackblitz.com/edit/stackblitz-starters-xkbhxc7y"
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/05-array-validation"
     >
       <span nbButtonTrailingIcon shape="circle" class="grid place-items-center">
         <ng-icon
@@ -158,8 +139,9 @@
         weight="black"
         transform="uppercase"
         tracking="wide"
+        i18n="@@prevArrayValidation"
       >
-        Prev: Async Validation
+        Prev: Array Validation
       </span>
     </a>
 
@@ -171,7 +153,7 @@
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Go to the next lesson"
-      href=""
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps"
     >
       <span
         nbText
@@ -179,8 +161,9 @@
         weight="black"
         transform="uppercase"
         tracking="wide"
+        i18n="@@nextConditionalValidation"
       >
-        Next: Array Validation
+        Next: Conditional Validation
       </span>
 
       <span nbButtonTrailingIcon shape="circle" class="grid place-items-center">
@@ -215,7 +198,7 @@
     <hr nbSeparator orientation="vertical" aria-hidden="true" />
 
     <a
-      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/05-array-validation"
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/06-custom-control"
       nbText
       tone="danger"
       size="xs"

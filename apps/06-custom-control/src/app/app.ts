@@ -5,25 +5,22 @@ import {
   NbCard,
   NbCardHeader,
   NbCardTitle,
-  NbInput,
   NbDisplay,
   NbChip,
   NbChipGroup,
   NbSticker,
-  NbInputGroup,
-  NbInputPrefix,
   NbSeparator,
   NbCluster,
   NbCallout,
   NbStack,
   NbHalftone,
-  NbText,
-  NbButton,
   NbButtonTrailingIcon,
+  NbButton,
+  NbText,
 } from '@ng-brutalism/ui';
 import { PIZZA_TOPPINGS } from './app.data';
 import { PizzaFormModel, pizzaMakerSchema } from './app.model';
-import { ValidationErrors } from './validation-errors';
+import { Topping } from './topping/topping';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   tablerCircleArrowLeftFill,
@@ -32,19 +29,16 @@ import {
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.html',
-  styleUrl: './app.css',
+  templateUrl: 'app.html',
+  styleUrl: 'app.css',
   imports: [
     NgOptimizedImage,
     NbChip,
     NbChipGroup,
     NbCard,
-    NbInputGroup,
-    NbInputPrefix,
     NbCluster,
     NbCardHeader,
     NbCardTitle,
-    NbInput,
     NbStack,
     NbDisplay,
     NbHalftone,
@@ -52,11 +46,11 @@ import {
     NbSeparator,
     FormField,
     NbCallout,
-    ValidationErrors,
+    Topping,
+    NbButtonTrailingIcon,
+    NbButton,
     NbText,
     NgIcon,
-    NbButton,
-    NbButtonTrailingIcon,
   ],
   viewProviders: [
     provideIcons({

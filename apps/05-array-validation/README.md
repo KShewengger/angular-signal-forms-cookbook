@@ -40,7 +40,7 @@ all projects share a single root `package.json`.
 | API                           | What it does                                                                 | Where in this recipe                                  |
 | ----------------------------- | ---------------------------------------------------------------------------- | ----------------------------------------------------- |
 | `applyEach(path, itemSchema)` | Applies a schema to **every element** of an array field                      | `applyEach(path.toppings, pizzaToppingItemSchema)`    |
-| `schema<T>()`                 | Declares a reusable validation schema, separate from the form                | `pizzaMakerSchema` in `app.utils.ts`                  |
+| `schema<T>()`                 | Declares a reusable validation schema, separate from the form                | `pizzaMakerSchema` in `app.model.ts`                  |
 | `min(path, n)`                | Built-in numeric minimum validator                                           | `min(item.count, 0)`                                  |
 | `validate(path, fn)`          | Custom validator; here it computes a per-item maximum                        | the `toppingMax` rule                                 |
 | `valueOf(path)`               | Reads a **sibling** field's value inside a validator                         | `valueOf(item.id)` to look up the topping             |
@@ -172,7 +172,7 @@ export type PizzaFormModelItem = { id: PizzaToppingId; count: number };
 export type PizzaFormModel = { toppings: PizzaFormModelItem[] };
 ```
 
-**2. Declare the per-item schema and apply it to the array** (`app.utils.ts`)
+**2. Declare the per-item schema and apply it to the array** (`app.model.ts`)
 
 Extracting the schema keeps it reusable: the component builds its form from it, and the
 tests build the same form in isolation without rendering a component.

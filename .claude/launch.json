@@ -12,6 +12,12 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["nx", "serve", "01-basic-form", "--port", "4301"],
       "port": 4301
+    },
+    {
+      "name": "06-custom-control",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["nx", "serve", "06-custom-control", "--port", "4306"],
+      "port": 4306
     }
   ]
 }
