@@ -18,6 +18,12 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["nx", "serve", "06-custom-control", "--port", "4306"],
       "port": 4306
+    },
+    {
+      "name": "07-debounce-input",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["nx", "serve", "07-debounce-input", "--port", "4307"],
+      "port": 4307
     }
   ]
 }

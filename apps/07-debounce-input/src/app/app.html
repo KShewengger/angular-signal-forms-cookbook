@@ -30,12 +30,16 @@
   <div nbCluster gap="lg" align="center" class="w-full">
     <div nbCluster gap="xs" align="center" [class.opacity-30]="!isLoading()">
       <span nbStatusDot [state]="isLoading() ? 'live' : 'offline'"></span>
-      <span nbText size="sm" weight="bold">Loading</span>
+      <span nbText size="sm" weight="bold" i18n="@@stateLoadingLabel"
+        >Loading</span
+      >
     </div>
 
     <div nbCluster gap="xs" align="center" [class.opacity-30]="!isResolved()">
       <span nbStatusDot [state]="isResolved() ? 'online' : 'offline'"></span>
-      <span nbText size="sm" weight="bold">Resolved</span>
+      <span nbText size="sm" weight="bold" i18n="@@stateResolvedLabel"
+        >Resolved</span
+      >
     </div>
   </div>
 
