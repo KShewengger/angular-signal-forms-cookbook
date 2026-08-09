@@ -22,6 +22,7 @@
 :root {
   --font-weight-medium: 700;
   --nb-card-bg: #fffaf0;
+  --nb-background: #ffffff;
 }
 
 body {

@@ -1,1 +1,87 @@
-<h1>Test</h1>
+<main nbStack gap="xl" justify="center" class="relative min-h-screen p-8 pt-20">
+  <div nbChipGroup nbCluster gap="md" aria-label="Lesson topics">
+    <span nbChip tone="danger" i18n="@@angular2Label"> Angular 22 </span>
+
+    <span nbChip tone="accent" i18n="@@signalFormsLabel"> Signal Forms </span>
+
+    <span nbChip tone="black" i18n="@@basicLabel"> Ng-Brutalism </span>
+  </div>
+
+  <!-- SEARCH -->
+  <div nbStack gap="xs" class="w-full">
+    <nb-input-group [class.error]="queryInvalid()">
+      <span nbInputPrefix>
+        <ng-icon name="tablerSearch" size="24" />
+      </span>
+      <input
+        nbInput
+        placeholder="Search a fruit..."
+        [formField]="searchForm.query"
+      />
+    </nb-input-group>
+
+    <app-validation-errors
+      [errors]="queryErrors()"
+      [visible]="queryInvalid()"
+    />
+  </div>
+
+  <!-- STATUS BADGES: the active resource state lights up -->
+  <div nbCluster gap="lg" align="center" class="w-full">
+    <div nbCluster gap="xs" align="center" [class.opacity-30]="!isLoading()">
+      <span nbStatusDot [state]="isLoading() ? 'live' : 'offline'"></span>
+      <span nbText size="sm" weight="bold">Loading</span>
+    </div>
+
+    <div nbCluster gap="xs" align="center" [class.opacity-30]="!isResolved()">
+      <span nbStatusDot [state]="isResolved() ? 'online' : 'offline'"></span>
+      <span nbText size="sm" weight="bold">Resolved</span>
+    </div>
+  </div>
+
+  <!-- RESULTS / ERROR -->
+  @if (results().length) {
+  <div nbStack gap="sm" class="w-full">
+    @for (fruit of results(); track fruit.name) {
+    <div nbCallout tone="background" size="lg" class="w-full">
+      <span class="text-2xl" aria-hidden="true">{{ fruit.emoji }}</span>
+      <hr nbSeparator orientation="vertical" aria-hidden="true" />
+      <span nbText weight="bold">{{ fruit.name }}</span>
+    </div>
+    }
+  </div>
+  }
+
+  <!-- FOOTER -->
+  <footer
+    nbCluster
+    gap="sm"
+    align="center"
+    justify="center"
+    class="absolute bottom-0 left-0 w-full pb-6"
+  >
+    <ng-icon
+      aria-hidden="true"
+      class="text-gray-300"
+      size="16"
+      name="tablerCopyright"
+    />
+
+    <small nbText tone="muted" size="xs" i18n="@@authorLabel">
+      Kristy Mae Almuete
+    </small>
+
+    <hr nbSeparator orientation="vertical" aria-hidden="true" />
+
+    <a
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/07-debounce-input"
+      nbText
+      tone="danger"
+      size="xs"
+      i18n="@@githubRepository"
+      target="_blank"
+      rel="noopener noreferrer"
+      >GitHub Repo</a
+    >
+  </footer>
+</main>
