@@ -145,18 +145,18 @@ Signal Forms exposes each field's status as a signal you read directly in the te
 
 ## Tech & tools
 
-| Layer     | Tool                                                                | Purpose                                                       |
-| --------- | ------------------------------------------------------------------- | ------------------------------------------------------------- |
-| Framework | **Angular 22** (standalone, signals, new control flow `@for`/`@if`) | Application shell and reactivity                              |
-| Forms     | **`@angular/forms/signals`**                                        | `form()`, `schema()`, `debounce()`, `pattern()`, `validate()` |
-| Async     | **`rxResource`** + a `@Service`                                     | Streams the fruit matches for the debounced query             |
-| UI kit    | **ng-brutalism** (`@ng-brutalism/ui`)                               | `nb-input-group`, `nbInput`, `nbCallout`, `nbStatusDot`, …    |
-| Icons     | **`@ng-icons/tabler-icons`**                                        | Search and copyright icons                                    |
-| Styling   | **Tailwind CSS v4** (with the ng-brutalism theme)                   | Utility classes plus the invalid-input border override        |
-| Images    | **Native emoji**                                                    | Fruit rows render emoji directly, no image assets             |
-| i18n      | **`@angular/localize`**                                             | Translatable user-facing strings                              |
-| Tooling   | **Nx 23** + **esbuild**                                             | Build, serve, and dependency graph                            |
-| Tests     | **Vitest 4**                                                        | Isolated schema tests + component tests                       |
+| Layer     | Tool                                                                | Purpose                                                                                        |
+| --------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Framework | **Angular 22** (standalone, signals, new control flow `@for`/`@if`) | Application shell and reactivity                                                               |
+| Forms     | **`@angular/forms/signals`**                                        | `form()`, `schema()`, `debounce()`, `pattern()`, `validate()`                                  |
+| Async     | **`rxResource`** + a `@Service`                                     | Streams the fruit matches for the debounced query                                              |
+| UI kit    | **ng-brutalism** (`@ng-brutalism/ui`)                               | `nb-card`, `nbMediaFrame`, `nbInput`, `nbCallout`, `nbStatusDot`, `nbHalftone`, `nbSticker`, … |
+| Icons     | **`@ng-icons/tabler-icons`**                                        | Search, copyright, and lesson-navigation icons                                                 |
+| Styling   | **Tailwind CSS v4** (with the ng-brutalism theme)                   | Utility classes plus the invalid-input border override                                         |
+| Images    | **`NgOptimizedImage`** + native emoji                               | Priority `hero-cover.png` header; fruit rows render emoji directly                             |
+| i18n      | **`@angular/localize`**                                             | Translatable user-facing strings                                                               |
+| Tooling   | **Nx 23** + **esbuild**                                             | Build, serve, and dependency graph                                                             |
+| Tests     | **Vitest 4**                                                        | Isolated schema tests + component tests                                                        |
 
 ---
 
