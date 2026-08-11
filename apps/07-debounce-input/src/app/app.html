@@ -1,0 +1,266 @@
+<main nbStack gap="md" justify="center" class="relative min-h-screen p-8 pt-20">
+  <!-- LIVE SEARCH CARD -->
+  <article aria-labelledby="live-search-title">
+    <nb-card class="relative border-t-0 pt-0!">
+      <!-- HEADER -->
+      <nb-card-header nbStack gap="md" class="relative px-0!">
+        <div
+          nbMediaFrame
+          ratio="21/9"
+          tone="lavender"
+          shadow="hard"
+          class="relative -top-0.5 mb-2 overflow-hidden"
+        >
+          <img
+            priority
+            ngSrc="hero-cover.png"
+            width="5000"
+            height="3084"
+            class="h-full w-full object-cover"
+            alt="Illustration of an Angular fruit market ecosystem"
+          />
+        </div>
+
+        <div nbStack gap="md" class="px-6">
+          <div
+            nbCallout
+            tone="lavender"
+            size="md"
+            class="w-fit"
+            aria-label="Lesson 7: Debounced Input"
+          >
+            <span aria-hidden="true">07</span>
+            <hr nbSeparator orientation="vertical" aria-hidden="true" />
+            <span class="text-sm" i18n="@@lessonDebounceLabel"
+              >Debounced Input</span
+            >
+          </div>
+
+          <nb-card-title>
+            <h1
+              i18n="@@liveSearchTitle"
+              id="live-search-title"
+              nbDisplay
+              size="lg"
+              underline="bar"
+              class="font-mono font-black uppercase leading-tight"
+            >
+              Live Search
+            </h1>
+          </nb-card-title>
+
+          <div
+            nbChipGroup
+            nbCluster
+            gap="md"
+            justify="start"
+            class="w-full"
+            aria-label="Lesson topics"
+          >
+            <span nbChip tone="danger" i18n="@@angular21Label">
+              Angular 22
+            </span>
+
+            <span nbChip tone="accent" i18n="@@signalFormsLabel">
+              Signal Forms
+            </span>
+
+            <span nbChip tone="black" i18n="@@basicLabel"> Ng-Brutalism </span>
+          </div>
+        </div>
+
+        <div
+          nbHalftone
+          shape="rectangle"
+          class="absolute -bottom-8 -right-1"
+          aria-hidden="true"
+          [rows]="3"
+          [columns]="7"
+        ></div>
+      </nb-card-header>
+
+      <hr nbSeparator variant="dashed" aria-hidden="true" />
+
+      <!-- CONTENT -->
+      <div nbStack gap="lg" class="px-6 pb-6">
+        <!-- SEARCH -->
+        <div nbStack gap="xs" class="w-full">
+          <nb-input-group [class.error]="queryInvalid()">
+            <span nbInputPrefix>
+              <ng-icon name="tablerSearch" size="24" />
+            </span>
+            <input
+              nbInput
+              placeholder="Search a fruit..."
+              [formField]="searchForm.query"
+            />
+          </nb-input-group>
+
+          <app-validation-errors
+            [errors]="queryErrors()"
+            [visible]="queryInvalid()"
+          />
+        </div>
+
+        <!-- STATUS BADGES: the active resource state lights up -->
+        <div nbCluster gap="lg" align="center" class="w-full">
+          <div
+            nbCluster
+            gap="xs"
+            align="center"
+            [class.opacity-30]="!isLoading()"
+          >
+            <span nbStatusDot [state]="isLoading() ? 'live' : 'offline'"></span>
+            <span nbText size="sm" weight="bold" i18n="@@stateLoadingLabel"
+              >Loading</span
+            >
+          </div>
+
+          <div
+            nbCluster
+            gap="xs"
+            align="center"
+            [class.opacity-30]="!isResolved()"
+          >
+            <span
+              nbStatusDot
+              [state]="isResolved() ? 'online' : 'offline'"
+            ></span>
+            <span nbText size="sm" weight="bold" i18n="@@stateResolvedLabel"
+              >Resolved</span
+            >
+          </div>
+        </div>
+
+        <!-- RESULTS -->
+        @if (results().length) {
+        <div nbStack gap="sm" class="w-full">
+          @for (fruit of results(); track fruit.name) {
+          <div nbCallout tone="background" size="lg" class="w-full">
+            <span class="text-2xl" aria-hidden="true">{{ fruit.emoji }}</span>
+            <hr nbSeparator orientation="vertical" aria-hidden="true" />
+            <span nbText weight="bold">{{ fruit.name }}</span>
+          </div>
+          }
+        </div>
+        }
+      </div>
+
+      <!-- DECORATIONS -->
+      <nb-sticker
+        shape="burst-wide"
+        tone="yellow"
+        class="absolute -right-12 -top-12 sm:-right-20 sm:-top-16"
+        aria-hidden="true"
+        i18n="@@testItLabel"
+        [rotate]="5"
+      >
+        TEST<br />
+        IT!
+      </nb-sticker>
+    </nb-card>
+  </article>
+
+  <!-- LESSON NAVIGATION -->
+  <nav
+    nbCluster
+    gap="md"
+    align="center"
+    justify="between"
+    class="mb-16"
+    aria-label="Lesson navigation"
+  >
+    <a
+      nbButton
+      tone="warning"
+      size="md"
+      radius="md"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Go to the previous lesson"
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/06-custom-control"
+    >
+      <span nbButtonTrailingIcon shape="circle" class="grid place-items-center">
+        <ng-icon
+          aria-hidden="true"
+          size="20"
+          name="tablerCircleArrowLeftFill"
+        />
+      </span>
+
+      <span
+        nbText
+        size="md"
+        weight="black"
+        transform="uppercase"
+        tracking="wide"
+        i18n="@@prevCustomControl"
+      >
+        Prev: Custom Control
+      </span>
+    </a>
+
+    <a
+      nbButton
+      tone="success"
+      size="md"
+      radius="md"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Go to the next lesson"
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps"
+    >
+      <span
+        nbText
+        size="md"
+        weight="black"
+        transform="uppercase"
+        tracking="wide"
+        i18n="@@nextConditionalValidation"
+      >
+        Next: Conditional Validation
+      </span>
+
+      <span nbButtonTrailingIcon shape="circle" class="grid place-items-center">
+        <ng-icon
+          aria-hidden="true"
+          size="20"
+          name="tablerCircleArrowRightFill"
+        />
+      </span>
+    </a>
+  </nav>
+
+  <!-- FOOTER -->
+  <footer
+    nbCluster
+    gap="sm"
+    align="center"
+    justify="center"
+    class="w-full pt-4"
+  >
+    <ng-icon
+      aria-hidden="true"
+      class="text-gray-300"
+      size="16"
+      name="tablerCopyright"
+    />
+
+    <small nbText tone="muted" size="xs" i18n="@@authorLabel">
+      Kristy Mae Almuete
+    </small>
+
+    <hr nbSeparator orientation="vertical" aria-hidden="true" />
+
+    <a
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/07-debounce-input"
+      nbText
+      tone="danger"
+      size="xs"
+      i18n="@@githubRepository"
+      target="_blank"
+      rel="noopener noreferrer"
+      >GitHub Repo</a
+    >
+  </footer>
+</main>
