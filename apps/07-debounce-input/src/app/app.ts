@@ -1,21 +1,35 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { form, FormField } from '@angular/forms/signals';
 import {
+  NbButton,
+  NbButtonTrailingIcon,
   NbCallout,
+  NbCard,
+  NbCardHeader,
+  NbCardTitle,
   NbChip,
   NbChipGroup,
   NbCluster,
+  NbDisplay,
+  NbHalftone,
   NbInput,
   NbInputGroup,
   NbInputPrefix,
+  NbMediaFrame,
   NbSeparator,
   NbStack,
   NbStatusDot,
+  NbSticker,
   NbText,
 } from '@ng-brutalism/ui';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { tablerCopyright, tablerSearch } from '@ng-icons/tabler-icons';
+import {
+  tablerCircleArrowLeftFill,
+  tablerCircleArrowRightFill,
+} from '@ng-icons/tabler-icons/fill';
 import { INITIAL_SEARCH, SearchFormModel, searchSchema } from './app.model';
 import { FruitSearch } from './fruit-search.service';
 import { ValidationErrors } from './validation-errors';
@@ -25,6 +39,16 @@ import { ValidationErrors } from './validation-errors';
   templateUrl: './app.html',
   styleUrl: './app.css',
   imports: [
+    NgOptimizedImage,
+    NbButton,
+    NbButtonTrailingIcon,
+    NbCard,
+    NbCardHeader,
+    NbCardTitle,
+    NbMediaFrame,
+    NbDisplay,
+    NbHalftone,
+    NbSticker,
     NbInputGroup,
     NbInputPrefix,
     NbInput,
@@ -40,7 +64,14 @@ import { ValidationErrors } from './validation-errors';
     FormField,
     ValidationErrors,
   ],
-  providers: [provideIcons({ tablerSearch, tablerCopyright })],
+  viewProviders: [
+    provideIcons({
+      tablerSearch,
+      tablerCopyright,
+      tablerCircleArrowLeftFill,
+      tablerCircleArrowRightFill,
+    }),
+  ],
   host: {
     class: 'relative flex flex-col gap-6 mx-auto w-3xl shrink-0',
   },

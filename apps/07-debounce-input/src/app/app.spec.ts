@@ -96,8 +96,9 @@ describe('App (07 · Debounce Input)', () => {
         }
       ).searchForm;
 
+    // The lesson badge is also an nbCallout; scope to the background-tone rows.
     const fruitRows = (): NodeListOf<Element> =>
-      host.querySelectorAll('[nbCallout]');
+      host.querySelectorAll('[nbCallout][tone="background"]');
 
     beforeEach(async () => {
       await TestBed.configureTestingModule({
