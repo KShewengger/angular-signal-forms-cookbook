@@ -1,1 +1,100 @@
-<h1>Test</h1>
+<main nbStack gap="md" justify="center" class="relative min-h-screen p-8 pt-20">
+  <div nbStack gap="md">
+    <div
+      nbCallout
+      tone="lavender"
+      size="md"
+      class="w-fit"
+      aria-label="Lesson 6: Custom Control"
+    >
+      <span aria-hidden="true">08</span>
+      <hr nbSeparator orientation="vertical" aria-hidden="true" />
+      <span class="text-sm" i18n="@@lessonCustomControlLabel"
+        >Conditional Validation</span
+      >
+    </div>
+
+    <div nbChipGroup nbCluster gap="md" aria-label="Lesson topics">
+      <span nbChip tone="danger" i18n="@@angular22Label"> Angular 22 </span>
+
+      <span nbChip tone="accent" i18n="@@signalFormsLabel"> Signal Forms </span>
+
+      <span nbChip tone="black" i18n="@@basicLabel"> Ng-Brutalism </span>
+    </div>
+
+    <div class="relative">
+      <div
+        nbMediaFrame
+        ratio="auto"
+        tone="lavender"
+        shadow="hard"
+        class="relative -top-0.5 mb-2 overflow-hidden"
+      >
+        <img
+          priority
+          ngSrc="hero-cover.png"
+          width="1834"
+          height="689"
+          class="block h-auto w-full"
+          alt="Conditional Validation lesson hero: a dependency thriller cinema marquee"
+        />
+      </div>
+
+      <nb-sticker
+        shape="burst-wide"
+        tone="yellow"
+        class="absolute -right-12 -top-12 sm:-right-20 sm:-top-16"
+        aria-hidden="true"
+        i18n="@@testItLabel"
+        [rotate]="5"
+      >
+        TEST<br />
+        IT!
+      </nb-sticker>
+    </div>
+  </div>
+
+  <div nbSurface nbStack gap="sm" tone="default" class="p-4">
+    <p nbCluster gap="sm">
+      <ng-icon size="32" name="tablerSquareNumber1Fill"></ng-icon>
+      <span class="uppercase font-medium text-lg">Choose Experience</span>
+    </p>
+
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      @for (experience of experiences; track experience.format) {
+      <button
+        type="button"
+        nbButton
+        size="md"
+        fullWidth
+        class="h-auto! items-stretch! text-left!"
+        [tone]="experience.format === selectedFormat() ? 'lavender' : 'background'"
+        [attr.aria-pressed]="experience.format === selectedFormat()"
+      >
+        <div
+          nbSplit
+          ratio="2:1"
+          gap="lg"
+          separator="dashed"
+          align="stretch"
+          class="w-full"
+        >
+          <div class="flex flex-col py-2">
+            <span nbText weight="bold" transform="uppercase"
+              >{{ experience.label }}</span
+            >
+            <span nbText tone="muted" size="sm"
+              >${{ experience.price }} · seat</span
+            >
+          </div>
+          <div nbStack align="center" justify="center" class="h-full py-2">
+            <span nbText tone="subtle" size="xs" tracking="wider"
+              >{{ experience.code }}</span
+            >
+          </div>
+        </div>
+      </button>
+      }
+    </div>
+  </div>
+</main>

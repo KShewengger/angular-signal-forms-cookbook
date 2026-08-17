@@ -41,7 +41,6 @@ export type PizzaFormModel = {
   toppings: PizzaFormModelItem[];
 };
 
-// Per-item schema, applied to every topping in the array via applyEach.
 export function pizzaToppingItemSchema(
   item: SchemaPathTree<PizzaFormModelItem>,
 ) {
@@ -71,15 +70,10 @@ export function pizzaToppingItemSchema(
   });
 }
 
-// Extracting the schema keeps it reusable: the component builds its form from it,
-// and the tests build the same form in isolation without rendering a component.
 export const pizzaMakerSchema = schema<PizzaFormModel>((path) => {
   applyEach(path.toppings, (topping) => {
     pizzaToppingItemSchema(topping);
 
-    // Hide the pepperoni control while there is more than one tomato. Array
-    // elements can't be indexed in the schema, so we run this rule on every item
-    // and read the sibling tomato from the array value.
     hidden(topping.count, {
       when: ({ valueOf }) => {
         if (valueOf(topping.id) !== 'pepperoni') return false;
