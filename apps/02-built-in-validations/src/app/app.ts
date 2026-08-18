@@ -44,6 +44,7 @@ import {
   tablerCircleArrowLeftFill,
 } from '@ng-icons/tabler-icons/fill';
 import { ValidationErrors } from './validation-errors';
+import { ROLES } from './app.data';
 
 @Component({
   selector: 'app-root',
@@ -115,6 +116,7 @@ export class App {
 
   protected readonly value = computed(() => this.userForm().value());
 
+  protected readonly roles = ROLES;
   protected readonly keepOrder = (): number => 0;
 
   protected clear(): void {

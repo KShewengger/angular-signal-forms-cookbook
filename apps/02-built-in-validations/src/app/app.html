@@ -162,29 +162,11 @@
                 placeholder="Select a role"
                 [formField]="userForm.role"
               >
-                <nb-select-option
-                  value="admin"
-                  label="Admin"
-                  i18n="@@roleAdminOption"
-                >
-                  Admin
+                @for (role of roles; track role.value) {
+                <nb-select-option [value]="role.value" [label]="role.label">
+                  {{ role.label }}
                 </nb-select-option>
-
-                <nb-select-option
-                  value="moderator"
-                  label="Moderator"
-                  i18n="@@roleModeratorOption"
-                >
-                  Moderator
-                </nb-select-option>
-
-                <nb-select-option
-                  value="user"
-                  label="User"
-                  i18n="@@roleUserOption"
-                >
-                  User
-                </nb-select-option>
+                }
               </nb-select>
 
               <app-validation-errors
