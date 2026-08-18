@@ -117,9 +117,9 @@
                 [formField]="userForm.role"
               >
                 @for (role of roles; track role.value) {
-                <nb-select-option [value]="role.value" [label]="role.label">
-                  {{ role.label }}
-                </nb-select-option>
+                  <nb-select-option [value]="role.value" [label]="role.label">
+                    {{ role.label }}
+                  </nb-select-option>
                 }
               </nb-select>
             </div>
@@ -368,36 +368,37 @@
       <nb-card-content>
         <dl nbStack gap="md">
           @for (record of value() | keyvalue: keepOrder; track record.key) {
-          <div
-            nbCluster
-            gap="md"
-            align="center"
-            justify="between"
-            wrap="nowrap"
-          >
-            <dt
-              nbText
-              size="sm"
-              weight="bold"
-              tone="subtle"
-              class="shrink-0 capitalize"
+            <div
+              nbCluster
+              gap="md"
+              align="center"
+              justify="between"
+              wrap="nowrap"
             >
-              {{ record.key }}
-            </dt>
+              <dt
+                nbText
+                size="sm"
+                weight="bold"
+                tone="subtle"
+                class="shrink-0 capitalize"
+              >
+                {{ record.key }}
+              </dt>
 
-            <dd
-              nbText
-              size="sm"
-              weight="bold"
-              class="min-w-0 break-words text-right"
-            >
-              {{ record.value }}
-            </dd>
-          </div>
+              <dd
+                nbText
+                size="sm"
+                weight="bold"
+                class="min-w-0 break-words text-right"
+              >
+                {{ record.value }}
+              </dd>
+            </div>
 
-          @if (!$last) {
-          <hr nbSeparator variant="dashed" />
-          } }
+            @if (!$last) {
+              <hr nbSeparator variant="dashed" />
+            }
+          }
         </dl>
       </nb-card-content>
     </nb-card>

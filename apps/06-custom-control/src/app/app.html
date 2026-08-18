@@ -57,11 +57,11 @@
       <hr nbSeparator variant="dashed" aria-hidden="true" />
 
       <div nbCluster gap="lg" justify="center" class="px-5">
-        @for(topping of pizzaToppings; track topping.id) {
-        <app-topping
-          [topping]="topping"
-          [formField]="pizzaMakerForm.toppings[$index].count"
-        />
+        @for (topping of pizzaToppings; track topping.id) {
+          <app-topping
+            [topping]="topping"
+            [formField]="pizzaMakerForm.toppings[$index].count"
+          />
         }
       </div>
 
@@ -74,21 +74,24 @@
           class="block h-auto w-full"
         />
 
-        @for(topping of pizzaToppings; track topping.id) { @for (slot of
-        topping.positions; track $index) {
-        <img
-          class="topping"
-          [class.topping--visible]="(visibleCounts().get(topping.id) ?? 0) > $index"
-          [alt]="topping.label"
-          [style.left.%]="slot.left"
-          [style.top.%]="slot.top"
-          [style.width.%]="slot.width"
-          [style.zIndex]="topping.zIndex"
-          [style.transitionDelay]="$index * 60 + 'ms'"
-          [src]="topping.imgUrl"
-          [alt]="topping.label"
-        />
-        } }
+        @for (topping of pizzaToppings; track topping.id) {
+          @for (slot of topping.positions; track $index) {
+            <img
+              class="topping"
+              [class.topping--visible]="
+                (visibleCounts().get(topping.id) ?? 0) > $index
+              "
+              [alt]="topping.label"
+              [style.left.%]="slot.left"
+              [style.top.%]="slot.top"
+              [style.width.%]="slot.width"
+              [style.zIndex]="topping.zIndex"
+              [style.transitionDelay]="$index * 60 + 'ms'"
+              [src]="topping.imgUrl"
+              [alt]="topping.label"
+            />
+          }
+        }
       </div>
 
       <!-- DECORATIONS -->

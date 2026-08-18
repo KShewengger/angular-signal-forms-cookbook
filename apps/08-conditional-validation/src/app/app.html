@@ -62,91 +62,103 @@
 
     <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
       @for (experience of experiences; track experience.format) {
-      <button
-        type="button"
-        nbButton
-        size="md"
-        fullWidth
-        class="h-auto! items-stretch! text-left!"
-        [tone]="experience.format === selectedFormat() ? 'lavender' : 'background'"
-        [attr.aria-pressed]="experience.format === selectedFormat()"
-        (click)="selectExperience(experience.format)"
-      >
-        <div
-          nbSplit
-          ratio="2:1"
-          gap="lg"
-          separator="dashed"
-          align="stretch"
-          class="w-full"
+        <button
+          type="button"
+          nbButton
+          size="md"
+          fullWidth
+          class="h-auto! items-stretch! text-left!"
+          [tone]="
+            experience.format === selectedFormat() ? 'lavender' : 'background'
+          "
+          [attr.aria-pressed]="experience.format === selectedFormat()"
+          (click)="selectExperience(experience.format)"
         >
-          <div class="flex flex-col py-2">
-            <span nbText weight="bold" transform="uppercase"
-              >{{ experience.label }}</span
-            >
-            <span nbText tone="muted" size="sm"
-              >${{ experience.price }} · seat</span
-            >
+          <div
+            nbSplit
+            ratio="2:1"
+            gap="lg"
+            separator="dashed"
+            align="stretch"
+            class="w-full"
+          >
+            <div class="flex flex-col py-2">
+              <span nbText weight="bold" transform="uppercase">{{
+                experience.label
+              }}</span>
+              <span nbText tone="muted" size="sm"
+                >${{ experience.price }} · seat</span
+              >
+            </div>
+            <div nbStack align="center" justify="center" class="h-full py-2">
+              <span nbText tone="subtle" size="xs" tracking="wider">{{
+                experience.code
+              }}</span>
+            </div>
           </div>
-          <div nbStack align="center" justify="center" class="h-full py-2">
-            <span nbText tone="subtle" size="xs" tracking="wider"
-              >{{ experience.code }}</span
-            >
-          </div>
-        </div>
-      </button>
+        </button>
       }
     </div>
 
     <div [class.mt-4]="selectedFormat() !== 'standard'">
-      @switch (selectedFormat()) { @case ('imax') {
-      <div class="grid w-full gap-2">
-        <label nbLabel for="glasses" i18n="@@glassesLabel"> 3D glasses </label>
+      @switch (selectedFormat()) {
+        @case ('imax') {
+          <div class="grid w-full gap-2">
+            <label nbLabel for="glasses" i18n="@@glassesLabel">
+              3D glasses
+            </label>
 
-        <input
-          nbInput
-          id="glasses"
-          type="number"
-          placeholder="How many pairs?"
-          i18n-placeholder="@@glassesPlaceholder"
-          [formField]="glassesField"
-        />
+            <input
+              nbInput
+              id="glasses"
+              type="number"
+              placeholder="How many pairs?"
+              i18n-placeholder="@@glassesPlaceholder"
+              [formField]="glassesField"
+            />
 
-        @if (glassesInvalid()) {
-        <span nbText size="xs" tone="danger" i18n="@@glassesRequiredError">
-          Enter at least 1 pair of glasses.
-        </span>
+            @if (glassesInvalid()) {
+              <span
+                nbText
+                size="xs"
+                tone="danger"
+                i18n="@@glassesRequiredError"
+              >
+                Enter at least 1 pair of glasses.
+              </span>
+            }
+          </div>
         }
-      </div>
-      } @case ('vip') {
-      <div class="grid w-full gap-2">
-        <label nbLabel id="meal-label" for="meal" i18n="@@mealLabel">
-          Meal pre-order
-        </label>
+        @case ('vip') {
+          <div class="grid w-full gap-2">
+            <label nbLabel id="meal-label" for="meal" i18n="@@mealLabel">
+              Meal pre-order
+            </label>
 
-        <nb-select
-          id="meal"
-          aria-labelledby="meal-label"
-          placeholder="Select a dish…"
-          i18n-placeholder="@@mealPlaceholder"
-          [attr.aria-invalid]="mealInvalid()"
-          [formField]="mealField"
-          (openChange)="markMealTouched($event)"
-        >
-          @for (meal of meals; track meal) {
-          <nb-select-option [value]="meal" [label]="meal">
-            {{ meal }}
-          </nb-select-option>
-          }
-        </nb-select>
+            <nb-select
+              id="meal"
+              aria-labelledby="meal-label"
+              placeholder="Select a dish…"
+              i18n-placeholder="@@mealPlaceholder"
+              [attr.aria-invalid]="mealInvalid()"
+              [formField]="mealField"
+              (openChange)="markMealTouched($event)"
+            >
+              @for (meal of meals; track meal) {
+                <nb-select-option [value]="meal" [label]="meal">
+                  {{ meal }}
+                </nb-select-option>
+              }
+            </nb-select>
 
-        @if (mealInvalid()) {
-        <span nbText size="xs" tone="danger" i18n="@@mealRequiredError">
-          Pick a dish to continue.
-        </span>
+            @if (mealInvalid()) {
+              <span nbText size="xs" tone="danger" i18n="@@mealRequiredError">
+                Pick a dish to continue.
+              </span>
+            }
+          </div>
         }
-      </div>
-      } }
+      }
     </div>
   </div>
 </main>

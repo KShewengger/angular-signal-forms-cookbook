@@ -57,30 +57,30 @@
       <hr nbSeparator variant="dashed" aria-hidden="true" />
 
       <div nbCluster gap="lg" justify="center" class="px-5">
-        @for(topping of pizzaToppings; track topping.id) {
-        <div nbStack gap="xs">
-          <nb-input-group class="w-32!">
-            <div nbInputPrefix>
-              <img
-                width="32"
-                height="32"
-                class="w-8 h-8"
-                [ngSrc]="topping.imgUrl"
-                [alt]="topping.label"
+        @for (topping of pizzaToppings; track topping.id) {
+          <div nbStack gap="xs">
+            <nb-input-group class="w-32!">
+              <div nbInputPrefix>
+                <img
+                  width="32"
+                  height="32"
+                  class="w-8 h-8"
+                  [ngSrc]="topping.imgUrl"
+                  [alt]="topping.label"
+                />
+              </div>
+              <input
+                nbInput
+                placeholder="0"
+                type="number"
+                [formField]="pizzaMakerForm.toppings[$index].count"
               />
-            </div>
-            <input
-              nbInput
-              placeholder="0"
-              type="number"
-              [formField]="pizzaMakerForm.toppings[$index].count"
+            </nb-input-group>
+            <app-validation-errors
+              class="min-h-5"
+              [field]="pizzaMakerForm.toppings[$index]"
             />
-          </nb-input-group>
-          <app-validation-errors
-            class="min-h-5"
-            [field]="pizzaMakerForm.toppings[$index]"
-          />
-        </div>
+          </div>
         }
       </div>
 
@@ -93,21 +93,24 @@
           class="block h-auto w-full"
         />
 
-        @for(topping of pizzaToppings; track topping.id) { @for (slot of
-        topping.positions; track $index) {
-        <img
-          class="topping"
-          [class.topping--visible]="(visibleCounts().get(topping.id) ?? 0) > $index"
-          [alt]="topping.label"
-          [style.left.%]="slot.left"
-          [style.top.%]="slot.top"
-          [style.width.%]="slot.width"
-          [style.zIndex]="topping.zIndex"
-          [style.transitionDelay]="$index * 60 + 'ms'"
-          [src]="topping.imgUrl"
-          [alt]="topping.label"
-        />
-        } }
+        @for (topping of pizzaToppings; track topping.id) {
+          @for (slot of topping.positions; track $index) {
+            <img
+              class="topping"
+              [class.topping--visible]="
+                (visibleCounts().get(topping.id) ?? 0) > $index
+              "
+              [alt]="topping.label"
+              [style.left.%]="slot.left"
+              [style.top.%]="slot.top"
+              [style.width.%]="slot.width"
+              [style.zIndex]="topping.zIndex"
+              [style.transitionDelay]="$index * 60 + 'ms'"
+              [src]="topping.imgUrl"
+              [alt]="topping.label"
+            />
+          }
+        }
       </div>
 
       <!-- DECORATIONS -->

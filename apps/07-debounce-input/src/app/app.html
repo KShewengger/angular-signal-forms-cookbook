@@ -134,15 +134,17 @@
 
         <!-- RESULTS -->
         @if (results().length) {
-        <div nbStack gap="sm" class="w-full">
-          @for (fruit of results(); track fruit.name) {
-          <div nbCallout tone="background" size="lg" class="w-full">
-            <span class="text-2xl" aria-hidden="true">{{ fruit.emoji }}</span>
-            <hr nbSeparator orientation="vertical" aria-hidden="true" />
-            <span nbText weight="bold">{{ fruit.name }}</span>
+          <div nbStack gap="sm" class="w-full">
+            @for (fruit of results(); track fruit.name) {
+              <div nbCallout tone="background" size="lg" class="w-full">
+                <span class="text-2xl" aria-hidden="true">{{
+                  fruit.emoji
+                }}</span>
+                <hr nbSeparator orientation="vertical" aria-hidden="true" />
+                <span nbText weight="bold">{{ fruit.name }}</span>
+              </div>
+            }
           </div>
-          }
-        </div>
         }
       </div>
 

@@ -45,8 +45,10 @@
                 underline="bar"
                 class="font-mono font-black uppercase leading-tight"
               >
-                {resolved(), select, true {Booking found!} false {Manage
-                Booking} }
+                {resolved(), select,
+                  true {Booking found!}
+                  false {Manage Booking}
+                }
               </h1>
             </nb-card-title>
 
@@ -77,111 +79,108 @@
       <hr nbSeparator variant="dashed" aria-hidden="true" />
 
       @if (loading()) {
-      <!-- PROGRESS BAR -->
-      <div
-        nbStack
-        gap="sm"
-        align="start"
-        justify="center"
-        class="mb-2 h-32 px-6"
-      >
-        <span
-          nbText
-          weight="black"
-          transform="uppercase"
-          tracking="tight"
-          tone="subtle"
-          i18n="@@fetchingLabel"
+        <!-- PROGRESS BAR -->
+        <div
+          nbStack
+          gap="sm"
+          align="start"
+          justify="center"
+          class="mb-2 h-32 px-6"
         >
-          Fetching...
-        </span>
+          <span
+            nbText
+            weight="black"
+            transform="uppercase"
+            tracking="tight"
+            tone="subtle"
+            i18n="@@fetchingLabel"
+          >
+            Fetching...
+          </span>
 
-        <nb-progress [value]="80" label="progress" tone="accent" />
-      </div>
+          <nb-progress [value]="80" label="progress" tone="accent" />
+        </div>
       } @else if (resolved()) {
-      <!-- TICKET INFO -->
-      <app-booking-info [booking]="bookingInfo()!" (back)="clear()" />
+        <!-- TICKET INFO -->
+        <app-booking-info [booking]="bookingInfo()!" (back)="clear()" />
       } @else {
-      <!-- FORM -->
-      <form
-        novalidate
-        nbStack
-        gap="none"
-        class="mb-4"
-        (submit)="payload.set(value()); $event.preventDefault()"
-      >
-        <nb-card-content>
-          <fieldset nbStack gap="md">
-            <legend class="sr-only" i18n="@@registrationLabel">
-              Registration details
-            </legend>
+        <!-- FORM -->
+        <form
+          novalidate
+          nbStack
+          gap="none"
+          class="mb-4"
+          (submit)="payload.set(value()); $event.preventDefault()"
+        >
+          <nb-card-content>
+            <fieldset nbStack gap="md">
+              <legend class="sr-only" i18n="@@registrationLabel">
+                Registration details
+              </legend>
 
-            <div class="grid w-full gap-2">
-              <label nbLabel for="reference" i18n="@@referenceLabel">
-                Reference Number
-                <span class="italic" nbText size="xs" tone="subtle"
-                  >(Try "ABC1234")</span
-                >
-              </label>
+              <div class="grid w-full gap-2">
+                <label nbLabel for="reference" i18n="@@referenceLabel">
+                  Reference Number
+                  <span class="italic" nbText size="xs" tone="subtle"
+                    >(Try "ABC1234")</span
+                  >
+                </label>
 
-              <nb-input-group>
+                <nb-input-group>
+                  <input
+                    nbInput
+                    id="reference"
+                    type="text"
+                    placeholder="Enter your booking reference"
+                    [formField]="bookingForm.reference"
+                  />
+                  @if (bookingForm.reference().valid()) {
+                    <span nbInputSuffix class="bg-white border-0! w-auto">
+                      <ng-icon
+                        name="tablerCheck"
+                        class="text-green-600! relative right-2"
+                        size="18"
+                    /></span>
+                  }
+                </nb-input-group>
+
+                <app-validation-errors [field]="bookingForm.reference" />
+              </div>
+
+              <div nbStack gap="sm">
+                <label nbLabel for="last-name" i18n="@@lastNameLabel">
+                  Last Name
+                </label>
+
                 <input
                   nbInput
-                  id="reference"
+                  id="last-name"
                   type="text"
-                  placeholder="Enter your booking reference"
-                  [formField]="bookingForm.reference"
+                  placeholder="Enter your last name"
+                  [formField]="bookingForm.lastName"
                 />
-                @if(bookingForm.reference().valid()) {
-                <span nbInputSuffix class="bg-white border-0! w-auto">
-                  <ng-icon
-                    name="tablerCheck"
-                    class="text-green-600! relative right-2"
-                    size="18"
-                /></span>
-                }
-              </nb-input-group>
 
-              <app-validation-errors [field]="bookingForm.reference" />
-            </div>
+                <app-validation-errors [field]="bookingForm.lastName" />
+              </div>
+            </fieldset>
+          </nb-card-content>
 
-            <div nbStack gap="sm">
-              <label nbLabel for="last-name" i18n="@@lastNameLabel">
-                Last Name
-              </label>
+          <!-- ACTIONS -->
+          <nb-card-actions class="mt-6">
+            <button
+              nbButton
+              tone="secondary"
+              fullWidth
+              [disabled]="!bookingForm().dirty() || bookingForm().invalid()"
+            >
+              <span i18n="@@findBookingLabel">Find my booking</span>
 
-              <input
-                nbInput
-                id="last-name"
-                type="text"
-                placeholder="Enter your last name"
-                [formField]="bookingForm.lastName"
-              />
-
-              <app-validation-errors [field]="bookingForm.lastName" />
-            </div>
-          </fieldset>
-        </nb-card-content>
-
-        <!-- ACTIONS -->
-        <nb-card-actions class="mt-6">
-          <button
-            nbButton
-            tone="secondary"
-            fullWidth
-            [disabled]="
-                !bookingForm().dirty() ||
-                bookingForm().invalid()
-              "
-          >
-            <span i18n="@@findBookingLabel">Find my booking</span>
-
-            <span nbButtonTrailingIcon class="grid place-items-center">
-              <ng-icon aria-hidden="true" size="20" name="tablerArrowRight" />
-            </span>
-          </button>
-        </nb-card-actions>
-      </form>
+              <span nbButtonTrailingIcon class="grid place-items-center">
+                <ng-icon aria-hidden="true" size="20" name="tablerArrowRight" />
+              </span>
+            </button>
+          </nb-card-actions>
+        </form>
       }
 
       <!-- DECORATIONS -->

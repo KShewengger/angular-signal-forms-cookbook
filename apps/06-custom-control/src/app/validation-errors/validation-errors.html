@@ -1,15 +1,15 @@
 @if (showErrors()) {
-<ul
-  class="space-y-1 text-sm text-red-600"
-  role="alert"
-  aria-live="polite"
-  [class.list-disc]="hasMultipleErrors()"
-  [class.pl-5]="hasMultipleErrors()"
->
-  @for (error of errors(); track error.kind) {
-  <li>
-    <span nbText size="xs" tone="danger"> {{ error.message }} </span>
-  </li>
-  }
-</ul>
+  <ul
+    class="space-y-1 text-sm text-red-600"
+    role="alert"
+    aria-live="polite"
+    [class.list-disc]="hasMultipleErrors()"
+    [class.pl-5]="hasMultipleErrors()"
+  >
+    @for (error of errors(); track error.kind) {
+      <li>
+        <span nbText size="xs" tone="danger"> {{ error.message }} </span>
+      </li>
+    }
+  </ul>
 }
