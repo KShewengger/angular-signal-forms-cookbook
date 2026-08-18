@@ -5,11 +5,11 @@
       tone="lavender"
       size="md"
       class="w-fit"
-      aria-label="Lesson 6: Custom Control"
+      aria-label="Lesson 8: Conditional Validation"
     >
       <span aria-hidden="true">08</span>
       <hr nbSeparator orientation="vertical" aria-hidden="true" />
-      <span class="text-sm" i18n="@@lessonCustomControlLabel"
+      <span class="text-sm" i18n="@@lessonConditionalLabel"
         >Conditional Validation</span
       >
     </div>
@@ -55,7 +55,9 @@
   <div nbSurface nbStack gap="sm" tone="default" class="p-4">
     <p nbCluster gap="sm">
       <ng-icon size="32" name="tablerSquareNumber1Fill"></ng-icon>
-      <span class="uppercase font-medium text-lg">Choose Experience</span>
+      <span class="uppercase font-medium text-lg" i18n="@@chooseExperienceLabel"
+        >Choose Experience</span
+      >
     </p>
 
     <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -99,31 +101,35 @@
     <div class="mt-4">
       @if (selectedFormat() === 'imax') {
       <div class="grid w-full gap-2">
-        <label nbLabel for="glasses"> 3D glasses </label>
+        <label nbLabel for="glasses" i18n="@@glassesLabel"> 3D glasses </label>
 
         <input
           nbInput
           id="glasses"
           type="number"
           placeholder="How many pairs?"
+          i18n-placeholder="@@glassesPlaceholder"
           [formField]="glassesField"
         />
 
         @if (glassesInvalid()) {
-        <span nbText size="xs" tone="danger">
+        <span nbText size="xs" tone="danger" i18n="@@glassesRequiredError">
           Enter at least 1 pair of glasses.
         </span>
         }
       </div>
       } @if (selectedFormat() === 'vip') {
       <div class="grid w-full gap-2">
-        <label nbLabel id="meal-label" for="meal"> Meal pre-order </label>
+        <label nbLabel id="meal-label" for="meal" i18n="@@mealLabel">
+          Meal pre-order
+        </label>
 
         <nb-select
           id="meal"
           aria-labelledby="meal-label"
-          [attr.aria-invalid]="mealInvalid()"
           placeholder="Select a dish…"
+          i18n-placeholder="@@mealPlaceholder"
+          [attr.aria-invalid]="mealInvalid()"
           [formField]="mealField"
           (openChange)="markMealTouched($event)"
         >
@@ -135,7 +141,9 @@
         </nb-select>
 
         @if (mealInvalid()) {
-        <span nbText size="xs" tone="danger"> Pick a dish to continue. </span>
+        <span nbText size="xs" tone="danger" i18n="@@mealRequiredError">
+          Pick a dish to continue.
+        </span>
         }
       </div>
       }

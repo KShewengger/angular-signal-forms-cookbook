@@ -98,28 +98,28 @@ import { ValidationErrors } from './validation-errors';
   },
 })
 export class App {
-  protected payload = signal<BookingFormModel | undefined>(undefined);
+  protected readonly payload = signal<BookingFormModel | undefined>(undefined);
 
-  private userModel = signal<BookingFormModel>({ ...INITIAL_BOOKING });
+  private readonly userModel = signal<BookingFormModel>({ ...INITIAL_BOOKING });
 
-  protected bookingForm = form(this.userModel, bookingSchema);
+  protected readonly bookingForm = form(this.userModel, bookingSchema);
 
-  protected value = computed(() => this.bookingForm().value());
+  protected readonly value = computed(() => this.bookingForm().value());
 
-  private bookingResource = rxResource({
+  private readonly bookingResource = rxResource({
     params: this.payload,
     stream: ({ params }) =>
       of(generateMockBookingResponse(params)).pipe(delay(1000)),
   });
 
-  protected loading = this.bookingResource.isLoading;
-  protected hasBookingInfo = this.bookingResource.hasValue;
-  protected bookingInfo = this.bookingResource.value;
-  protected resolved = computed(
+  protected readonly loading = this.bookingResource.isLoading;
+  protected readonly hasBookingInfo = this.bookingResource.hasValue;
+  protected readonly bookingInfo = this.bookingResource.value;
+  protected readonly resolved = computed(
     () => this.bookingResource.status() === 'resolved',
   );
 
-  protected clear() {
+  protected clear(): void {
     this.payload.set(undefined);
     this.bookingForm().reset({ ...INITIAL_BOOKING });
   }

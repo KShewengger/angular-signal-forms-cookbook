@@ -14,7 +14,6 @@ import {
   NbChip,
   NbChipGroup,
   NbCluster,
-  NbIconButton,
   NbInput,
   NbLabel,
   NbMediaFrame,
@@ -49,7 +48,6 @@ import { tablerSquareNumber1Fill } from '@ng-icons/tabler-icons/fill';
     NbMediaFrame,
     NbSurface,
     NbSticker,
-    NbIconButton,
     NgIcon,
     NbSplit,
     NbText,
@@ -59,10 +57,10 @@ import { tablerSquareNumber1Fill } from '@ng-icons/tabler-icons/fill';
     NbSelectOption,
     FormField,
   ],
-  providers: [provideIcons({ tablerSquareNumber1Fill })],
+  viewProviders: [provideIcons({ tablerSquareNumber1Fill })],
 })
 export class App {
-  protected bookingModel = signal<Booking>({
+  protected readonly bookingModel = signal<Booking>({
     tickets: [],
     addSnacks: false,
     comboSize: '',
@@ -70,14 +68,14 @@ export class App {
     promoCode: '',
   });
 
-  protected form = form(this.bookingModel, bookingSchema);
+  protected readonly bookingForm = form(this.bookingModel, bookingSchema);
 
   protected readonly experiences = EXPERIENCES;
 
   protected readonly meals = MEALS;
 
-  protected selectedFormat = computed(
-    () => this.form.experience().value().format,
+  protected readonly selectedFormat = computed(
+    () => this.bookingForm.experience().value().format,
   );
 
   protected selectExperience(format: Experience['format']): void {
@@ -90,7 +88,7 @@ export class App {
           ? { format, mealChoice: '' }
           : { format: 'standard' };
 
-    this.form.experience().value.set(next);
+    this.bookingForm.experience().value.set(next);
   }
 
   // `nb-select` has no "clear" gesture, so closing it counts as finishing the
@@ -100,7 +98,7 @@ export class App {
   }
 
   private variant<V extends Experience>(): FieldTree<V> {
-    return this.form.experience as unknown as FieldTree<V>;
+    return this.bookingForm.experience as unknown as FieldTree<V>;
   }
 
   protected get glassesField(): FieldTree<number | null> {
@@ -113,13 +111,13 @@ export class App {
 
   // Show a field's error only once the user has engaged with it: touched (blurred)
   // or dirty (edited). The variant guard keeps the union getter safe to read.
-  protected glassesInvalid = computed(() => {
+  protected readonly glassesInvalid = computed(() => {
     if (this.selectedFormat() !== 'imax') return false;
     const field = this.glassesField();
     return (field.dirty() || field.touched()) && field.invalid();
   });
 
-  protected mealInvalid = computed(() => {
+  protected readonly mealInvalid = computed(() => {
     if (this.selectedFormat() !== 'vip') return false;
     const field = this.mealField();
     return (field.dirty() || field.touched()) && field.invalid();

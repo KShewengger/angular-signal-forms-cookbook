@@ -1,5 +1,5 @@
 import { Component, computed, input } from '@angular/core';
-import { type Field, type ValidationError } from '@angular/forms/signals';
+import { type Field } from '@angular/forms/signals';
 import { NbText } from '@ng-brutalism/ui';
 
 @Component({

@@ -65,16 +65,19 @@ import {
 export class App {
   protected readonly pizzaToppings = PIZZA_TOPPINGS;
 
-  protected pizzaMakerModel = signal<PizzaFormModel>({
+  protected readonly pizzaMakerModel = signal<PizzaFormModel>({
     toppings: PIZZA_TOPPINGS.map((topping) => ({
       id: topping.id,
       count: 0,
     })),
   });
 
-  protected pizzaMakerForm = form(this.pizzaMakerModel, pizzaMakerSchema);
+  protected readonly pizzaMakerForm = form(
+    this.pizzaMakerModel,
+    pizzaMakerSchema,
+  );
 
-  protected visibleCounts = computed(() => {
+  protected readonly visibleCounts = computed(() => {
     return new Map(
       this.pizzaMakerModel().toppings.map((topping) => [
         topping.id,
