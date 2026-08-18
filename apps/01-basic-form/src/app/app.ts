@@ -38,6 +38,7 @@ import {
   registrationSchema,
 } from './app.model';
 import { ROLES } from './app.data';
+import { keepOrder } from './app.utils';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { tablerUserCheck, tablerCopyright } from '@ng-icons/tabler-icons';
 import { tablerCircleArrowRightFill } from '@ng-icons/tabler-icons/fill';
@@ -111,7 +112,7 @@ export class App {
   protected readonly value = computed(() => this.userForm().value());
 
   protected readonly roles = ROLES;
-  protected readonly keepOrder = (): number => 0;
+  protected readonly keepOrder = keepOrder;
 
   protected clear(): void {
     this.dialog().close();

@@ -7,6 +7,7 @@ import {
   bookingSchema,
 } from './app.model';
 import { EXPERIENCES, MEALS } from './app.data';
+import { createExperience } from './app.utils';
 import { FieldTree, form, FormField } from '@angular/forms/signals';
 import {
   NbButton,
@@ -71,28 +72,34 @@ export class App {
   protected readonly bookingForm = form(this.bookingModel, bookingSchema);
 
   protected readonly experiences = EXPERIENCES;
-
   protected readonly meals = MEALS;
 
   protected readonly selectedFormat = computed(
     () => this.bookingForm.experience().value().format,
   );
 
+  protected readonly glassesInvalid = computed(() => {
+    if (this.selectedFormat() !== 'imax') return false;
+
+    const field = this.glassesField();
+
+    return (field.dirty() || field.touched()) && field.invalid();
+  });
+
+  protected readonly mealInvalid = computed(() => {
+    if (this.selectedFormat() !== 'vip') return false;
+
+    const field = this.mealField();
+
+    return (field.dirty() || field.touched()) && field.invalid();
+  });
+
   protected selectExperience(format: Experience['format']): void {
     if (this.selectedFormat() === format) return;
 
-    const next: Experience =
-      format === 'imax'
-        ? { format, glasses: null }
-        : format === 'vip'
-          ? { format, mealChoice: '' }
-          : { format: 'standard' };
-
-    this.bookingForm.experience().value.set(next);
+    this.bookingForm.experience().value.set(createExperience(format));
   }
 
-  // `nb-select` has no "clear" gesture, so closing it counts as finishing the
-  // interaction: mark the field touched so an empty selection shows its error.
   protected markMealTouched(open: boolean): void {
     if (!open) this.mealField().markAsTouched();
   }
@@ -108,18 +115,4 @@ export class App {
   protected get mealField(): FieldTree<string> {
     return this.variant<VipExperience>().mealChoice;
   }
-
-  // Show a field's error only once the user has engaged with it: touched (blurred)
-  // or dirty (edited). The variant guard keeps the union getter safe to read.
-  protected readonly glassesInvalid = computed(() => {
-    if (this.selectedFormat() !== 'imax') return false;
-    const field = this.glassesField();
-    return (field.dirty() || field.touched()) && field.invalid();
-  });
-
-  protected readonly mealInvalid = computed(() => {
-    if (this.selectedFormat() !== 'vip') return false;
-    const field = this.mealField();
-    return (field.dirty() || field.touched()) && field.invalid();
-  });
 }
