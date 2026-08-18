@@ -12,3 +12,10 @@ export const EXPERIENCES: ExperienceOption[] = [
   { format: 'imax', label: 'IMAX 3D', price: 19, code: 'MAX·002' },
   { format: 'vip', label: 'VIP Dine-in', price: 32, code: 'VIP·003' },
 ];
+
+export const MEALS: string[] = [
+  'Truffle fries + soda',
+  'Wagyu slider trio',
+  'Margherita flatbread',
+  'Vegan buddha bowl',
+];

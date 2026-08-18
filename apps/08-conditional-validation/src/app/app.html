@@ -16,9 +16,7 @@
 
     <div nbChipGroup nbCluster gap="md" aria-label="Lesson topics">
       <span nbChip tone="danger" i18n="@@angular22Label"> Angular 22 </span>
-
       <span nbChip tone="accent" i18n="@@signalFormsLabel"> Signal Forms </span>
-
       <span nbChip tone="black" i18n="@@basicLabel"> Ng-Brutalism </span>
     </div>
 
@@ -70,6 +68,7 @@
         class="h-auto! items-stretch! text-left!"
         [tone]="experience.format === selectedFormat() ? 'lavender' : 'background'"
         [attr.aria-pressed]="experience.format === selectedFormat()"
+        (click)="selectExperience(experience.format)"
       >
         <div
           nbSplit
@@ -94,6 +93,51 @@
           </div>
         </div>
       </button>
+      }
+    </div>
+
+    <div class="mt-4">
+      @if (selectedFormat() === 'imax') {
+      <div class="grid w-full gap-2">
+        <label nbLabel for="glasses"> 3D glasses </label>
+
+        <input
+          nbInput
+          id="glasses"
+          type="number"
+          placeholder="How many pairs?"
+          [formField]="glassesField"
+        />
+
+        @if (glassesInvalid()) {
+        <span nbText size="xs" tone="danger">
+          Enter at least 1 pair of glasses.
+        </span>
+        }
+      </div>
+      } @if (selectedFormat() === 'vip') {
+      <div class="grid w-full gap-2">
+        <label nbLabel id="meal-label" for="meal"> Meal pre-order </label>
+
+        <nb-select
+          id="meal"
+          aria-labelledby="meal-label"
+          [attr.aria-invalid]="mealInvalid()"
+          placeholder="Select a dish…"
+          [formField]="mealField"
+          (openChange)="markMealTouched($event)"
+        >
+          @for (meal of meals; track meal) {
+          <nb-select-option [value]="meal" [label]="meal">
+            {{ meal }}
+          </nb-select-option>
+          }
+        </nb-select>
+
+        @if (mealInvalid()) {
+        <span nbText size="xs" tone="danger"> Pick a dish to continue. </span>
+        }
+      </div>
       }
     </div>
   </div>

@@ -15,8 +15,11 @@ export type Ticket = {
 
 export type Experience =
   | { format: 'standard' }
-  | { format: 'imax'; glasses: number }
+  | { format: 'imax'; glasses: number | null }
   | { format: 'vip'; mealChoice: string };
+
+export type ImaxExperience = Extract<Experience, { format: 'imax' }>;
+export type VipExperience = Extract<Experience, { format: 'vip' }>;
 
 export type Booking = {
   tickets: Ticket[];
@@ -40,13 +43,18 @@ export const bookingSchema = schema<Booking>((path) => {
 
   applyWhenValue(
     path.experience,
-    (experience) => experience.format === 'imax',
-    (imax) => min(imax.glasses, 1),
+    (experience): experience is Extract<Experience, { format: 'imax' }> =>
+      experience.format === 'imax',
+    (imax) => {
+      required(imax.glasses);
+      min(imax.glasses, 1);
+    },
   );
 
   applyWhenValue(
     path.experience,
-    (experience) => experience.format === 'vip',
+    (experience): experience is Extract<Experience, { format: 'vip' }> =>
+      experience.format === 'vip',
     (vip) => required(vip.mealChoice),
   );
 
