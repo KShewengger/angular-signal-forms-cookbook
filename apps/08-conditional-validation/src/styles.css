@@ -44,7 +44,7 @@ nb-select > button {
   height: 36px;
 }
 
-input,
+input:not([type='checkbox']):not([type='radio']),
 select,
 textarea {
   background: white;

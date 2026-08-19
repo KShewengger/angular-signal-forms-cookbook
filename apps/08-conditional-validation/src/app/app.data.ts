@@ -13,6 +13,8 @@ export const MEALS: string[] = [
   'Vegan buddha bowl',
 ];
 
+export const COMBO_SIZES: string[] = ['Small', 'Medium', 'Large'];
+
 export const SEATS: Seat[] = [
   { id: 'R1', taken: false },
   { id: 'R2', taken: false },

@@ -6,12 +6,19 @@ import {
   VipExperience,
   bookingSchema,
 } from './app.model';
-import { EXPERIENCES, MEALS, SEATS, SEAT_LEGEND } from './app.data';
+import {
+  COMBO_SIZES,
+  EXPERIENCES,
+  MEALS,
+  SEATS,
+  SEAT_LEGEND,
+} from './app.data';
 import { createExperience } from './app.utils';
 import { FieldTree, form, FormField } from '@angular/forms/signals';
 import {
   NbButton,
   NbCallout,
+  NbCheckbox,
   NbChip,
   NbChipGroup,
   NbCluster,
@@ -32,6 +39,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   tablerSquareNumber1Fill,
   tablerSquareNumber2Fill,
+  tablerSquareNumber3Fill,
 } from '@ng-icons/tabler-icons/fill';
 
 @Component({
@@ -58,12 +66,17 @@ import {
     NbText,
     NbInput,
     NbLabel,
+    NbCheckbox,
     NbSelect,
     NbSelectOption,
     FormField,
   ],
   viewProviders: [
-    provideIcons({ tablerSquareNumber1Fill, tablerSquareNumber2Fill }),
+    provideIcons({
+      tablerSquareNumber1Fill,
+      tablerSquareNumber2Fill,
+      tablerSquareNumber3Fill,
+    }),
   ],
 })
 export class App {
@@ -79,11 +92,10 @@ export class App {
 
   protected readonly experiences = EXPERIENCES;
   protected readonly meals = MEALS;
+  protected readonly comboSizes = COMBO_SIZES;
   protected readonly seats = SEATS;
   protected readonly seatLegend = SEAT_LEGEND;
 
-  // A Set keyed by seat id, so the template asks `.has(id)` per seat instead of
-  // scanning `tickets` once per button.
   protected readonly selectedSeats = computed(
     () =>
       new Set(
@@ -114,14 +126,18 @@ export class App {
     return (field.dirty() || field.touched()) && field.invalid();
   });
 
+  protected readonly comboInvalid = computed(() => {
+    const field = this.bookingForm.comboSize();
+
+    return (field.dirty() || field.touched()) && field.invalid();
+  });
+
   protected selectExperience(format: Experience['format']): void {
     if (this.selectedFormat() === format) return;
 
     this.bookingForm.experience().value.set(createExperience(format));
   }
 
-  // Every seat is one entry in `tickets`, which is what the array schema
-  // validates and what `disabled()` counts to unlock the promo code.
   protected toggleSeat(seat: string): void {
     const tickets = this.bookingForm.tickets().value();
 
@@ -130,12 +146,16 @@ export class App {
       .value.set(
         this.selectedSeats().has(seat)
           ? tickets.filter((ticket) => ticket.seat !== seat)
-          : [...tickets, { seat, age: 0 }],
+          : [...tickets, { seat }],
       );
   }
 
   protected markMealTouched(open: boolean): void {
     if (!open) this.mealField().markAsTouched();
+  }
+
+  protected markComboTouched(open: boolean): void {
+    if (!open) this.bookingForm.comboSize().markAsTouched();
   }
 
   private variant<V extends Experience>(): FieldTree<V> {

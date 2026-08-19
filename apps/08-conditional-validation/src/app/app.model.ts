@@ -10,7 +10,6 @@ import {
 
 export type Ticket = {
   seat: string;
-  age: number;
 };
 
 export type Experience =
@@ -49,7 +48,6 @@ export type SeatLegendItem = {
 export const bookingSchema = schema<Booking>((path) => {
   applyEach(path.tickets, (ticket) => {
     required(ticket.seat);
-    min(ticket.age, 0);
   });
 
   applyWhen(

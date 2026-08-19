@@ -221,4 +221,61 @@
       }
     </div>
   </div>
+
+  <div nbSurface nbStack gap="sm" tone="default" class="p-4">
+    <p nbCluster gap="sm">
+      <ng-icon size="32" name="tablerSquareNumber3Fill"></ng-icon>
+      <span class="uppercase font-medium text-lg" i18n="@@extrasLabel"
+        >Extras</span
+      >
+    </p>
+
+    <div nbStack gap="lg">
+      <label
+        nbCluster
+        gap="sm"
+        align="center"
+        class="mt-2 w-fit cursor-pointer px-2"
+      >
+        <input
+          type="checkbox"
+          nbCheckbox
+          size="lg"
+          [formField]="bookingForm.addSnacks"
+        />
+        <span nbText weight="bold" i18n="@@addSnacksLabel">
+          🍿 Add snacks combo
+        </span>
+      </label>
+
+      @if (bookingForm.addSnacks().value()) {
+        <div class="grid w-full gap-2 px-1">
+          <label nbLabel id="combo-label" for="combo" i18n="@@comboSizeLabel">
+            Combo size
+          </label>
+
+          <nb-select
+            id="combo"
+            aria-labelledby="combo-label"
+            [attr.aria-invalid]="comboInvalid()"
+            placeholder="Choose size…"
+            [formField]="bookingForm.comboSize"
+            (openChange)="markComboTouched($event)"
+          >
+            @for (size of comboSizes; track size) {
+              <nb-select-option [value]="size" [label]="size">
+                {{ size }}
+              </nb-select-option>
+            }
+          </nb-select>
+
+          @if (comboInvalid()) {
+            <span nbText size="xs" tone="danger" i18n="@@comboRequiredError">
+              Choose a combo size.
+            </span>
+          }
+        </div>
+      }
+    </div>
+  </div>
 </main>
