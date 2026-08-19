@@ -1,4 +1,9 @@
-<main nbStack gap="md" justify="center" class="relative min-h-screen p-8 pt-20">
+<main
+  nbStack
+  gap="md"
+  justify="center"
+  class="relative min-h-screen p-8 pb-14 pt-16"
+>
   <div nbStack gap="md">
     <div
       nbCallout
@@ -279,7 +284,6 @@
     </div>
   </div>
 
-  <!-- CHECKOUT — promo code (when/disabled) + total + book -->
   <div nbSurface nbStack gap="md" tone="default" class="p-4">
     <div class="grid w-full gap-2">
       <label nbLabel for="promo" i18n="@@promoCodeLabel">
@@ -346,4 +350,107 @@
       Book {{ seatCount() }} seats →
     </button>
   </div>
+
+  <!-- LESSON NAVIGATION -->
+  <nav
+    nbCluster
+    gap="md"
+    align="center"
+    justify="between"
+    class="mb-8"
+    aria-label="Lesson navigation"
+  >
+    <a
+      nbButton
+      tone="warning"
+      size="md"
+      radius="md"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Go to the previous lesson"
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/07-debounce-input"
+    >
+      <span nbButtonTrailingIcon shape="circle" class="grid place-items-center">
+        <ng-icon
+          aria-hidden="true"
+          size="20"
+          name="tablerCircleArrowLeftFill"
+        />
+      </span>
+
+      <span
+        nbText
+        size="md"
+        weight="black"
+        transform="uppercase"
+        tracking="wide"
+        i18n="@@prevDebounceInput"
+      >
+        Prev: Debounce Input
+      </span>
+    </a>
+
+    <a
+      nbButton
+      tone="success"
+      size="md"
+      radius="md"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Go to the next lesson"
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps"
+    >
+      <span
+        nbText
+        size="md"
+        weight="black"
+        transform="uppercase"
+        tracking="wide"
+        i18n="@@nextFormSubmission"
+      >
+        Next: Form Submission
+      </span>
+
+      <span nbButtonTrailingIcon shape="circle" class="grid place-items-center">
+        <ng-icon
+          aria-hidden="true"
+          size="20"
+          name="tablerCircleArrowRightFill"
+        />
+      </span>
+    </a>
+  </nav>
+
+  <!-- FOOTER -->
+  <footer
+    nbCluster
+    gap="sm"
+    align="center"
+    justify="center"
+    class="w-full pt-4"
+  >
+    <ng-icon
+      aria-hidden="true"
+      class="text-gray-300"
+      size="16"
+      name="tablerCopyright"
+    />
+
+    <small nbText tone="muted" size="xs" i18n="@@authorLabel">
+      Kristy Mae Almuete
+    </small>
+
+    <hr nbSeparator orientation="vertical" aria-hidden="true" />
+
+    <a
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/08-conditional-validation"
+      nbText
+      tone="danger"
+      size="xs"
+      i18n="@@githubRepository"
+      target="_blank"
+      rel="noopener noreferrer"
+      >GitHub Repo</a
+    >
+  </footer>
 </main>

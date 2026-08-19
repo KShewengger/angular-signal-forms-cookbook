@@ -18,6 +18,7 @@ import { createExperience } from './app.utils';
 import { FieldTree, form, FormField, submit } from '@angular/forms/signals';
 import {
   NbButton,
+  NbButtonTrailingIcon,
   NbCallout,
   NbCheckbox,
   NbChip,
@@ -37,7 +38,10 @@ import {
 } from '@ng-brutalism/ui';
 import { NgOptimizedImage } from '@angular/common';
 import { NgIcon, provideIcons } from '@ng-icons/core';
+import { tablerCopyright } from '@ng-icons/tabler-icons';
 import {
+  tablerCircleArrowLeftFill,
+  tablerCircleArrowRightFill,
   tablerSquareNumber1Fill,
   tablerSquareNumber2Fill,
   tablerSquareNumber3Fill,
@@ -53,6 +57,7 @@ import {
   imports: [
     NbStack,
     NbButton,
+    NbButtonTrailingIcon,
     NbChip,
     NbChipGroup,
     NbCluster,
@@ -77,6 +82,9 @@ import {
       tablerSquareNumber1Fill,
       tablerSquareNumber2Fill,
       tablerSquareNumber3Fill,
+      tablerCircleArrowLeftFill,
+      tablerCircleArrowRightFill,
+      tablerCopyright,
     }),
   ],
 })
