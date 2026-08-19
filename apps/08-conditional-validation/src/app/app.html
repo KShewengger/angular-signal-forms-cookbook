@@ -278,4 +278,72 @@
       }
     </div>
   </div>
+
+  <!-- CHECKOUT — promo code (when/disabled) + total + book -->
+  <div nbSurface nbStack gap="md" tone="default" class="p-4">
+    <div class="grid w-full gap-2">
+      <label nbLabel for="promo" i18n="@@promoCodeLabel">
+        Group promo code
+      </label>
+
+      <input
+        nbInput
+        id="promo"
+        type="text"
+        [attr.aria-invalid]="couponInvalid()"
+        [placeholder]="promoPlaceholder()"
+        [formField]="bookingForm.promoCode"
+      />
+
+      <span
+        nbText
+        size="xs"
+        [tone]="
+          promoDisabled() ? 'muted' : couponInvalid() ? 'danger' : 'success'
+        "
+      >
+        @if (promoDisabled()) {
+          🔒 Unlocks when you book 4+ seats ({{ seatCount() }}/4)
+        } @else if (couponInvalid()) {
+          Invalid coupon.
+        } @else if (promoApplied()) {
+          🔓 Group rate applied · 50% off
+        } @else {
+          🔓 Unlocked · add a code for 50% off
+        }
+      </span>
+    </div>
+
+    <hr nbSeparator variant="dashed" aria-hidden="true" />
+
+    <div nbStack gap="none">
+      <span
+        nbText
+        size="xs"
+        tone="muted"
+        transform="uppercase"
+        tracking="wide"
+        i18n="@@orderTotalLabel"
+      >
+        Order total
+      </span>
+      <span nbCluster gap="sm" align="baseline">
+        @if (promoApplied()) {
+          <s nbText size="lg" tone="subtle">{{ subtotalDisplay() }}</s>
+        }
+        <span nbText size="3xl" weight="bold">{{ orderTotal() }}</span>
+      </span>
+    </div>
+
+    <button
+      type="button"
+      nbButton
+      tone="success"
+      fullWidth
+      [disabled]="!canBook()"
+      (click)="book()"
+    >
+      Book {{ seatCount() }} seats →
+    </button>
+  </div>
 </main>

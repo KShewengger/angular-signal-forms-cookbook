@@ -10,11 +10,12 @@ import {
   COMBO_SIZES,
   EXPERIENCES,
   MEALS,
+  PROMO_CODE,
   SEATS,
   SEAT_LEGEND,
 } from './app.data';
 import { createExperience } from './app.utils';
-import { FieldTree, form, FormField } from '@angular/forms/signals';
+import { FieldTree, form, FormField, submit } from '@angular/forms/signals';
 import {
   NbButton,
   NbCallout,
@@ -132,6 +133,55 @@ export class App {
     return (field.dirty() || field.touched()) && field.invalid();
   });
 
+  protected readonly seatCount = computed(() => this.selectedSeats().size);
+
+  // Driven by the schema's `disabled(promoCode, when: tickets.length < 4)`:
+  // reading the field's own disabled state is the `when` rule's payoff.
+  protected readonly promoDisabled = computed(() =>
+    this.bookingForm.promoCode().disabled(),
+  );
+
+  protected readonly promoPlaceholder = computed(() =>
+    this.promoDisabled()
+      ? `Add ${Math.max(0, 4 - this.seatCount())} more seat(s) to unlock`
+      : `e.g. ${PROMO_CODE}`,
+  );
+
+  private readonly subtotal = computed(() => {
+    const price =
+      this.experiences.find((option) => option.format === this.selectedFormat())
+        ?.price ?? 0;
+
+    return price * this.seatCount();
+  });
+
+  // The discount needs the exact code AND an unlocked field (the `when` rule).
+  protected readonly promoApplied = computed(
+    () =>
+      !this.promoDisabled() &&
+      this.bookingForm.promoCode().value().trim().toUpperCase() === PROMO_CODE,
+  );
+
+  protected readonly couponInvalid = computed(() => {
+    const field = this.bookingForm.promoCode();
+
+    return (field.dirty() || field.touched()) && field.invalid();
+  });
+
+  protected readonly subtotalDisplay = computed(
+    () => `$${this.subtotal().toFixed(2)}`,
+  );
+
+  protected readonly orderTotal = computed(() => {
+    const total = this.promoApplied() ? this.subtotal() / 2 : this.subtotal();
+
+    return `$${total.toFixed(2)}`;
+  });
+
+  protected readonly canBook = computed(
+    () => this.bookingForm().valid() && this.seatCount() > 0,
+  );
+
   protected selectExperience(format: Experience['format']): void {
     if (this.selectedFormat() === format) return;
 
@@ -156,6 +206,12 @@ export class App {
 
   protected markComboTouched(open: boolean): void {
     if (!open) this.bookingForm.comboSize().markAsTouched();
+  }
+
+  // `submit()` marks every field touched before the action runs, so any pending
+  // conditional errors surface. No backend here, so the action just resolves.
+  protected book(): void {
+    submit(this.bookingForm, async () => undefined);
   }
 
   private variant<V extends Experience>(): FieldTree<V> {

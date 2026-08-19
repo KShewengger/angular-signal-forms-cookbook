@@ -6,7 +6,9 @@ import {
   min,
   required,
   schema,
+  validate,
 } from '@angular/forms/signals';
+import { PROMO_CODE } from './app.data';
 
 export type Ticket = {
   seat: string;
@@ -75,5 +77,13 @@ export const bookingSchema = schema<Booking>((path) => {
 
   disabled(path.promoCode, {
     when: ({ valueOf }) => valueOf(path.tickets).length < 4,
+  });
+
+  validate(path.promoCode, ({ value }) => {
+    const code = value().trim();
+
+    if (!code || code.toUpperCase() === PROMO_CODE) return null;
+
+    return { kind: 'invalidCoupon', message: 'Invalid coupon.' };
   });
 });
