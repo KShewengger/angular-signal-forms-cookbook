@@ -342,12 +342,17 @@
     <button
       type="button"
       nbButton
-      tone="success"
       fullWidth
-      [disabled]="!canBook()"
+      [tone]="booked() ? 'accent' : 'success'"
+      [disabled]="!booked() && !canBook()"
       (click)="book()"
     >
-      Book {{ seatCount() }} seats →
+      @if (booked()) {
+        Reserved
+        <ng-icon aria-hidden="true" size="20" name="tablerCircleCheckFill" />
+      } @else {
+        Book {{ seatCount() }} seats →
+      }
     </button>
   </div>
 

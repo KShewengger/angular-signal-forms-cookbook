@@ -42,6 +42,7 @@ import { tablerCopyright } from '@ng-icons/tabler-icons';
 import {
   tablerCircleArrowLeftFill,
   tablerCircleArrowRightFill,
+  tablerCircleCheckFill,
   tablerSquareNumber1Fill,
   tablerSquareNumber2Fill,
   tablerSquareNumber3Fill,
@@ -84,6 +85,7 @@ import {
       tablerSquareNumber3Fill,
       tablerCircleArrowLeftFill,
       tablerCircleArrowRightFill,
+      tablerCircleCheckFill,
       tablerCopyright,
     }),
   ],
@@ -190,6 +192,8 @@ export class App {
     () => this.bookingForm().valid() && this.seatCount() > 0,
   );
 
+  protected readonly booked = signal(false);
+
   protected selectExperience(format: Experience['format']): void {
     if (this.selectedFormat() === format) return;
 
@@ -217,9 +221,13 @@ export class App {
   }
 
   // `submit()` marks every field touched before the action runs, so any pending
-  // conditional errors surface. No backend here, so the action just resolves.
+  // conditional errors surface. No backend here, so it just flips to "reserved".
   protected book(): void {
-    submit(this.bookingForm, async () => undefined);
+    if (this.booked()) return;
+
+    submit(this.bookingForm, async () => {
+      this.booked.set(true);
+    });
   }
 
   private variant<V extends Experience>(): FieldTree<V> {
