@@ -161,4 +161,64 @@
       }
     </div>
   </div>
+
+  <div nbSurface nbStack gap="sm" tone="default" class="p-4">
+    <p nbCluster gap="sm">
+      <ng-icon size="32" name="tablerSquareNumber2Fill"></ng-icon>
+      <span class="uppercase font-medium text-lg" i18n="@@pickYourSeatsLabel"
+        >Pick your seats</span
+      >
+    </p>
+
+    <div nbStack gap="xs" class="mt-2">
+      <div
+        aria-hidden="true"
+        class="mx-auto h-3 w-3/4 border-2 border-black bg-white shadow-nb"
+      ></div>
+      <p
+        class="text-center text-[10px] font-bold uppercase tracking-widest opacity-50"
+        i18n="@@screenThisWayLabel"
+      >
+        Screen this way
+      </p>
+    </div>
+
+    <div
+      nbCluster
+      gap="sm"
+      justify="center"
+      role="group"
+      aria-label="Row R seats"
+      class="mt-2"
+    >
+      @for (seat of seats; track seat.id) {
+        <button
+          type="button"
+          nbButton
+          size="sm"
+          class="w-14"
+          [class.seat-taken]="seat.taken"
+          [tone]="selectedSeats().has(seat.id) ? 'blue' : 'white'"
+          [disabled]="seat.taken"
+          [attr.aria-pressed]="selectedSeats().has(seat.id)"
+          (click)="toggleSeat(seat.id)"
+        >
+          {{ seat.id }}
+        </button>
+      }
+    </div>
+
+    <div nbCluster gap="md" justify="center" class="mt-2">
+      @for (item of seatLegend; track item.label) {
+        <span nbCluster gap="xs" align="center">
+          <span
+            aria-hidden="true"
+            class="inline-block h-3 w-4 rounded-xs border border-black"
+            [class]="item.swatchClass"
+          ></span>
+          <span nbText size="xs" weight="bold">{{ item.label }}</span>
+        </span>
+      }
+    </div>
+  </div>
 </main>

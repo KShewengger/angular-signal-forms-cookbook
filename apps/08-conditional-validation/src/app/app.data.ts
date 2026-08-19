@@ -1,11 +1,4 @@
-import type { Experience } from './app.model';
-
-export type ExperienceOption = {
-  format: Experience['format'];
-  label: string;
-  price: number;
-  code: string;
-};
+import type { ExperienceOption, Seat, SeatLegendItem } from './app.model';
 
 export const EXPERIENCES: ExperienceOption[] = [
   { format: 'standard', label: 'Standard', price: 14, code: 'STD·001' },
@@ -18,4 +11,24 @@ export const MEALS: string[] = [
   'Wagyu slider trio',
   'Margherita flatbread',
   'Vegan buddha bowl',
+];
+
+export const SEATS: Seat[] = [
+  { id: 'R1', taken: false },
+  { id: 'R2', taken: false },
+  { id: 'R3', taken: true },
+  { id: 'R4', taken: false },
+  { id: 'R5', taken: false },
+  { id: 'R6', taken: true },
+  { id: 'R7', taken: false },
+  { id: 'R8', taken: false },
+];
+
+export const SEAT_LEGEND: SeatLegendItem[] = [
+  {
+    label: $localize`:@@seatAvailableLabel:Available`,
+    swatchClass: 'bg-white',
+  },
+  { label: $localize`:@@seatYoursLabel:Yours`, swatchClass: 'bg-nb-blue' },
+  { label: $localize`:@@seatTakenLabel:Taken`, swatchClass: 'seat-taken' },
 ];

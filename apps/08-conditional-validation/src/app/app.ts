@@ -6,7 +6,7 @@ import {
   VipExperience,
   bookingSchema,
 } from './app.model';
-import { EXPERIENCES, MEALS } from './app.data';
+import { EXPERIENCES, MEALS, SEATS, SEAT_LEGEND } from './app.data';
 import { createExperience } from './app.utils';
 import { FieldTree, form, FormField } from '@angular/forms/signals';
 import {
@@ -29,11 +29,15 @@ import {
 } from '@ng-brutalism/ui';
 import { NgOptimizedImage } from '@angular/common';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { tablerSquareNumber1Fill } from '@ng-icons/tabler-icons/fill';
+import {
+  tablerSquareNumber1Fill,
+  tablerSquareNumber2Fill,
+} from '@ng-icons/tabler-icons/fill';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
+  styleUrl: './app.css',
   host: {
     class: 'relative flex flex-col gap-6 mx-auto w-4xl shrink-0',
   },
@@ -58,7 +62,9 @@ import { tablerSquareNumber1Fill } from '@ng-icons/tabler-icons/fill';
     NbSelectOption,
     FormField,
   ],
-  viewProviders: [provideIcons({ tablerSquareNumber1Fill })],
+  viewProviders: [
+    provideIcons({ tablerSquareNumber1Fill, tablerSquareNumber2Fill }),
+  ],
 })
 export class App {
   protected readonly bookingModel = signal<Booking>({
@@ -73,6 +79,20 @@ export class App {
 
   protected readonly experiences = EXPERIENCES;
   protected readonly meals = MEALS;
+  protected readonly seats = SEATS;
+  protected readonly seatLegend = SEAT_LEGEND;
+
+  // A Set keyed by seat id, so the template asks `.has(id)` per seat instead of
+  // scanning `tickets` once per button.
+  protected readonly selectedSeats = computed(
+    () =>
+      new Set(
+        this.bookingForm
+          .tickets()
+          .value()
+          .map((ticket) => ticket.seat),
+      ),
+  );
 
   protected readonly selectedFormat = computed(
     () => this.bookingForm.experience().value().format,
@@ -98,6 +118,20 @@ export class App {
     if (this.selectedFormat() === format) return;
 
     this.bookingForm.experience().value.set(createExperience(format));
+  }
+
+  // Every seat is one entry in `tickets`, which is what the array schema
+  // validates and what `disabled()` counts to unlock the promo code.
+  protected toggleSeat(seat: string): void {
+    const tickets = this.bookingForm.tickets().value();
+
+    this.bookingForm
+      .tickets()
+      .value.set(
+        this.selectedSeats().has(seat)
+          ? tickets.filter((ticket) => ticket.seat !== seat)
+          : [...tickets, { seat, age: 0 }],
+      );
   }
 
   protected markMealTouched(open: boolean): void {
