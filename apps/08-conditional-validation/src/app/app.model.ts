@@ -29,8 +29,6 @@ export type Booking = {
   promoCode: string;
 };
 
-// View-model types. These shape what the template renders, not what the form
-// validates, and their values live in `app.data.ts`.
 export type ExperienceOption = {
   format: Experience['format'];
   label: string;
