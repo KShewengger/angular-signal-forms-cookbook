@@ -19,7 +19,8 @@ import {
   NbText,
 } from '@ng-brutalism/ui';
 import { PIZZA_TOPPINGS } from './app.data';
-import { PizzaFormModel, pizzaMakerSchema } from './app.model';
+import { PizzaFormModel } from './app.model';
+import { pizzaMakerSchema } from './app.schema';
 import { Topping } from './topping/topping';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {

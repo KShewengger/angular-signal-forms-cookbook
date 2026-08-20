@@ -2,7 +2,8 @@ import { ApplicationRef, Injector, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { form, type FieldTree } from '@angular/forms/signals';
-import { BookingFormModel, INITIAL_BOOKING, bookingSchema } from '../app.model';
+import { BookingFormModel, INITIAL_BOOKING } from '../app.model';
+import { bookingSchema } from '../app.schema';
 import { mockHttpInterceptor } from '../../mock.interceptor';
 import { ValidationErrors } from './validation-errors';
 

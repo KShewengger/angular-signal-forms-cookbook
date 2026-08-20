@@ -7,8 +7,8 @@ import {
   ImaxExperience,
   INITIAL_BOOKING,
   VipExperience,
-  bookingSchema,
 } from './app.model';
+import { bookingSchema } from './app.schema';
 import { PROMO_CODE } from './app.data';
 
 type ErrorReader = () => {

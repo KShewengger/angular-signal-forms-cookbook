@@ -1,11 +1,8 @@
 import { Injector, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { form, type FieldTree } from '@angular/forms/signals';
-import {
-  INITIAL_REGISTRATION,
-  RegistrationFormModel,
-  registrationSchema,
-} from '../app.model';
+import { INITIAL_REGISTRATION, RegistrationFormModel } from '../app.model';
+import { registrationSchema } from '../app.schema';
 import { ValidationErrors } from './validation-errors';
 
 describe('ValidationErrors', () => {

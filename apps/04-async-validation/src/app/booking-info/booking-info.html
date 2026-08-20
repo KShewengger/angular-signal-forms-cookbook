@@ -1,13 +1,14 @@
 <div nbStack gap="lg" class="px-6">
+  <!-- BOOKING SUMMARY -->
   <div nbCluster gap="md" align="start" justify="between">
     <div nbStack gap="none" align="start">
       <span nbText size="sm" weight="extrabold" i18n="@@bookingReferenceLabel">
         Booking Reference
       </span>
 
-      <span nbText size="lg" tone="warning" weight="bold"
-        >{{ booking().reference }}</span
-      >
+      <span nbText size="lg" tone="warning" weight="bold">{{
+        booking().reference
+      }}</span>
     </div>
 
     <div
@@ -23,6 +24,7 @@
     </div>
   </div>
 
+  <!-- PASSENGER -->
   <div nbSplit ratio="1:1" gap="xl" collapse="sm" align="start">
     <div
       nbMediaFrame
@@ -38,7 +40,7 @@
     <div nbStack gap="none" align="start">
       @let passenger = booking().passenger;
       <h2 nbTitle class="font-mono text-5xl font-black leading-tight uppercase">
-        {{ passenger.firstName }} {{passenger.lastName }}
+        {{ passenger.firstName }} {{ passenger.lastName }}
       </h2>
 
       <div
@@ -51,6 +53,7 @@
     </div>
   </div>
 
+  <!-- FLIGHT DETAILS -->
   <div nbSection divider="all" padding="lg">
     @let flight = booking().flight;
 
@@ -89,6 +92,7 @@
     </div>
   </div>
 
+  <!-- BACK BUTTON -->
   <button nbButton fullWidth tone="background" (click)="back.emit()">
     <ng-icon aria-hidden="true" size="20" name="tablerArrowLeft" />
     <span i18n="@@backLabel">Back</span>

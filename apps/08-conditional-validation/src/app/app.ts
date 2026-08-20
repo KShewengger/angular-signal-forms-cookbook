@@ -5,8 +5,8 @@ import {
   INITIAL_BOOKING,
   ImaxExperience,
   VipExperience,
-  bookingSchema,
 } from './app.model';
+import { bookingSchema } from './app.schema';
 import {
   COMBO_SIZES,
   EXPERIENCES,

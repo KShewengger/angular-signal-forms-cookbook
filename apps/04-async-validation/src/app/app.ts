@@ -25,7 +25,8 @@ import {
   NbProgress,
   NbButtonTrailingIcon,
 } from '@ng-brutalism/ui';
-import { BookingFormModel, INITIAL_BOOKING, bookingSchema } from './app.model';
+import { BookingFormModel, INITIAL_BOOKING } from './app.model';
+import { bookingSchema } from './app.schema';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   tablerUserCheck,

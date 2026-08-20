@@ -30,7 +30,8 @@ import {
   tablerCircleArrowLeftFill,
   tablerCircleArrowRightFill,
 } from '@ng-icons/tabler-icons/fill';
-import { INITIAL_SEARCH, SearchFormModel, searchSchema } from './app.model';
+import { INITIAL_SEARCH, SearchFormModel } from './app.model';
+import { searchSchema } from './app.schema';
 import { FruitSearch } from './fruit-search.service';
 import { ValidationErrors } from './validation-errors';
 

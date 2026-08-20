@@ -1,3 +1,4 @@
+<!-- HERO -->
 <nb-card class="w-7xl max-w-full pb-7 relative hero-card">
   <nb-card-header>
     <nb-card-title nbCluster justify="between">
@@ -55,6 +56,7 @@
         IT!
       </nb-sticker>
     </nb-card-title>
+    <!-- HERO DESCRIPTION -->
     <nb-card-description nbStack gap="lg" class="text-center lg:text-left">
       <p
         nbText
@@ -103,9 +105,11 @@
   </nb-card-header>
 </nb-card>
 
+<!-- RECIPE GRID -->
 <section
   class="recipe-grid grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-7xl"
 >
+  <!-- RECIPE CARD -->
   @for (example of examples; track example.link) {
     <div class="relative">
       <nb-card

@@ -2,7 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Injector, signal } from '@angular/core';
 import { form, type FieldTree } from '@angular/forms/signals';
 import { App } from './app';
-import { INITIAL_USER, UserFormModel, userSchema } from './app.model';
+import { INITIAL_USER, UserFormModel } from './app.model';
+import { userSchema } from './app.schema';
 
 type ErrorReader = () => {
   errors(): ReadonlyArray<{ kind: string; message?: string }>;

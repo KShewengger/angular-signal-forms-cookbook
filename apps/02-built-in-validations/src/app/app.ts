@@ -32,11 +32,8 @@ import {
   NbCheckbox,
   NbButtonTrailingIcon,
 } from '@ng-brutalism/ui';
-import {
-  INITIAL_REGISTRATION,
-  RegistrationFormModel,
-  registrationSchema,
-} from './app.model';
+import { INITIAL_REGISTRATION, RegistrationFormModel } from './app.model';
+import { registrationSchema } from './app.schema';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { tablerUserCheck, tablerCopyright } from '@ng-icons/tabler-icons';
 import {

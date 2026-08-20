@@ -33,7 +33,8 @@ import {
   tablerUserCheck,
   tablerCheck,
 } from '@ng-icons/tabler-icons';
-import { INITIAL_USER, UserFormModel, userSchema } from './app.model';
+import { INITIAL_USER, UserFormModel } from './app.model';
+import { userSchema } from './app.schema';
 import { ValidationErrors } from './validation-errors';
 import {
   tablerCircleArrowLeftFill,

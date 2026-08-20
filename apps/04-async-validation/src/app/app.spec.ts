@@ -9,7 +9,8 @@ import {
 import { throwError } from 'rxjs';
 import { form, type FieldTree } from '@angular/forms/signals';
 import { App } from './app';
-import { BookingFormModel, INITIAL_BOOKING, bookingSchema } from './app.model';
+import { BookingFormModel, INITIAL_BOOKING } from './app.model';
+import { bookingSchema } from './app.schema';
 import { mockHttpInterceptor } from '../mock.interceptor';
 
 type ErrorReader = () => {
