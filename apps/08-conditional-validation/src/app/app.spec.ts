@@ -277,5 +277,22 @@ describe('App (08 · Conditional Validation)', () => {
 
       expect(bookButton().disabled).toBe(false);
     });
+
+    it('locks the form on reserve, then resets on the second click', async () => {
+      appForm().tickets().value.set(FOUR_SEATS);
+      await fixture.whenStable();
+
+      // reserve
+      bookButton().click();
+      await fixture.whenStable();
+      expect(host.textContent).toContain('Book again');
+      expect(host.querySelector('[inert]')).toBeTruthy();
+
+      // book again resets the form and re-enables editing
+      bookButton().click();
+      await fixture.whenStable();
+      expect(host.querySelector('[inert]')).toBeNull();
+      expect(appForm().tickets().value().length).toBe(0);
+    });
   });
 });

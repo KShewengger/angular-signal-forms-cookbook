@@ -74,17 +74,17 @@ itself as the user fills it in.
 
 ```ts
 export const bookingSchema = schema<Booking>((path) => {
-  // applyEach — one rule set for every ticket in the array
+  // applyEach: one rule set for every ticket in the array
   applyEach(path.tickets, (ticket) => required(ticket.seat));
 
-  // applyWhen — comboSize is required only while snacks are on
+  // applyWhen: comboSize is required only while snacks are on
   applyWhen(
     path,
     ({ valueOf }) => valueOf(path.addSnacks),
     (path) => required(path.comboSize),
   );
 
-  // applyWhenValue — narrows the union, so each variant validates its own field
+  // applyWhenValue: narrows the union, so each variant validates its own field
   applyWhenValue(
     path.experience,
     (e): e is Extract<Experience, { format: 'imax' }> => e.format === 'imax',
@@ -99,12 +99,12 @@ export const bookingSchema = schema<Booking>((path) => {
     (vip) => required(vip.mealChoice),
   );
 
-  // when — the promo field is disabled (and skips its own validator) under 4 seats
+  // when: the promo field is disabled (and skips its own validator) under 4 seats
   disabled(path.promoCode, {
     when: ({ valueOf }) => valueOf(path.tickets).length < 4,
   });
 
-  // validate — once unlocked, an entered code must be the real one
+  // validate: once unlocked, an entered code must be the real one
   validate(path.promoCode, ({ value }) => {
     const code = value().trim();
     if (!code || code.toUpperCase() === PROMO_CODE) return null;

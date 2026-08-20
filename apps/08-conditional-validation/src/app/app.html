@@ -57,7 +57,15 @@
     </div>
   </div>
 
-  <div nbSurface nbStack gap="sm" tone="default" class="p-4">
+  <div
+    nbSurface
+    nbStack
+    gap="sm"
+    tone="default"
+    class="p-4 transition-opacity"
+    [class.opacity-60]="booked()"
+    [attr.inert]="booked() || null"
+  >
     <p nbCluster gap="sm">
       <ng-icon size="32" name="tablerSquareNumber1Fill"></ng-icon>
       <span class="uppercase font-medium text-lg" i18n="@@chooseExperienceLabel"
@@ -167,7 +175,15 @@
     </div>
   </div>
 
-  <div nbSurface nbStack gap="sm" tone="default" class="p-4">
+  <div
+    nbSurface
+    nbStack
+    gap="sm"
+    tone="default"
+    class="p-4 transition-opacity"
+    [class.opacity-60]="booked()"
+    [attr.inert]="booked() || null"
+  >
     <p nbCluster gap="sm">
       <ng-icon size="32" name="tablerSquareNumber2Fill"></ng-icon>
       <span class="uppercase font-medium text-lg" i18n="@@pickYourSeatsLabel"
@@ -227,7 +243,15 @@
     </div>
   </div>
 
-  <div nbSurface nbStack gap="sm" tone="default" class="p-4">
+  <div
+    nbSurface
+    nbStack
+    gap="sm"
+    tone="default"
+    class="p-4 transition-opacity"
+    [class.opacity-60]="booked()"
+    [attr.inert]="booked() || null"
+  >
     <p nbCluster gap="sm">
       <ng-icon size="32" name="tablerSquareNumber3Fill"></ng-icon>
       <span class="uppercase font-medium text-lg" i18n="@@extrasLabel"
@@ -285,7 +309,11 @@
   </div>
 
   <div nbSurface nbStack gap="md" tone="default" class="p-4">
-    <div class="grid w-full gap-2">
+    <div
+      class="grid w-full gap-2 transition-opacity"
+      [class.opacity-60]="booked()"
+      [attr.inert]="booked() || null"
+    >
       <label nbLabel for="promo" i18n="@@promoCodeLabel">
         Group promo code
       </label>
@@ -352,8 +380,8 @@
       (click)="book()"
     >
       @if (booked()) {
-        <span i18n="@@reservedLabel">Reserved</span>
-        <ng-icon aria-hidden="true" size="20" name="tablerCircleCheckFill" />
+        <ng-icon aria-hidden="true" size="20" name="tablerRefresh" />
+        <span i18n="@@bookAgainLabel">Reserved · Book again</span>
       } @else {
         <span i18n="@@bookSeatsLabel">Book {{ seatCount() }} seats →</span>
       }
