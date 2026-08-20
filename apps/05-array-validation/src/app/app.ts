@@ -22,7 +22,8 @@ import {
   NbButtonTrailingIcon,
 } from '@ng-brutalism/ui';
 import { PIZZA_TOPPINGS } from './app.data';
-import { PizzaFormModel, pizzaMakerSchema } from './app.model';
+import { PizzaFormModel } from './app.model';
+import { pizzaMakerSchema } from './app.schema';
 import { ValidationErrors } from './validation-errors';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -71,16 +72,19 @@ import {
 export class App {
   protected readonly pizzaToppings = PIZZA_TOPPINGS;
 
-  protected pizzaMakerModel = signal<PizzaFormModel>({
+  protected readonly pizzaMakerModel = signal<PizzaFormModel>({
     toppings: PIZZA_TOPPINGS.map((topping) => ({
       id: topping.id,
       count: 0,
     })),
   });
 
-  protected pizzaMakerForm = form(this.pizzaMakerModel, pizzaMakerSchema);
+  protected readonly pizzaMakerForm = form(
+    this.pizzaMakerModel,
+    pizzaMakerSchema,
+  );
 
-  protected visibleCounts = computed(() => {
+  protected readonly visibleCounts = computed(() => {
     return new Map(
       this.pizzaMakerModel().toppings.map((topping) => [
         topping.id,

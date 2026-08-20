@@ -33,7 +33,8 @@ import {
   tablerUserCheck,
   tablerCheck,
 } from '@ng-icons/tabler-icons';
-import { INITIAL_USER, UserFormModel, userSchema } from './app.model';
+import { INITIAL_USER, UserFormModel } from './app.model';
+import { userSchema } from './app.schema';
 import { ValidationErrors } from './validation-errors';
 import {
   tablerCircleArrowLeftFill,
@@ -87,16 +88,17 @@ import {
   },
 })
 export class App {
-  private userModel = signal<UserFormModel>({ ...INITIAL_USER });
+  private readonly userModel = signal<UserFormModel>({ ...INITIAL_USER });
 
-  protected userForm = form(this.userModel, userSchema);
+  protected readonly userForm = form(this.userModel, userSchema);
 
-  protected value = computed(() => this.userForm().value());
-  protected valid = computed(
+  protected readonly value = computed(() => this.userForm().value());
+
+  protected readonly valid = computed(
     () => this.userForm().dirty() && this.userForm().valid(),
   );
 
-  protected clear() {
+  protected clear(): void {
     this.userForm().reset({ ...INITIAL_USER });
   }
 }

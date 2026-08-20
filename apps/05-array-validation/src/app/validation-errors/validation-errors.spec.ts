@@ -5,8 +5,8 @@ import {
   PizzaFormModel,
   PizzaFormModelItem,
   PizzaToppingId,
-  pizzaMakerSchema,
 } from '../app.model';
+import { pizzaMakerSchema } from '../app.schema';
 import { PIZZA_TOPPINGS } from '../app.data';
 import { ValidationErrors } from './validation-errors';
 

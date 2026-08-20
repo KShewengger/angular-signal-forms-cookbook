@@ -2,7 +2,8 @@ import { Injector, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { form, type FieldTree } from '@angular/forms/signals';
 import { App } from './app';
-import { INITIAL_SEARCH, SearchFormModel, searchSchema } from './app.model';
+import { INITIAL_SEARCH, SearchFormModel } from './app.model';
+import { searchSchema } from './app.schema';
 import { ALLOWED_FRUITS } from './app.data';
 
 type ErrorReader = () => {

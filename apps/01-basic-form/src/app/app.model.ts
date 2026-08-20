@@ -1,5 +1,3 @@
-import { required, schema } from '@angular/forms/signals';
-
 export type RegistrationFormModel = {
   name: string;
   age: number | null;
@@ -15,7 +13,3 @@ export const INITIAL_REGISTRATION: RegistrationFormModel = {
   bio: '',
   beginner: false,
 };
-
-export const registrationSchema = schema<RegistrationFormModel>((path) => {
-  required(path.name);
-});

@@ -1,0 +1,498 @@
+<main
+  nbStack
+  gap="md"
+  justify="center"
+  class="relative min-h-screen p-8 pb-14 pt-16"
+>
+  <!-- HERO -->
+  <div nbStack gap="md">
+    <div
+      nbCallout
+      tone="lavender"
+      size="md"
+      class="w-fit"
+      aria-label="Lesson 8: Conditional Validation"
+    >
+      <span aria-hidden="true">08</span>
+      <hr nbSeparator orientation="vertical" aria-hidden="true" />
+      <span class="text-sm" i18n="@@lessonConditionalLabel"
+        >Conditional Validation</span
+      >
+    </div>
+
+    <div nbChipGroup nbCluster gap="md" aria-label="Lesson topics">
+      <span nbChip tone="danger" i18n="@@angular22Label"> Angular 22 </span>
+      <span nbChip tone="accent" i18n="@@signalFormsLabel"> Signal Forms </span>
+      <span nbChip tone="black" i18n="@@basicLabel"> Ng-Brutalism </span>
+    </div>
+
+    <div class="relative">
+      <div
+        nbMediaFrame
+        ratio="auto"
+        tone="lavender"
+        shadow="hard"
+        class="relative -top-0.5 mb-2 overflow-hidden"
+      >
+        <img
+          priority
+          ngSrc="hero-cover.png"
+          width="1834"
+          height="689"
+          class="block h-auto w-full"
+          alt="Conditional Validation lesson hero: a dependency thriller cinema marquee"
+        />
+      </div>
+
+      <nb-sticker
+        shape="burst-wide"
+        tone="yellow"
+        class="absolute -right-12 -top-12 sm:-right-20 sm:-top-16"
+        aria-hidden="true"
+        i18n="@@testItLabel"
+        [rotate]="5"
+      >
+        TEST<br />
+        IT!
+      </nb-sticker>
+    </div>
+  </div>
+
+  <!-- CHOOSE EXPERIENCE -->
+  <div
+    nbSurface
+    nbStack
+    gap="sm"
+    tone="default"
+    class="p-4 transition-opacity"
+    [class.opacity-60]="booked()"
+    [attr.inert]="booked() || null"
+  >
+    <p nbCluster gap="sm">
+      <ng-icon size="32" name="tablerSquareNumber1Fill"></ng-icon>
+      <span class="uppercase font-medium text-lg" i18n="@@chooseExperienceLabel"
+        >Choose Experience</span
+      >
+    </p>
+
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      @for (experience of experiences; track experience.format) {
+        <button
+          type="button"
+          nbButton
+          size="md"
+          fullWidth
+          class="h-auto! items-stretch! text-left!"
+          [tone]="
+            experience.format === selectedFormat() ? 'lavender' : 'background'
+          "
+          [attr.aria-pressed]="experience.format === selectedFormat()"
+          (click)="selectExperience(experience.format)"
+        >
+          <div
+            nbSplit
+            ratio="2:1"
+            gap="lg"
+            separator="dashed"
+            align="stretch"
+            class="w-full"
+          >
+            <div class="flex flex-col py-2">
+              <span nbText weight="bold" transform="uppercase">{{
+                experience.label
+              }}</span>
+              <span nbText tone="muted" size="sm"
+                >${{ experience.price }} · seat</span
+              >
+            </div>
+            <div nbStack align="center" justify="center" class="h-full py-2">
+              <span nbText tone="subtle" size="xs" tracking="wider">{{
+                experience.code
+              }}</span>
+            </div>
+          </div>
+        </button>
+      }
+    </div>
+
+    <div [class.mt-4]="selectedFormat() !== 'standard'">
+      @switch (selectedFormat()) {
+        @case ('imax') {
+          <div class="grid w-full gap-2">
+            <label nbLabel for="glasses" i18n="@@glassesLabel">
+              3D glasses
+            </label>
+
+            <input
+              nbInput
+              id="glasses"
+              type="number"
+              placeholder="How many pairs?"
+              i18n-placeholder="@@glassesPlaceholder"
+              [formField]="glassesField"
+            />
+
+            @if (glassesInvalid()) {
+              <span
+                nbText
+                size="xs"
+                tone="danger"
+                i18n="@@glassesRequiredError"
+              >
+                Enter at least 1 pair of glasses.
+              </span>
+            }
+          </div>
+        }
+        @case ('vip') {
+          <div class="grid w-full gap-2">
+            <label nbLabel id="meal-label" for="meal" i18n="@@mealLabel">
+              Meal pre-order
+            </label>
+
+            <nb-select
+              id="meal"
+              aria-labelledby="meal-label"
+              placeholder="Select a dish…"
+              i18n-placeholder="@@mealPlaceholder"
+              [attr.aria-invalid]="mealInvalid()"
+              [formField]="mealField"
+              (openChange)="markMealTouched($event)"
+            >
+              @for (meal of meals; track meal) {
+                <nb-select-option [value]="meal" [label]="meal">
+                  {{ meal }}
+                </nb-select-option>
+              }
+            </nb-select>
+
+            @if (mealInvalid()) {
+              <span nbText size="xs" tone="danger" i18n="@@mealRequiredError">
+                Pick a dish to continue.
+              </span>
+            }
+          </div>
+        }
+      }
+    </div>
+  </div>
+
+  <!-- SEAT SELECTION -->
+  <div
+    nbSurface
+    nbStack
+    gap="sm"
+    tone="default"
+    class="p-4 transition-opacity"
+    [class.opacity-60]="booked()"
+    [attr.inert]="booked() || null"
+  >
+    <p nbCluster gap="sm">
+      <ng-icon size="32" name="tablerSquareNumber2Fill"></ng-icon>
+      <span class="uppercase font-medium text-lg" i18n="@@pickYourSeatsLabel"
+        >Pick your seats</span
+      >
+    </p>
+
+    <div nbStack gap="xs" class="mt-2">
+      <div
+        aria-hidden="true"
+        class="mx-auto h-3 w-3/4 border-2 border-black bg-white shadow-nb"
+      ></div>
+      <p
+        class="text-center text-xs font-bold uppercase tracking-widest opacity-50"
+        i18n="@@screenThisWayLabel"
+      >
+        Screen this way
+      </p>
+    </div>
+
+    <div
+      nbCluster
+      gap="sm"
+      justify="center"
+      role="group"
+      aria-label="Row R seats"
+      class="mt-2"
+    >
+      @for (seat of seats; track seat.id) {
+        <button
+          type="button"
+          nbButton
+          size="sm"
+          class="w-14"
+          [class.seat-taken]="seat.taken"
+          [tone]="selectedSeats().has(seat.id) ? 'blue' : 'white'"
+          [disabled]="seat.taken"
+          [attr.aria-pressed]="selectedSeats().has(seat.id)"
+          (click)="toggleSeat(seat.id)"
+        >
+          {{ seat.id }}
+        </button>
+      }
+    </div>
+
+    <div nbCluster gap="md" justify="center" class="mt-2">
+      @for (item of seatLegend; track item.label) {
+        <span nbCluster gap="xs" align="center">
+          <span
+            aria-hidden="true"
+            class="inline-block h-3 w-4 rounded-xs border border-black"
+            [class]="item.swatchClass"
+          ></span>
+          <span nbText size="xs" weight="bold">{{ item.label }}</span>
+        </span>
+      }
+    </div>
+  </div>
+
+  <!-- EXTRAS -->
+  <div
+    nbSurface
+    nbStack
+    gap="sm"
+    tone="default"
+    class="p-4 transition-opacity"
+    [class.opacity-60]="booked()"
+    [attr.inert]="booked() || null"
+  >
+    <p nbCluster gap="sm">
+      <ng-icon size="32" name="tablerSquareNumber3Fill"></ng-icon>
+      <span class="uppercase font-medium text-lg" i18n="@@extrasLabel"
+        >Extras</span
+      >
+    </p>
+
+    <div nbStack gap="lg">
+      <label
+        nbCluster
+        gap="sm"
+        align="center"
+        class="mt-2 w-fit cursor-pointer px-2"
+      >
+        <input
+          type="checkbox"
+          nbCheckbox
+          size="lg"
+          [formField]="bookingForm.addSnacks"
+        />
+        <span nbText weight="bold" i18n="@@addSnacksLabel">
+          🍿 Add snacks combo
+        </span>
+      </label>
+
+      @if (bookingForm.addSnacks().value()) {
+        <div class="grid w-full gap-2 px-1">
+          <label nbLabel id="combo-label" for="combo" i18n="@@comboSizeLabel">
+            Combo size
+          </label>
+
+          <nb-select
+            id="combo"
+            aria-labelledby="combo-label"
+            [attr.aria-invalid]="comboInvalid()"
+            placeholder="Choose size…"
+            [formField]="bookingForm.comboSize"
+            (openChange)="markComboTouched($event)"
+          >
+            @for (size of comboSizes; track size) {
+              <nb-select-option [value]="size" [label]="size">
+                {{ size }}
+              </nb-select-option>
+            }
+          </nb-select>
+
+          @if (comboInvalid()) {
+            <span nbText size="xs" tone="danger" i18n="@@comboRequiredError">
+              Choose a combo size.
+            </span>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- CHECKOUT -->
+  <div nbSurface nbStack gap="md" tone="default" class="p-4">
+    <div
+      class="grid w-full gap-2 transition-opacity"
+      [class.opacity-60]="booked()"
+      [attr.inert]="booked() || null"
+    >
+      <label nbLabel for="promo" i18n="@@promoCodeLabel">
+        Group promo code
+      </label>
+
+      <input
+        nbInput
+        id="promo"
+        type="text"
+        [attr.aria-invalid]="couponInvalid()"
+        [placeholder]="promoPlaceholder()"
+        [formField]="bookingForm.promoCode"
+      />
+
+      <span
+        nbText
+        size="xs"
+        [tone]="
+          promoDisabled() ? 'muted' : couponInvalid() ? 'danger' : 'success'
+        "
+      >
+        @if (promoDisabled()) {
+          <span i18n="@@promoLockedHint"
+            >🔒 Unlocks when you book 4+ seats ({{ seatCount() }}/4)</span
+          >
+        } @else if (couponInvalid()) {
+          <span i18n="@@invalidCouponError">Invalid coupon.</span>
+        } @else if (promoApplied()) {
+          <span i18n="@@promoAppliedHint">🔓 Group rate applied · 50% off</span>
+        } @else {
+          <span i18n="@@promoUnlockedHint"
+            >🔓 Unlocked · add a code for 50% off</span
+          >
+        }
+      </span>
+    </div>
+
+    <hr nbSeparator variant="dashed" aria-hidden="true" />
+
+    <div nbStack gap="none">
+      <span
+        nbText
+        size="xs"
+        tone="muted"
+        transform="uppercase"
+        tracking="wide"
+        i18n="@@orderTotalLabel"
+      >
+        Order total
+      </span>
+      <span nbCluster gap="sm" align="baseline">
+        @if (promoApplied()) {
+          <s nbText size="lg" tone="subtle">{{ subtotalDisplay() }}</s>
+        }
+        <span nbText size="3xl" weight="bold">{{ orderTotal() }}</span>
+      </span>
+    </div>
+
+    <button
+      type="button"
+      nbButton
+      fullWidth
+      [tone]="booked() ? 'accent' : 'success'"
+      [disabled]="!booked() && !canBook()"
+      (click)="book()"
+    >
+      @if (booked()) {
+        <ng-icon aria-hidden="true" size="20" name="tablerRefresh" />
+        <span i18n="@@bookAgainLabel">Reserved · Book again</span>
+      } @else {
+        <span i18n="@@bookSeatsLabel">Book {{ seatCount() }} seats →</span>
+      }
+    </button>
+  </div>
+
+  <!-- LESSON NAVIGATION -->
+  <nav
+    nbCluster
+    gap="md"
+    align="center"
+    justify="between"
+    class="mb-8"
+    aria-label="Lesson navigation"
+  >
+    <a
+      nbButton
+      tone="warning"
+      size="md"
+      radius="md"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Go to the previous lesson"
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/07-debounce-input"
+    >
+      <span nbButtonTrailingIcon shape="circle" class="grid place-items-center">
+        <ng-icon
+          aria-hidden="true"
+          size="20"
+          name="tablerCircleArrowLeftFill"
+        />
+      </span>
+
+      <span
+        nbText
+        size="md"
+        weight="black"
+        transform="uppercase"
+        tracking="wide"
+        i18n="@@prevDebounceInput"
+      >
+        Prev: Debounce Input
+      </span>
+    </a>
+
+    <a
+      nbButton
+      tone="success"
+      size="md"
+      radius="md"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Go to the next lesson"
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps"
+    >
+      <span
+        nbText
+        size="md"
+        weight="black"
+        transform="uppercase"
+        tracking="wide"
+        i18n="@@nextFormSubmission"
+      >
+        Next: Form Submission
+      </span>
+
+      <span nbButtonTrailingIcon shape="circle" class="grid place-items-center">
+        <ng-icon
+          aria-hidden="true"
+          size="20"
+          name="tablerCircleArrowRightFill"
+        />
+      </span>
+    </a>
+  </nav>
+
+  <!-- FOOTER -->
+  <footer
+    nbCluster
+    gap="sm"
+    align="center"
+    justify="center"
+    class="w-full pt-4"
+  >
+    <ng-icon
+      aria-hidden="true"
+      class="text-gray-300"
+      size="16"
+      name="tablerCopyright"
+    />
+
+    <small nbText tone="muted" size="xs" i18n="@@authorLabel">
+      Kristy Mae Almuete
+    </small>
+
+    <hr nbSeparator orientation="vertical" aria-hidden="true" />
+
+    <a
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/08-conditional-validation"
+      nbText
+      tone="danger"
+      size="xs"
+      i18n="@@githubRepository"
+      target="_blank"
+      rel="noopener noreferrer"
+      >GitHub Repo</a
+    >
+  </footer>
+</main>

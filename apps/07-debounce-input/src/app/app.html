@@ -57,7 +57,7 @@
             class="w-full"
             aria-label="Lesson topics"
           >
-            <span nbChip tone="danger" i18n="@@angular21Label">
+            <span nbChip tone="danger" i18n="@@angular22Label">
               Angular 22
             </span>
 
@@ -102,7 +102,7 @@
           />
         </div>
 
-        <!-- STATUS BADGES: the active resource state lights up -->
+        <!-- STATUS BADGES -->
         <div nbCluster gap="lg" align="center" class="w-full">
           <div
             nbCluster
@@ -134,15 +134,17 @@
 
         <!-- RESULTS -->
         @if (results().length) {
-        <div nbStack gap="sm" class="w-full">
-          @for (fruit of results(); track fruit.name) {
-          <div nbCallout tone="background" size="lg" class="w-full">
-            <span class="text-2xl" aria-hidden="true">{{ fruit.emoji }}</span>
-            <hr nbSeparator orientation="vertical" aria-hidden="true" />
-            <span nbText weight="bold">{{ fruit.name }}</span>
+          <div nbStack gap="sm" class="w-full">
+            @for (fruit of results(); track fruit.name) {
+              <div nbCallout tone="background" size="lg" class="w-full">
+                <span class="text-2xl" aria-hidden="true">{{
+                  fruit.emoji
+                }}</span>
+                <hr nbSeparator orientation="vertical" aria-hidden="true" />
+                <span nbText weight="bold">{{ fruit.name }}</span>
+              </div>
+            }
           </div>
-          }
-        </div>
         }
       </div>
 
@@ -208,7 +210,7 @@
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Go to the next lesson"
-      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps"
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/08-conditional-validation"
     >
       <span
         nbText

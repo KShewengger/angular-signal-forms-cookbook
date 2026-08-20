@@ -1,3 +1,4 @@
+<!-- HERO -->
 <nb-card class="w-7xl max-w-full pb-7 relative hero-card">
   <nb-card-header>
     <nb-card-title nbCluster justify="between">
@@ -55,6 +56,7 @@
         IT!
       </nb-sticker>
     </nb-card-title>
+    <!-- HERO DESCRIPTION -->
     <nb-card-description nbStack gap="lg" class="text-center lg:text-left">
       <p
         nbText
@@ -103,92 +105,98 @@
   </nb-card-header>
 </nb-card>
 
+<!-- RECIPE GRID -->
 <section
   class="recipe-grid grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-7xl"
 >
+  <!-- RECIPE CARD -->
   @for (example of examples; track example.link) {
-  <div class="relative">
-    <nb-card
-      class="relative overflow-hidden !py-0 !gap-0 transition-transform duration-200 motion-safe:hover:-translate-x-1 motion-safe:hover:-translate-y-1"
-    >
-      <div
-        class="absolute left-0 top-0 bottom-0 w-3 border-r-2 border-black"
-        [ngClass]="toneRail[example.tone]"
-      ></div>
-
-      <div
-        nbHalftone
-        shape="square"
-        class="pointer-events-none absolute top-0 right-0"
-        [rows]="4"
-        [columns]="5"
-        [color]="'var(--nb-' + example.tone + ')'"
-      ></div>
-
-      <div nbStack gap="md" class="py-6 pr-6 pl-8">
-        <nb-avatar [tone]="example.tone" class="self-start">
-          {{ ($index + 1) | number: '2.0-0' }}
-        </nb-avatar>
-
-        <span
-          class="self-start rounded-lg border-2 border-black px-3 py-1.5 font-mono text-base font-extrabold shadow-[2px_2px_0_#141414]"
-          [ngClass]="toneTint[example.tone]"
-        >
-          {{ example.api }}
-        </span>
-
-        <h3
-          nbTitle
-          class="self-start font-black text-xl uppercase tracking-wider"
-          [ngClass]="toneWave[example.tone]"
-        >
-          {{ example.title }}
-        </h3>
-
-        <p class="text-sm font-medium">{{ example.description }}</p>
-
-        <div nbCluster gap="sm" align="center">
-          @for (tag of example.tags; track $index) {
-          <span nbBadge>{{ tag }}</span>
-          }
-        </div>
+    <div class="relative">
+      <nb-card
+        class="relative overflow-hidden !py-0 !gap-0 transition-transform duration-200 motion-safe:hover:-translate-x-1 motion-safe:hover:-translate-y-1"
+      >
+        <div
+          class="absolute left-0 top-0 bottom-0 w-3 border-r-2 border-black"
+          [ngClass]="toneRail[example.tone]"
+        ></div>
 
         <div
-          nbCluster
-          justify="between"
-          align="center"
-          class="mt-1 border-t-2 border-dashed border-black/25 pt-3"
-        >
+          nbHalftone
+          shape="square"
+          class="pointer-events-none absolute top-0 right-0"
+          [rows]="4"
+          [columns]="5"
+          [color]="'var(--nb-' + example.tone + ')'"
+        ></div>
+
+        <div nbStack gap="md" class="py-6 pr-6 pl-8">
+          <nb-avatar [tone]="example.tone" class="self-start">
+            {{ $index + 1 | number: '2.0-0' }}
+          </nb-avatar>
+
           <span
-            class="font-mono text-xs uppercase tracking-widest text-black/55"
+            class="self-start rounded-lg border-2 border-black px-3 py-1.5 font-mono text-base font-extrabold shadow-[2px_2px_0_var(--nb-shadow)]"
+            [ngClass]="toneTint[example.tone]"
           >
-            {{ example.app }}
+            {{ example.api }}
           </span>
 
-          <a
-            nbButton
-            class="group"
-            target="_blank"
-            rel="noopener"
-            radius="md"
-            [tone]="example.tone"
-            [href]="example.link"
+          <h3
+            nbTitle
+            class="self-start font-black text-xl uppercase tracking-wider"
+            [ngClass]="toneWave[example.tone]"
           >
-            <span nbText weight="black" transform="uppercase" i18n="@@card.view"
-              >View</span
-            >
+            {{ example.title }}
+          </h3>
+
+          <p class="text-sm font-medium">{{ example.description }}</p>
+
+          <div nbCluster gap="sm" align="center">
+            @for (tag of example.tags; track $index) {
+              <span nbBadge>{{ tag }}</span>
+            }
+          </div>
+
+          <div
+            nbCluster
+            justify="between"
+            align="center"
+            class="mt-1 border-t-2 border-dashed border-black/25 pt-3"
+          >
             <span
-              nbButtonTrailingIcon
-              shape="circle"
-              size="lg"
-              class="transition-transform motion-safe:group-hover:translate-x-1"
+              class="font-mono text-xs uppercase tracking-widest text-black/55"
             >
-              <ng-icon size="20" name="tablerCircleArrowRightFill" />
+              {{ example.app }}
             </span>
-          </a>
+
+            <a
+              nbButton
+              class="group"
+              target="_blank"
+              rel="noopener"
+              radius="md"
+              [tone]="example.tone"
+              [href]="example.link"
+            >
+              <span
+                nbText
+                weight="black"
+                transform="uppercase"
+                i18n="@@card.view"
+                >View</span
+              >
+              <span
+                nbButtonTrailingIcon
+                shape="circle"
+                size="lg"
+                class="transition-transform motion-safe:group-hover:translate-x-1"
+              >
+                <ng-icon size="20" name="tablerCircleArrowRightFill" />
+              </span>
+            </a>
+          </div>
         </div>
-      </div>
-    </nb-card>
-  </div>
+      </nb-card>
+    </div>
   }
 </section>

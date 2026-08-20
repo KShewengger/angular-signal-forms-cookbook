@@ -14,6 +14,10 @@ export class ValidationErrors {
 
   readonly visible = input(false);
 
+  protected readonly showErrors = computed(
+    () => this.visible() && this.errors().length > 0,
+  );
+
   protected readonly hasMultipleErrors = computed(
     () => this.errors().length > 1,
   );

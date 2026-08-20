@@ -1,0 +1,12 @@
+.seat-taken {
+  background-color: color-mix(
+    in srgb,
+    var(--nb-foreground) 18%,
+    var(--nb-surface)
+  ) !important;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent 0 4px,
+    rgba(0, 0, 0, 0.13) 4px 7px
+  );
+}

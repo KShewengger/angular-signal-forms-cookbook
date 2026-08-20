@@ -32,11 +32,8 @@ import {
   NbCheckbox,
   NbButtonTrailingIcon,
 } from '@ng-brutalism/ui';
-import {
-  INITIAL_REGISTRATION,
-  RegistrationFormModel,
-  registrationSchema,
-} from './app.model';
+import { INITIAL_REGISTRATION, RegistrationFormModel } from './app.model';
+import { registrationSchema } from './app.schema';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { tablerUserCheck, tablerCopyright } from '@ng-icons/tabler-icons';
 import {
@@ -44,6 +41,7 @@ import {
   tablerCircleArrowLeftFill,
 } from '@ng-icons/tabler-icons/fill';
 import { ValidationErrors } from './validation-errors';
+import { ROLES } from './app.data';
 
 @Component({
   selector: 'app-root',
@@ -115,7 +113,8 @@ export class App {
 
   protected readonly value = computed(() => this.userForm().value());
 
-  protected readonly keepOrder = (): number => 0;
+  protected readonly roles = ROLES;
+  protected readonly keepOrder = () => 0;
 
   protected clear(): void {
     this.dialog().close();

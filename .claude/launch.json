@@ -14,6 +14,42 @@
       "port": 4301
     },
     {
+      "name": "02-built-in-validations",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "nx",
+        "serve",
+        "02-built-in-validations",
+        "--port",
+        "4302"
+      ],
+      "port": 4302
+    },
+    {
+      "name": "03-cross-field-validation",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "nx",
+        "serve",
+        "03-cross-field-validation",
+        "--port",
+        "4303"
+      ],
+      "port": 4303
+    },
+    {
+      "name": "04-async-validation",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["nx", "serve", "04-async-validation", "--port", "4304"],
+      "port": 4304
+    },
+    {
+      "name": "05-array-validation",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["nx", "serve", "05-array-validation", "--port", "4305"],
+      "port": 4305
+    },
+    {
       "name": "06-custom-control",
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["nx", "serve", "06-custom-control", "--port", "4306"],
@@ -24,6 +60,18 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["nx", "serve", "07-debounce-input", "--port", "4307"],
       "port": 4307
+    },
+    {
+      "name": "08-conditional-validation",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "nx",
+        "serve",
+        "08-conditional-validation",
+        "--port",
+        "4308"
+      ],
+      "port": 4308
     }
   ]
 }

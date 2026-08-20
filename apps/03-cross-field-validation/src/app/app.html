@@ -58,7 +58,7 @@
               class="min-w-28"
               aria-label="Lesson topics"
             >
-              <span nbChip tone="danger" i18n="@@angular21Label">
+              <span nbChip tone="danger" i18n="@@angular22Label">
                 Angular 22
               </span>
 
@@ -89,11 +89,12 @@
             <img src="passport.png" alt="Passport" />
           </div>
 
+          <!-- EMAIL FORM -->
           <form novalidate nbStack gap="lg" class="mb-4 z-50">
             <div class="grid w-full w-96 gap-2">
               <label nbLabel for="email" i18n="@@emailLabel">Email</label>
               <nb-input-group>
-                <span nbInputPrefix>@</span>
+                <span nbInputPrefix>&#64;</span>
                 <input
                   nbInput
                   id="email"
@@ -102,12 +103,12 @@
                 />
 
                 @if (valid()) {
-                <span nbInputSuffix class="bg-white border-0! w-auto">
-                  <ng-icon
-                    name="tablerCheck"
-                    class="text-green-500! relative right-2"
-                    size="16"
-                /></span>
+                  <span nbInputSuffix class="bg-white border-0! w-auto">
+                    <ng-icon
+                      name="tablerCheck"
+                      class="text-green-500! relative right-2"
+                      size="16"
+                  /></span>
                 }
               </nb-input-group>
 
@@ -119,7 +120,7 @@
                 >Confirm Email</label
               >
               <nb-input-group>
-                <span nbInputPrefix>@</span>
+                <span nbInputPrefix>&#64;</span>
                 <input
                   nbInput
                   id="confirm-email"
@@ -128,12 +129,12 @@
                 />
 
                 @if (valid()) {
-                <span nbInputSuffix class="bg-white border-0! w-auto">
-                  <ng-icon
-                    name="tablerCheck"
-                    class="text-green-500! relative right-2"
-                    size="16"
-                /></span>
+                  <span nbInputSuffix class="bg-white border-0! w-auto">
+                    <ng-icon
+                      name="tablerCheck"
+                      class="text-green-500! relative right-2"
+                      size="16"
+                  /></span>
                 }
               </nb-input-group>
 
@@ -213,7 +214,7 @@
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Go to the next lesson"
-      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps"
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/04-async-validation"
     >
       <span
         nbText

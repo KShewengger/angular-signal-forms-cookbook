@@ -2,11 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Injector, signal } from '@angular/core';
 import { form } from '@angular/forms/signals';
 import { App } from './app';
-import {
-  INITIAL_REGISTRATION,
-  RegistrationFormModel,
-  registrationSchema,
-} from './app.model';
+import { INITIAL_REGISTRATION, RegistrationFormModel } from './app.model';
+import { registrationSchema } from './app.schema';
 
 describe('App (01 · Basic Form)', () => {
   describe('form schema (isolated)', () => {

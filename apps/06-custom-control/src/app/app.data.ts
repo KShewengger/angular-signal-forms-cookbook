@@ -1,4 +1,5 @@
 import type { PizzaTopping, RenderPizzaTopping } from './app.model';
+import { calculatePct } from './app.utils';
 
 export const PIZZA_TOPPINGS_MAP: Record<string, PizzaTopping> = {
   mozzarella: {
@@ -63,8 +64,6 @@ const PIZZA_BOARD_SIZE = { width: 250, height: 180 };
 export const PIZZA_TOPPINGS: RenderPizzaTopping[] = Object.values(
   PIZZA_TOPPINGS_MAP,
 ).map((topping) => {
-  const calculatePct = (value: number, whole: number) => (value / whole) * 100;
-
   return {
     ...topping,
     positions: topping.slots.map((slot) => ({

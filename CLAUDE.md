@@ -302,6 +302,17 @@ recipe focused on **one** concept with a clear `README.md`.
   `nrwl/nx-set-shas`. Don't remove those.
 - A card that won't shrink is usually the component host - `:host { display: block;
 width: 100% }` fixes ng-brutalism cards, not `!w-full` hacks.
+- **Component templates need Prettier's `angular` parser, not `html`.** Prettier infers
+  `html` from the `.html` extension, and that parser does not understand control flow
+  blocks: it leaves `@if` / `@for` / `@switch` bodies unindented and collapses `}` and
+  `@case` onto one line. The `overrides` block in `.prettierrc` maps
+  `apps/*/src/app/**/*.html` to `parser: "angular"`. Keep the glob scoped to `src/app` so
+  each app's `src/index.html`, which is a plain document, stays on the `html` parser.
+- **A literal `@` in template text must be `&#64;`.** Angular reads `@` as the control
+  flow sigil. The compiler currently tolerates a stray one, so `nx build` stays green and
+  the bug hides, but Prettier's `angular` parser rejects it outright
+  (`SyntaxError: Incomplete block ""`). Only text content is affected; `@` inside an
+  attribute value (`placeholder="user@example.com"`) is fine.
 
 ---
 

@@ -20,7 +20,7 @@
           </div>
 
           <div nbChipGroup nbCluster gap="md" aria-label="Lesson topics">
-            <span nbChip tone="danger" i18n="@@angular21Label">
+            <span nbChip tone="danger" i18n="@@angular22Label">
               Angular 22
             </span>
 
@@ -56,34 +56,36 @@
 
       <hr nbSeparator variant="dashed" aria-hidden="true" />
 
+      <!-- TOPPINGS FORM -->
       <div nbCluster gap="lg" justify="center" class="px-5">
-        @for(topping of pizzaToppings; track topping.id) {
-        <div nbStack gap="xs">
-          <nb-input-group class="w-32!">
-            <div nbInputPrefix>
-              <img
-                width="32"
-                height="32"
-                class="w-8 h-8"
-                [ngSrc]="topping.imgUrl"
-                [alt]="topping.label"
+        @for (topping of pizzaToppings; track topping.id) {
+          <div nbStack gap="xs">
+            <nb-input-group class="w-32!">
+              <div nbInputPrefix>
+                <img
+                  width="32"
+                  height="32"
+                  class="w-8 h-8"
+                  [ngSrc]="topping.imgUrl"
+                  [alt]="topping.label"
+                />
+              </div>
+              <input
+                nbInput
+                placeholder="0"
+                type="number"
+                [formField]="pizzaMakerForm.toppings[$index].count"
               />
-            </div>
-            <input
-              nbInput
-              placeholder="0"
-              type="number"
-              [formField]="pizzaMakerForm.toppings[$index].count"
+            </nb-input-group>
+            <app-validation-errors
+              class="min-h-5"
+              [field]="pizzaMakerForm.toppings[$index]"
             />
-          </nb-input-group>
-          <app-validation-errors
-            class="min-h-5"
-            [field]="pizzaMakerForm.toppings[$index]"
-          />
-        </div>
+          </div>
         }
       </div>
 
+      <!-- PIZZA PREVIEW -->
       <div nbCluster justify="center" class="relative mb-20">
         <img
           ngSrc="pizza-board.svg"
@@ -93,21 +95,24 @@
           class="block h-auto w-full"
         />
 
-        @for(topping of pizzaToppings; track topping.id) { @for (slot of
-        topping.positions; track $index) {
-        <img
-          class="topping"
-          [class.topping--visible]="(visibleCounts().get(topping.id) ?? 0) > $index"
-          [alt]="topping.label"
-          [style.left.%]="slot.left"
-          [style.top.%]="slot.top"
-          [style.width.%]="slot.width"
-          [style.zIndex]="topping.zIndex"
-          [style.transitionDelay]="$index * 60 + 'ms'"
-          [src]="topping.imgUrl"
-          [alt]="topping.label"
-        />
-        } }
+        @for (topping of pizzaToppings; track topping.id) {
+          @for (slot of topping.positions; track $index) {
+            <img
+              class="topping"
+              [class.topping--visible]="
+                (visibleCounts().get(topping.id) ?? 0) > $index
+              "
+              [alt]="topping.label"
+              [style.left.%]="slot.left"
+              [style.top.%]="slot.top"
+              [style.width.%]="slot.width"
+              [style.zIndex]="topping.zIndex"
+              [style.transitionDelay]="$index * 60 + 'ms'"
+              [src]="topping.imgUrl"
+              [alt]="topping.label"
+            />
+          }
+        }
       </div>
 
       <!-- DECORATIONS -->
@@ -158,6 +163,7 @@
         weight="black"
         transform="uppercase"
         tracking="wide"
+        i18n="@@prevAsyncValidation"
       >
         Prev: Async Validation
       </span>
@@ -171,7 +177,7 @@
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Go to the next lesson"
-      href=""
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/06-custom-control"
     >
       <span
         nbText
@@ -179,8 +185,9 @@
         weight="black"
         transform="uppercase"
         tracking="wide"
+        i18n="@@nextCustomControl"
       >
-        Next: Array Validation
+        Next: Custom Control
       </span>
 
       <span nbButtonTrailingIcon shape="circle" class="grid place-items-center">
