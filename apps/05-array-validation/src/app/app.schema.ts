@@ -8,7 +8,6 @@ import {
 import { PIZZA_TOPPINGS_MAP } from './app.data';
 import { PizzaFormModel, PizzaFormModelItem } from './app.model';
 
-// Per-item schema, applied to every topping in the array via applyEach.
 export function pizzaToppingItemSchema(
   item: SchemaPathTree<PizzaFormModelItem>,
 ) {
@@ -28,8 +27,6 @@ export function pizzaToppingItemSchema(
   });
 }
 
-// Extracting the schema keeps it reusable: the component builds its form from it,
-// and the tests build the same form in isolation without rendering a component.
 export const pizzaMakerSchema = schema<PizzaFormModel>((path) => {
   applyEach(path.toppings, pizzaToppingItemSchema);
 });

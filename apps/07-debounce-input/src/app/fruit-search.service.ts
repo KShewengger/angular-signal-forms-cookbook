@@ -11,7 +11,6 @@ export class FruitSearch {
       fruit.name.toLowerCase().includes(q),
     );
 
-    // Simulate a server round-trip so the debounced query has something to await.
     return of(matches).pipe(delay(600));
   }
 }

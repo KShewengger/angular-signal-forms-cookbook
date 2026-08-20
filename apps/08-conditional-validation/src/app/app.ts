@@ -211,9 +211,6 @@ export class App {
     if (!open) this.bookingForm.comboSize().markAsTouched();
   }
 
-  // First click reserves: `submit()` marks every field touched, then the action
-  // runs only if the form is valid. A reserved order locks its fields, so the
-  // button turns into a reset that clears the form and re-enables editing.
   protected book(): void {
     if (this.booked()) {
       this.bookingForm().reset({ ...INITIAL_BOOKING });

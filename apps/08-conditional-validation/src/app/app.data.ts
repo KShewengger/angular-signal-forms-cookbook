@@ -15,7 +15,6 @@ export const MEALS: string[] = [
 
 export const COMBO_SIZES: string[] = ['Small', 'Medium', 'Large'];
 
-// The one code that unlocks the 50% group discount (matched case-insensitively).
 export const PROMO_CODE = 'SQUAD50';
 
 export const SEATS: Seat[] = [
