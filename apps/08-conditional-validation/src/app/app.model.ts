@@ -30,6 +30,14 @@ export type Booking = {
   promoCode: string;
 };
 
+export const INITIAL_BOOKING: Booking = {
+  tickets: [],
+  addSnacks: false,
+  comboSize: '',
+  experience: { format: 'standard' },
+  promoCode: '',
+};
+
 export type ExperienceOption = {
   format: Experience['format'];
   label: string;

@@ -307,13 +307,17 @@
         "
       >
         @if (promoDisabled()) {
-          🔒 Unlocks when you book 4+ seats ({{ seatCount() }}/4)
+          <span i18n="@@promoLockedHint"
+            >🔒 Unlocks when you book 4+ seats ({{ seatCount() }}/4)</span
+          >
         } @else if (couponInvalid()) {
-          Invalid coupon.
+          <span i18n="@@invalidCouponError">Invalid coupon.</span>
         } @else if (promoApplied()) {
-          🔓 Group rate applied · 50% off
+          <span i18n="@@promoAppliedHint">🔓 Group rate applied · 50% off</span>
         } @else {
-          🔓 Unlocked · add a code for 50% off
+          <span i18n="@@promoUnlockedHint"
+            >🔓 Unlocked · add a code for 50% off</span
+          >
         }
       </span>
     </div>
@@ -348,10 +352,10 @@
       (click)="book()"
     >
       @if (booked()) {
-        Reserved
+        <span i18n="@@reservedLabel">Reserved</span>
         <ng-icon aria-hidden="true" size="20" name="tablerCircleCheckFill" />
       } @else {
-        Book {{ seatCount() }} seats →
+        <span i18n="@@bookSeatsLabel">Book {{ seatCount() }} seats →</span>
       }
     </button>
   </div>

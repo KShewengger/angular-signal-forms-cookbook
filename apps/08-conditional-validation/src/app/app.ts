@@ -2,6 +2,7 @@ import { Component, computed, signal } from '@angular/core';
 import {
   Booking,
   Experience,
+  INITIAL_BOOKING,
   ImaxExperience,
   VipExperience,
   bookingSchema,
@@ -91,13 +92,7 @@ import {
   ],
 })
 export class App {
-  protected readonly bookingModel = signal<Booking>({
-    tickets: [],
-    addSnacks: false,
-    comboSize: '',
-    experience: { format: 'standard' },
-    promoCode: '',
-  });
+  protected readonly bookingModel = signal<Booking>({ ...INITIAL_BOOKING });
 
   protected readonly bookingForm = form(this.bookingModel, bookingSchema);
 
@@ -145,8 +140,6 @@ export class App {
 
   protected readonly seatCount = computed(() => this.selectedSeats().size);
 
-  // Driven by the schema's `disabled(promoCode, when: tickets.length < 4)`:
-  // reading the field's own disabled state is the `when` rule's payoff.
   protected readonly promoDisabled = computed(() =>
     this.bookingForm.promoCode().disabled(),
   );
@@ -165,7 +158,6 @@ export class App {
     return price * this.seatCount();
   });
 
-  // The discount needs the exact code AND an unlocked field (the `when` rule).
   protected readonly promoApplied = computed(
     () =>
       !this.promoDisabled() &&
@@ -220,8 +212,6 @@ export class App {
     if (!open) this.bookingForm.comboSize().markAsTouched();
   }
 
-  // `submit()` marks every field touched before the action runs, so any pending
-  // conditional errors surface. No backend here, so it just flips to "reserved".
   protected book(): void {
     if (this.booked()) return;
 
