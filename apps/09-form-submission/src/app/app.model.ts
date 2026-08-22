@@ -16,7 +16,6 @@ export type QuestionOption = {
 export type Question = {
   id: string;
   kind: QuestionKind;
-  kicker: string;
   prompt: string;
   answer: string;
   hint: string;

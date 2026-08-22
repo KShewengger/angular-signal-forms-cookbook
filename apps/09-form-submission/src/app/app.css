@@ -1,11 +1,11 @@
 /* Stacked backing cards: transforms are the one thing Tailwind can't express. */
 .deck-layer--near {
-  background: #f2ead6;
+  background: color-mix(in srgb, var(--nb-card-bg), var(--nb-shadow) 7%);
   transform: translate(7px, 9px) rotate(2deg) scale(0.99);
   z-index: 1;
 }
 .deck-layer--far {
-  background: #ede3ca;
+  background: color-mix(in srgb, var(--nb-card-bg), var(--nb-shadow) 12%);
   transform: translate(15px, 18px) rotate(4deg) scale(0.98);
   z-index: 0;
 }
@@ -13,7 +13,7 @@
 .spinner {
   width: 15px;
   height: 15px;
-  border: 3px solid rgba(20, 20, 20, 0.25);
+  border: 3px solid color-mix(in srgb, var(--nb-shadow) 25%, transparent);
   border-top-color: var(--nb-shadow);
   border-radius: 50%;
 }
