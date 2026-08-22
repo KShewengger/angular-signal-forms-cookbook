@@ -3,10 +3,10 @@
 > The **form submission** recipe: a neo-brutalist **Signals Pop Quiz** dealt as a
 > flashcard deck. Every card is _one form submission_, you answer, hit **Submit**, and a
 > mock server (`GraderService`) grades it. Its verdict routes straight back onto the field
-> via **`submit()`** / the **`[formRoot]`** directive: a wrong answer returns a
-> field-targeted error (`fieldTree`), running out of tries returns a **form-level** error
-> that locks the deck, and a correct answer resolves the submission and deals the next
-> card. No `ReactiveFormsModule`, no `FormBuilder`.
+> via the **`[formRoot]`** submission API: a wrong answer returns a field-targeted error
+> (`fieldTree`) that shows under the card and clears the moment you edit, and a correct
+> answer resolves the submission and swipes in the next card. No `ReactiveFormsModule`, no
+> `FormBuilder`.
 
 <p align="center">
   <img
@@ -36,24 +36,27 @@ all projects share a single root `package.json`.
 
 ## Signal Forms API at a glance
 
-| API                                           | What it does                                                                     | Where in this recipe                        |
-| --------------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------- |
-| `form(model, schema, { submission })`         | Configures the submission `action`, `onInvalid`, and `ignoreValidators`          | `answerForm`                                |
-| `[formRoot]`                                  | Wires a native `<form>` to submit the form (sets `novalidate`, prevents default) | `<form [formRoot]="answerForm">`            |
-| `field().submitting()`                        | `true` while the async action runs, drives the spinner + double-submit guard     | the Submit button                           |
-| action returns `undefined`                    | Submission succeeded                                                             | correct answer → deal the next card         |
-| action returns `{ kind, message, fieldTree }` | A **field-level** server error                                                   | wrong answer → error under the card         |
-| action returns `{ kind, message }`            | A **form-level** (root) server error                                             | out of tries → the deck locks               |
-| `onInvalid` + `focusBoundControl()`           | Runs when validation blocks the submit; focuses the first invalid field          | submit an empty card                        |
-| `ignoreValidators: 'none'`                    | Pending validators block submission                                              | configured on `answerForm`                  |
-| `submit(form, action)` → `Promise<boolean>`   | Manual submission that resolves `true`/`false`                                   | the alternative to `[formRoot]` (see below) |
-| `required`                                    | Client rule that gates the action                                                | `required(path.answer)`                     |
+| API                                           | What it does                                                                       | Where in this recipe                |
+| --------------------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------- |
+| `form(model, schema, { submission })`         | Configures the submission `action`, `onInvalid`, and `ignoreValidators`            | `answerForm`                        |
+| `[formRoot]`                                  | Wires a native `<form>` to submit the form (sets `novalidate`, prevents default)   | `<form [formRoot]="answerForm">`    |
+| `field().submitting()`                        | `true` while the async action runs; drives the spinner and the double-submit guard | the Submit button                   |
+| action returns `undefined`                    | Submission succeeded                                                               | correct answer → deal the next card |
+| action returns `{ kind, message, fieldTree }` | A **field-level** server error, routed onto the answer field                       | wrong answer → error under the card |
+| `onInvalid` + `focusBoundControl()`           | Runs when client validation blocks the submit; focuses the first invalid field     | submit an empty card                |
+| `ignoreValidators: 'none'`                    | The action only runs once every validator passes (pending validators block it)     | configured on `answerForm`          |
+| `submit(form, action)` → `Promise<boolean>`   | The imperative alternative to `[formRoot]`: resolves `true`/`false`                | not used here (see below)           |
+| `required`                                    | Client rule that gates the action                                                  | `required(path.answer)`             |
 
 ---
 
 ## The form
 
-The whole quiz runs on **one reusable single-field form**, reset between cards:
+The whole quiz runs on **one reusable single-field form**, reset between cards.
+
+| Field    | Control                                              | Type     | Validation           |
+| -------- | ---------------------------------------------------- | -------- | -------------------- |
+| `answer` | `nbInput` (text card) / choice buttons (choice card) | `string` | `required` on submit |
 
 ```ts
 export type QuizAnswer = { answer: string };
@@ -63,7 +66,7 @@ export const answerSchema = schema<QuizAnswer>((path) => {
 });
 ```
 
-Each card binds the same field, the text card with `[formField]`, the multiple-choice card
+Each card binds the same field: the text card with `[formField]`, the multiple-choice card
 by writing the selected option into `answerForm.answer().value`.
 
 ---
@@ -71,8 +74,8 @@ by writing the selected option into `answerForm.answer().value`.
 ## Submission (the recipe's core idea)
 
 The submission is configured **on `form()`**, and the native `<form [formRoot]>` triggers it.
-The `action` is where the server lives: it grades the answer and **returns** the result as
-errors, exactly the three shapes the guide describes.
+The `action` is where the server lives: it grades the answer and **returns** the result as a
+validation result, exactly as the guide describes.
 
 ```ts
 protected readonly answerForm = form(this.answerModel, answerSchema, {
@@ -86,30 +89,23 @@ protected readonly answerForm = form(this.answerModel, answerSchema, {
 
 private async gradeSubmission(field: FieldTree<QuizAnswer>) {
   const question = this.currentQuestion();
-  const correct = await this.grader.grade(question.id, field.answer().value());
+  const result = await this.grader.grade(question.id, field.answer().value());
 
-  if (correct) {
-    queueMicrotask(() => this.advance()); // success → deal the next card
-    return undefined;
+  if (result.correct) {
+    this.index.update((current) => current + 1); // advance; `phase` derives 'passed' at the end
+    this.answerForm().reset({ ...INITIAL_ANSWER });
+    return undefined; // submission succeeded
   }
 
-  const remaining = this.hearts() - 1;
-  this.hearts.set(remaining);
-
-  if (remaining <= 0) {
-    queueMicrotask(() => this.phase.set('locked'));
-    return { kind: 'locked', message: 'Out of tries, the deck is locked.' }; // form-level
-  }
-
-  return { kind: 'wrongAnswer', message: 'Not quite, try again.', fieldTree: field.answer }; // field-level
+  // field-level server error: shows under the answer and clears when the user edits
+  return { kind: 'wrongAnswer', message: result.message, fieldTree: field.answer };
 }
 ```
 
-| Return value                         | Kind of error | Effect                                                   |
-| ------------------------------------ | ------------- | -------------------------------------------------------- |
-| `undefined`                          | none          | submission succeeds, the deck advances                   |
-| `{ kind, message, fieldTree }`       | field-level   | the message shows under the answer, a try is spent       |
-| `{ kind, message }` (no `fieldTree`) | form-level    | the deck locks; the message reads from `form().errors()` |
+| Return value                   | Kind of error | Effect                                                         |
+| ------------------------------ | ------------- | -------------------------------------------------------------- |
+| `undefined`                    | none          | submission succeeds, the deck swipes to the next card          |
+| `{ kind, message, fieldTree }` | field-level   | the message shows under the answer; the card shakes; you retry |
 
 > **`[formRoot]` vs `submit()`.** `[formRoot]` submits declaratively from the template
 > (used here). The manual `submit(answerForm, action)` returns a `Promise<boolean>` you can
@@ -118,17 +114,40 @@ private async gradeSubmission(field: FieldTree<QuizAnswer>) {
 
 ---
 
+## The mock server
+
+`GraderService` is an injectable `@Service()` that stands in for a backend: it scores the
+answer synchronously, then resolves a `Promise` after a short delay so `submitting()` is
+actually visible.
+
+```ts
+@Service()
+export class GraderService {
+  grade(questionId: string, answer: string): Promise<GradeResult> {
+    const question = QUESTIONS.find((entry) => entry.id === questionId);
+    const correct = question !== undefined && answer.trim().toLowerCase() === question.answer;
+
+    const result: GradeResult = correct ? { correct: true } : { correct: false, message: $localize`:@@wrongAnswer:Not quite, try again.` };
+
+    return new Promise<GradeResult>((resolve) => setTimeout(() => resolve(result), 500));
+  }
+}
+```
+
+---
+
 ## Error display
 
-Submission errors attach to a field (or the form root) and, per the guide, **clear the
-moment the user edits that field**, so a wrong answer's red state disappears as soon as you
-change your answer to try again.
+Both messages surface through the shared **`ValidationErrors`** component bound to the
+answer field (`[field]="answerField"`), which reads `errorSummary()` and gates visibility on
+`(dirty() || touched()) && invalid()`. Submission errors attach to the field and, per the
+guide, **clear the moment the user edits that field**, so a wrong answer's red state
+disappears as soon as you change your answer.
 
 | Message                                   | Level            | Shows when                                         |
 | ----------------------------------------- | ---------------- | -------------------------------------------------- |
 | "Answer this question before submitting." | field (required) | submit an empty card (`onInvalid` also focuses it) |
-| "Not quite, try again."                   | field (server)   | a wrong answer, tries remaining                    |
-| "Out of tries, the deck is locked."       | form (server)    | the last try is spent                              |
+| "Not quite, try again."                   | field (server)   | a wrong answer                                     |
 
 ---
 
@@ -139,22 +158,21 @@ change your answer to try again.
 | Submitting | `answerForm().submitting()`     | the grading action is in flight               |
 | Invalid    | `answerForm.answer().invalid()` | the answer is empty or carries a server error |
 | Touched    | `answerForm.answer().touched()` | after a submit attempt (submit marks touched) |
-| Form error | `answerForm().errors()`         | a form-level (root) server error is present   |
 
 ---
 
 ## Tech & tools
 
-| Layer     | Tool                                                                          | Purpose                                                           |
-| --------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| Framework | **Angular 22** (standalone, signals, new control flow `@if`/`@for`/`@switch`) | Application shell and reactivity                                  |
-| Forms     | **`@angular/forms/signals`**                                                  | `form()`, `[formRoot]`, `submit()`, `submitting()`, server errors |
-| UI kit    | **ng-brutalism** (`@ng-brutalism/ui`)                                         | `nbButton`, `nbInput`, `nbText`, `nbCluster`, `nbSeparator`       |
-| Icons     | **`@ng-icons/tabler-icons`**                                                  | Lesson-nav arrows, footer copyright                               |
-| Styling   | **Tailwind CSS v4** (with the ng-brutalism theme)                             | Utility classes plus the card deck / animations in `app.css`      |
-| i18n      | **`@angular/localize`**                                                       | Translatable user-facing strings                                  |
-| Tooling   | **Nx 23** + **esbuild**                                                       | Build, serve, and dependency graph                                |
-| Tests     | **Vitest 4**                                                                  | Isolated schema + grader-service + component tests                |
+| Layer     | Tool                                                                          | Purpose                                                                 |
+| --------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Framework | **Angular 22** (standalone, signals, new control flow `@if`/`@for`/`@switch`) | Application shell and reactivity                                        |
+| Forms     | **`@angular/forms/signals`**                                                  | `form()`, `[formRoot]`, `submitting()`, server errors                   |
+| UI kit    | **ng-brutalism** (`@ng-brutalism/ui`)                                         | `nbButton`, `nbInput`, `nbText`, `nbCluster`, `nbSeparator`             |
+| Icons     | **`@ng-icons/tabler-icons`**                                                  | Lesson-nav arrows, footer copyright, the replay icon                    |
+| Styling   | **Tailwind CSS v4** (with the ng-brutalism theme)                             | Utility classes plus the card deck and `animate.enter` in `app.css`     |
+| i18n      | **`@angular/localize`**                                                       | Translatable user-facing strings                                        |
+| Tooling   | **Nx 23** + **esbuild**                                                       | Build, serve, and dependency graph                                      |
+| Tests     | **Vitest 4**                                                                  | Isolated schema + grader-service + component + `ValidationErrors` tests |
 
 ---
 
@@ -173,7 +191,8 @@ the tests build the same form in isolation.
 **3. Configure submission** (`app.ts`)
 
 `form(model, schema, { submission: { action, onInvalid, ignoreValidators } })`. The `action`
-calls the mock `GraderService` and returns the field / form-level errors above.
+calls the mock `GraderService`; a correct answer returns `undefined` and advances the deck,
+a wrong answer returns a `{ kind, message, fieldTree }` field error.
 
 **4. Submit from the template** (`app.html`)
 
@@ -192,19 +211,22 @@ Following the [Signal Forms testing guide](https://angular.dev/guide/forms/signa
 tests are split by concern:
 
 - **Isolated schema tests** build the form directly from `answerSchema` and assert the
-  `required` rule.
-- **Grader-service tests** exercise the mock server directly (correct/incorrect answers,
-  case-insensitive matching, unknown questions), with `GRADER_LATENCY_MS` provided as `0`.
+  `required` rule, without a component or DOM.
+- **Grader-service tests** exercise the mock server directly (correct answers, case-insensitive
+  and whitespace-trimmed matching, wrong answers, unknown questions), advancing Vitest fake
+  timers to resolve the delayed `Promise`.
 - **Component tests** cover the submission lifecycle through the DOM: the first card renders,
   an empty submit is blocked and reports the required error (`onInvalid`), a correct answer
-  advances the deck, a wrong answer shows the field error and spends a try, and the last
-  try locks the deck with the form-level error.
+  advances the deck, and a wrong answer shows the field error and shakes the card.
+- **`ValidationErrors`** is tested against the real answer field, so its visibility gating,
+  the required message, the single-error list, and its `role="alert"` are verified against the
+  actual recipe.
 
 ---
 
 ## Internationalization
 
 Every user-facing string is translatable. Template text uses `i18n="@@stableId"` and
-TypeScript strings (the questions, the server messages) use the `$localize` tagged template.
+TypeScript strings (the questions, the server message) use the `$localize` tagged template.
 The `@angular/localize/init` polyfill is wired in `project.json` (build) and `test-setup.ts`
 (tests). Keep the `@@` IDs stable; they are the translation contract.
