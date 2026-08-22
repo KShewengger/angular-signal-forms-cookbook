@@ -1,0 +1,322 @@
+<!-- HERO -->
+<header
+  class="mx-auto flex w-120 max-w-full flex-col gap-3"
+  aria-label="Lesson header"
+>
+  <div
+    nbCallout
+    tone="lavender"
+    size="md"
+    class="w-fit"
+    aria-label="Lesson 9: Form Submission"
+  >
+    <span aria-hidden="true">09</span>
+    <hr nbSeparator orientation="vertical" aria-hidden="true" />
+    <span class="text-sm" i18n="@@lessonFormSubmissionLabel">
+      Form Submission
+    </span>
+  </div>
+
+  <div nbChipGroup nbCluster gap="md" aria-label="Lesson topics">
+    <span nbChip tone="danger" i18n="@@angular22Label"> Angular 22 </span>
+    <span nbChip tone="accent" i18n="@@signalFormsLabel"> Signal Forms </span>
+    <span nbChip tone="black" i18n="@@basicLabel"> Ng-Brutalism </span>
+  </div>
+</header>
+
+<!-- QUIZ DECK -->
+<section class="flex flex-col items-center" aria-label="Signals pop quiz">
+  <div class="relative w-120 max-w-full">
+    <!-- STAR STICKER -->
+    <div
+      class="absolute -top-7 -right-10 z-20 origin-top-right scale-68"
+      aria-hidden="true"
+    >
+      <nb-sticker
+        shape="burst-wide"
+        tone="yellow"
+        i18n="@@testItLabel"
+        [rotate]="6"
+      >
+        TEST<br />
+        IT!
+      </nb-sticker>
+    </div>
+
+    <!-- STACK LAYERS -->
+    <div
+      class="deck-layer deck-layer--far absolute inset-0 rounded-2xl border-3 border-black shadow-hard-sm"
+      aria-hidden="true"
+    ></div>
+    <div
+      class="deck-layer deck-layer--near absolute inset-0 rounded-2xl border-3 border-black shadow-hard-sm"
+      aria-hidden="true"
+    ></div>
+
+    <!-- ACTIVE CARD -->
+    <form
+      class="card relative z-10 flex flex-col gap-2 rounded-2xl border-3 border-black bg-nb-card p-5 shadow-hard"
+      [formRoot]="answerForm"
+      [class.card--shake]="shaking()"
+    >
+      <nb-progress
+        tone="success"
+        aria-hidden="true"
+        [value]="index()"
+        [max]="questions.length"
+      />
+
+      @if (phase() === 'answering') {
+        <p
+          nbText
+          tone="muted"
+          size="xs"
+          weight="bold"
+          transform="uppercase"
+          tracking="wider"
+          class="m-0"
+          i18n="@@questionCounter"
+        >
+          Question {{ index() + 1 }} / {{ questions.length }}
+        </p>
+
+        <div class="flex flex-col gap-4 pt-8">
+          @for (question of [currentQuestion()]; track question.id) {
+            <div
+              class="flex flex-col gap-6 text-center"
+              animate.enter="card-enter"
+            >
+              <h2
+                nbTitle
+                class="m-0 text-lg leading-tight font-bold text-balance [--nb-title-wave-color:var(--nb-lavender)] [&::after]:mx-auto"
+              >
+                {{ question.prompt }}
+              </h2>
+
+              <div class="flex flex-col gap-1.5">
+                @switch (question.kind) {
+                  @case ('text') {
+                    <input
+                      nbInput
+                      class="text-center font-bold"
+                      autocomplete="off"
+                      spellcheck="false"
+                      placeholder="your answer"
+                      i18n-placeholder="@@answerPlaceholder"
+                      [formField]="answerField"
+                    />
+                  }
+                  @case ('choice') {
+                    <div class="flex flex-col gap-2">
+                      @for (option of question.options; track option.value) {
+                        <button
+                          nbButton
+                          fullWidth
+                          type="button"
+                          radius="md"
+                          [tone]="
+                            option.value === selectedValue()
+                              ? 'lavender'
+                              : 'background'
+                          "
+                          (click)="selectOption(option.value)"
+                        >
+                          {{ option.label }}
+                        </button>
+                      }
+                    </div>
+                  }
+                }
+
+                <app-validation-errors [field]="answerField" />
+
+                @if (hintShown()) {
+                  <small
+                    class="m-0 rounded-lg border-2 border-dashed border-black bg-nb-lavender/20 px-2.5 py-2"
+                  >
+                    {{ question.hint }}
+                  </small>
+                } @else {
+                  <button
+                    nbText
+                    type="button"
+                    tone="subtle"
+                    size="sm"
+                    weight="medium"
+                    class="cursor-pointer self-center border-0 bg-transparent p-0 transition-opacity hover:opacity-70"
+                    (click)="revealHint()"
+                  >
+                    <small class="font-medium tracking-wider" i18n="@@needHint"
+                      >Need a hint?</small
+                    >
+                  </button>
+                }
+              </div>
+            </div>
+          }
+
+          <button
+            nbButton
+            fullWidth
+            type="submit"
+            size="lg"
+            radius="md"
+            tone="yellow"
+            class="mt-2"
+            [disabled]="submitting()"
+          >
+            @if (submitting()) {
+              <span class="spinner" aria-hidden="true"></span>
+              <span i18n="@@submitting">Checking…</span>
+            } @else {
+              <span i18n="@@submit">Submit</span>
+            }
+          </button>
+        </div>
+      }
+
+      <!-- PASSED -->
+      @if (phase() === 'passed') {
+        <p
+          nbText
+          tone="muted"
+          size="xs"
+          weight="bold"
+          transform="uppercase"
+          tracking="wider"
+          class="m-0 text-center"
+          i18n="@@quizCompleteEyebrow"
+        >
+          Quiz complete
+        </p>
+
+        <div class="flex flex-col items-center gap-4 pt-8 text-center">
+          <div
+            class="medallion grid size-16 place-items-center rounded-full border-3 border-black bg-nb-mint text-3xl shadow-hard-sm"
+            aria-hidden="true"
+          >
+            🎉
+          </div>
+          <h2
+            nbTitle
+            class="m-0 self-center! text-2xl leading-tight font-black text-balance [--nb-title-wave-color:var(--nb-mint)] [&::after]:mx-auto"
+            i18n="@@passedTitle"
+          >
+            You passed!
+          </h2>
+
+          <p
+            nbText
+            tone="subtle"
+            size="sm"
+            weight="medium"
+            class="m-0"
+            i18n="@@passedMessage"
+          >
+            Signal forms mastered. You're a great Angular dev!
+          </p>
+
+          <button
+            nbButton
+            type="button"
+            size="lg"
+            radius="md"
+            tone="lavender"
+            class="mt-2"
+            (click)="restart()"
+          >
+            <span i18n="@@playAgain">Play again</span>
+            <ng-icon aria-hidden="true" size="20" name="tablerRefresh" />
+          </button>
+        </div>
+      }
+    </form>
+  </div>
+</section>
+
+<!-- LESSON NAVIGATION -->
+<nav
+  class="mx-auto mt-12 mb-4 flex w-120 max-w-full flex-col gap-2.5"
+  aria-label="Lesson navigation"
+>
+  <a
+    nbButton
+    fullWidth
+    tone="warning"
+    size="sm"
+    radius="md"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Go to the previous lesson"
+    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/08-conditional-validation"
+  >
+    <span nbButtonTrailingIcon shape="circle" class="grid place-items-center">
+      <ng-icon aria-hidden="true" size="20" name="tablerCircleArrowLeftFill" />
+    </span>
+
+    <span
+      nbText
+      size="md"
+      weight="black"
+      transform="uppercase"
+      tracking="wide"
+      i18n="@@prevConditionalValidation"
+    >
+      Prev: Conditional Validation
+    </span>
+  </a>
+
+  <a
+    nbButton
+    fullWidth
+    tone="success"
+    size="sm"
+    radius="md"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Go to the next lesson"
+    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps"
+  >
+    <span
+      nbText
+      size="md"
+      weight="black"
+      transform="uppercase"
+      tracking="wide"
+      i18n="@@nextZodSchema"
+    >
+      Next: Zod Schema Validation
+    </span>
+
+    <span nbButtonTrailingIcon shape="circle" class="grid place-items-center">
+      <ng-icon aria-hidden="true" size="20" name="tablerCircleArrowRightFill" />
+    </span>
+  </a>
+</nav>
+
+<!-- FOOTER -->
+<footer nbCluster gap="sm" align="center" justify="center" class="w-full">
+  <ng-icon
+    aria-hidden="true"
+    class="text-gray-300"
+    size="16"
+    name="tablerCopyright"
+  />
+
+  <small nbText tone="muted" size="xs" i18n="@@authorLabel">
+    Kristy Mae Almuete
+  </small>
+
+  <hr nbSeparator orientation="vertical" aria-hidden="true" />
+
+  <a
+    nbText
+    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/09-form-submission"
+    tone="danger"
+    size="xs"
+    target="_blank"
+    rel="noopener noreferrer"
+    i18n="@@githubRepository"
+    >GitHub Repo</a
+  >
+</footer>

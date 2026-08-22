@@ -39,7 +39,7 @@ $stagger-base: 0.2s;
     animation: nb-pop 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
-  .recipe-grid > * {
+  .recipe-grid__card {
     animation: nb-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 
     @for $i from 1 through $recipe-count {

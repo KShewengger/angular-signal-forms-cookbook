@@ -38,12 +38,12 @@
 
           <nb-card-title>
             <h1
-              i18n="@@liveSearchTitle"
-              id="live-search-title"
               nbDisplay
+              id="live-search-title"
               size="lg"
               underline="bar"
               class="font-mono font-black uppercase leading-tight"
+              i18n="@@liveSearchTitle"
             >
               Live Search
             </h1>
@@ -85,7 +85,9 @@
       <div nbStack gap="lg" class="px-6 pb-6">
         <!-- SEARCH -->
         <div nbStack gap="xs" class="w-full">
-          <nb-input-group [class.error]="queryInvalid()">
+          <nb-input-group
+            [style.--nb-border]="queryInvalid() ? 'var(--nb-danger)' : null"
+          >
             <span nbInputPrefix>
               <ng-icon name="tablerSearch" size="24" />
             </span>
@@ -255,13 +257,13 @@
     <hr nbSeparator orientation="vertical" aria-hidden="true" />
 
     <a
-      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/07-debounce-input"
       nbText
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/07-debounce-input"
       tone="danger"
       size="xs"
-      i18n="@@githubRepository"
       target="_blank"
       rel="noopener noreferrer"
+      i18n="@@githubRepository"
       >GitHub Repo</a
     >
   </footer>

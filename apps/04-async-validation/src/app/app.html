@@ -39,12 +39,12 @@
           <div nbCluster gap="lg" align="start" justify="between" wrap="nowrap">
             <nb-card-title>
               <h1
-                i18n="@@manageBookingTitle"
-                id="registration-title"
                 nbDisplay
+                id="registration-title"
                 size="lg"
                 underline="bar"
                 class="font-mono font-black uppercase leading-tight"
+                i18n="@@manageBookingTitle"
               >
                 {resolved(), select,
                   true {Booking found!}
@@ -100,7 +100,7 @@
             Fetching...
           </span>
 
-          <nb-progress [value]="80" label="progress" tone="accent" />
+          <nb-progress label="progress" tone="accent" [value]="80" />
         </div>
       } @else if (resolved()) {
         <!-- TICKET INFO -->
@@ -123,7 +123,7 @@
               <div class="grid w-full gap-2">
                 <label nbLabel for="reference" i18n="@@referenceLabel">
                   Reference Number
-                  <span class="italic" nbText size="xs" tone="subtle"
+                  <span nbText class="italic" size="xs" tone="subtle"
                     >(Try "ABC1234")</span
                   >
                 </label>
@@ -171,8 +171,8 @@
           <nb-card-actions class="mt-6">
             <button
               nbButton
-              tone="secondary"
               fullWidth
+              tone="secondary"
               [disabled]="!bookingForm().dirty() || bookingForm().invalid()"
             >
               <span i18n="@@findBookingLabel">Find my booking</span>
@@ -292,13 +292,13 @@
     <hr nbSeparator orientation="vertical" aria-hidden="true" />
 
     <a
-      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/04-async-validation"
       nbText
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/04-async-validation"
       tone="danger"
       size="xs"
-      i18n="@@githubRepository"
       target="_blank"
       rel="noopener noreferrer"
+      i18n="@@githubRepository"
       >GitHub Repo</a
     >
   </footer>
