@@ -66,11 +66,14 @@ export class App {
   protected readonly questions = QUESTIONS;
 
   protected readonly index = signal(0);
-  protected readonly phase = signal<QuizPhase>('answering');
   protected readonly hintShown = signal(false);
 
   protected readonly currentQuestion = computed(
-    () => this.questions[this.index()],
+    () => this.questions[Math.min(this.index(), this.questions.length - 1)],
+  );
+
+  protected readonly phase = computed<QuizPhase>(() =>
+    this.index() >= this.questions.length ? 'passed' : 'answering',
   );
 
   protected readonly answerModel = signal<QuizAnswer>({ ...INITIAL_ANSWER });
@@ -101,10 +104,6 @@ export class App {
       .some((error) => error.kind === 'wrongAnswer'),
   );
 
-  protected readonly progressValue = computed(() =>
-    this.phase() === 'passed' ? this.questions.length : this.index(),
-  );
-
   protected selectOption(value: string): void {
     this.answerForm.answer().value.set(value);
   }
@@ -115,7 +114,6 @@ export class App {
 
   protected restart(): void {
     this.index.set(0);
-    this.phase.set('answering');
     this.hintShown.set(false);
 
     this.answerForm().reset({ ...INITIAL_ANSWER });
@@ -127,14 +125,10 @@ export class App {
     const result = await this.grader.grade(question.id, field.answer().value());
 
     if (result.correct) {
-      const next = this.index() + 1;
-
       this.hintShown.set(false);
+      this.index.update((current) => current + 1);
 
-      if (next >= this.questions.length) {
-        this.phase.set('passed');
-      } else {
-        this.index.set(next);
+      if (this.index() < this.questions.length) {
         this.answerForm().reset({ ...INITIAL_ANSWER });
       }
 
