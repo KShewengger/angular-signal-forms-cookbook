@@ -42,8 +42,9 @@ Each recipe is a small, runnable example that solves one problem, with a folder-
 | 06  | [Custom Control](./apps/06-custom-control)                 | Build a custom `FormValueControl` the framework binds value and state to                                              |
 | 07  | [Debounced Input](./apps/07-debounce-input)                | Delay model updates until the user pauses typing with `debounce()`, then run a live `rxResource` search               |
 | 08  | [Conditional Validation](./apps/08-conditional-validation) | Rules that switch on based on other field values                                                                      |
-| 09  | [Zod schema Validation](./apps/09-zod)                     | Drive validation straight from a Zod schema                                                                           |
-| 10  | [Dynamic Forms](./apps/10-dynamic-forms)                   | Build the model, schema, and fields at runtime from a JSON config                                                     |
+| 09  | [Form Submission](./apps/09-form-submission)               | Submit to a server with `submit()` / `[formRoot]`, then route the server's errors back onto the fields                |
+| 10  | [Zod schema Validation](./apps/10-zod)                     | Drive validation straight from a Zod schema                                                                           |
+| 11  | [Dynamic Forms](./apps/11-dynamic-forms)                   | Build the model, schema, and fields at runtime from a JSON config                                                     |
 
 ---
 

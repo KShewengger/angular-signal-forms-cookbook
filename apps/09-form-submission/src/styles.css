@@ -1,0 +1,51 @@
+@import 'tailwindcss';
+@import '@ng-brutalism/ui/styles.css';
+
+@source "./**/*.{html,ts}";
+
+@theme {
+  --background-grid:
+    linear-gradient(rgba(0, 0, 0, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.08) 1px, transparent 1px);
+}
+
+/* `inline` references the existing ng-brutalism vars directly in the generated
+   utilities, so no duplicate `--color-nb-*` variables are emitted to :root. */
+@theme inline {
+  --color-nb-yellow: var(--nb-yellow);
+  --color-nb-pink: var(--nb-pink);
+  --color-nb-mint: var(--nb-mint);
+  --color-nb-lavender: var(--nb-lavender);
+  --color-nb-blue: var(--nb-blue);
+  --color-nb-danger: var(--nb-danger);
+  --color-nb-card: var(--nb-card-bg);
+  --shadow-hard: 6px 6px 0 0 var(--nb-shadow);
+  --shadow-hard-sm: 3px 3px 0 0 var(--nb-shadow);
+}
+
+:root {
+  --font-weight-medium: 700;
+  --nb-card-bg: #fffaf0;
+  --nb-background: #ffffff;
+}
+
+body {
+  @apply flex min-h-screen justify-center items-center flex-col bg-amber-50;
+  background-image: var(--background-grid);
+  background-size: 24px 24px;
+  font-family: var(--nb-font-mono);
+}
+
+input:not([type='checkbox']):not([type='radio']),
+select,
+textarea {
+  background: white;
+}
+
+.shadow-nb {
+  --tw-shadow: var(--nb-shadow-offset-x) var(--nb-shadow-offset-y) 0 0
+    var(--nb-shadow);
+  box-shadow:
+    var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+    var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}

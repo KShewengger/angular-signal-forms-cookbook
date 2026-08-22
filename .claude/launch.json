@@ -72,6 +72,12 @@
         "4308"
       ],
       "port": 4308
+    },
+    {
+      "name": "09-form-submission",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["nx", "serve", "09-form-submission", "--port", "4309"],
+      "port": 4309
     }
   ]
 }
