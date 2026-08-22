@@ -3,20 +3,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { form, type FieldTree } from '@angular/forms/signals';
 import { firstValueFrom, of } from 'rxjs';
 import { App } from './app';
-import { QUESTIONS } from './app.data';
 import { INITIAL_ANSWER, QuizAnswer } from './app.model';
 import { answerSchema } from './app.schema';
 import { GraderService } from './grader.service';
+import { evaluateAnswer } from './app.utils';
 
 const GRADE_DELAY_MS = 700;
 
 const instantGrader: Pick<GraderService, 'grade'> = {
-  grade: (questionId, answer) => {
-    const question = QUESTIONS.find((entry) => entry.id === questionId);
-    return of(
-      question !== undefined && answer.trim().toLowerCase() === question.answer,
-    );
-  },
+  grade: (questionId, answer) => of(evaluateAnswer(questionId, answer)),
 };
 
 const buildAnswerForm = (value = ''): FieldTree<QuizAnswer> => {
@@ -40,6 +35,24 @@ describe('App (09 · Form Submission)', () => {
     });
   });
 
+  describe('answer scoring (pure)', () => {
+    it('accepts the right answer, case-insensitively and trimmed', () => {
+      expect(evaluateAnswer('q1', '  Form ')).toEqual({ correct: true });
+      expect(evaluateAnswer('q2', 'submitting')).toEqual({ correct: true });
+    });
+
+    it('reports a wrong answer', () => {
+      expect(evaluateAnswer('q1', 'schema')).toEqual({
+        correct: false,
+        message: 'Not quite, try again.',
+      });
+    });
+
+    it('treats an unknown question as wrong', () => {
+      expect(evaluateAnswer('nope', 'form')).toMatchObject({ correct: false });
+    });
+  });
+
   describe('grader service (the mock server)', () => {
     let grader: GraderService;
 
@@ -51,24 +64,10 @@ describe('App (09 · Form Submission)', () => {
 
     afterEach(() => vi.useRealTimers());
 
-    it('accepts the right answer, case-insensitively and trimmed', async () => {
-      const q1 = firstValueFrom(grader.grade('q1', '  Form '));
-      const q2 = firstValueFrom(grader.grade('q2', 'submitting'));
+    it('resolves the scored result after the server delay', async () => {
+      const result = firstValueFrom(grader.grade('q1', 'form'));
       await vi.advanceTimersByTimeAsync(GRADE_DELAY_MS);
-      expect(await q1).toBe(true);
-      expect(await q2).toBe(true);
-    });
-
-    it('rejects a wrong answer', async () => {
-      const result = firstValueFrom(grader.grade('q1', 'schema'));
-      await vi.advanceTimersByTimeAsync(GRADE_DELAY_MS);
-      expect(await result).toBe(false);
-    });
-
-    it('rejects an unknown question', async () => {
-      const result = firstValueFrom(grader.grade('nope', 'form'));
-      await vi.advanceTimersByTimeAsync(GRADE_DELAY_MS);
-      expect(await result).toBe(false);
+      expect(await result).toEqual({ correct: true });
     });
   });
 
@@ -133,25 +132,14 @@ describe('App (09 · Form Submission)', () => {
       expect(host.textContent).toContain('while the submit action runs');
     });
 
-    it('shows the field error and stays on the card for a wrong answer', async () => {
+    it('shows the field error, shakes, and stays on the card for a wrong answer', async () => {
       typeAnswer('schema');
       submitForm();
       await gradeAndSettle();
 
       expect(host.textContent).toContain('Not quite, try again.');
       expect(host.textContent).toContain('Question 1 / 2');
-    });
-
-    it('locks the deck with a form-level error after three wrong tries', async () => {
-      const wrongTries = ['alpha', 'beta', 'gamma'];
-      for (const wrong of wrongTries) {
-        typeAnswer(wrong);
-        submitForm();
-        await gradeAndSettle();
-      }
-
-      expect(host.textContent).toContain('Out of tries');
-      expect(host.textContent).toContain('Out of tries, the deck is locked.');
+      expect(host.querySelector('.card')?.classList).toContain('card--shake');
     });
   });
 });

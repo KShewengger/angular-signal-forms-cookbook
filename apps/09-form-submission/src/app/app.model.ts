@@ -22,4 +22,8 @@ export type Question = {
   options?: QuestionOption[];
 };
 
-export type QuizPhase = 'answering' | 'passed' | 'locked';
+export type QuizPhase = 'answering' | 'passed';
+
+export type GradeResult =
+  | { correct: true }
+  | { correct: false; message: string };

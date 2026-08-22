@@ -90,7 +90,7 @@
                 {{ question.prompt }}
               </h2>
 
-              <div class="flex flex-col gap-2.5">
+              <div class="flex flex-col gap-1.5">
                 @switch (question.kind) {
                   @case ('text') {
                     <input
@@ -125,18 +125,7 @@
                   }
                 }
 
-                @if (showFieldError()) {
-                  <p
-                    nbText
-                    tone="danger"
-                    size="xs"
-                    weight="medium"
-                    class="m-0"
-                    role="alert"
-                  >
-                    {{ fieldErrorMessage() }}
-                  </p>
-                }
+                <app-validation-errors [field]="answerField" />
 
                 @if (hintShown()) {
                   <small
@@ -179,52 +168,6 @@
             } @else {
               <span i18n="@@submit">Submit</span>
             }
-          </button>
-        </div>
-      }
-
-      <!-- LOCKED -->
-      @if (phase() === 'locked') {
-        <p
-          nbText
-          tone="muted"
-          size="xs"
-          weight="bold"
-          transform="uppercase"
-          tracking="wider"
-          class="m-0 text-center"
-          i18n="@@gameOverEyebrow"
-        >
-          Game over
-        </p>
-
-        <div class="flex flex-col items-center gap-4 pt-8 text-center">
-          <div
-            class="medallion grid size-16 place-items-center rounded-full border-3 border-black bg-nb-danger text-3xl shadow-hard-sm"
-            aria-hidden="true"
-          >
-            🔒
-          </div>
-          <h2
-            class="m-0 text-2xl leading-tight font-black text-balance"
-            i18n="@@lockedTitle"
-          >
-            Out of tries
-          </h2>
-          <p nbText tone="muted" size="xs" class="m-0" role="alert">
-            {{ formErrorMessage() }}
-          </p>
-          <button
-            nbButton
-            type="button"
-            size="lg"
-            radius="md"
-            tone="lavender"
-            class="mt-2"
-            (click)="restart()"
-          >
-            <span i18n="@@startOver">Start over</span>
-            <ng-icon aria-hidden="true" size="20" name="tablerRefresh" />
           </button>
         </div>
       }

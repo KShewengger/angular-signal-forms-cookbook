@@ -1,7 +1,5 @@
 import type { Question } from './app.model';
 
-export const TOTAL_HEARTS = 3;
-
 export const QUESTIONS: Question[] = [
   {
     id: 'q1',

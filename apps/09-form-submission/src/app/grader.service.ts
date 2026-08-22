@@ -1,14 +1,11 @@
 import { Service } from '@angular/core';
 import { Observable, delay, of } from 'rxjs';
-import { QUESTIONS } from './app.data';
+import { GradeResult } from './app.model';
+import { evaluateAnswer } from './app.utils';
 
 @Service()
 export class GraderService {
-  grade(questionId: string, answer: string): Observable<boolean> {
-    const question = QUESTIONS.find((entry) => entry.id === questionId);
-    const correct =
-      question !== undefined && answer.trim().toLowerCase() === question.answer;
-
-    return of(correct).pipe(delay(700));
+  grade(questionId: string, answer: string): Observable<GradeResult> {
+    return of(evaluateAnswer(questionId, answer)).pipe(delay(700));
   }
 }
