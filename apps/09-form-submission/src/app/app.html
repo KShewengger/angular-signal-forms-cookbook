@@ -62,7 +62,7 @@
       <nb-progress
         tone="success"
         aria-hidden="true"
-        [value]="index()"
+        [value]="progressValue()"
         [max]="questions.length"
       />
 
@@ -80,7 +80,7 @@
           Question {{ index() + 1 }} / {{ questions.length }}
         </p>
 
-        <div class="flex flex-col gap-6 pt-8">
+        <div class="flex flex-col gap-4 pt-8">
           @for (question of [currentQuestion()]; track index()) {
             <div class="card__body flex flex-col gap-6 text-center">
               <h2
@@ -185,17 +185,28 @@
 
       <!-- LOCKED -->
       @if (phase() === 'locked') {
-        <div
-          class="flex flex-1 flex-col items-center justify-center gap-4 text-center"
+        <p
+          nbText
+          tone="muted"
+          size="xs"
+          weight="bold"
+          transform="uppercase"
+          tracking="wider"
+          class="m-0 text-center"
+          i18n="@@gameOverEyebrow"
         >
+          Game over
+        </p>
+
+        <div class="flex flex-col items-center gap-4 pt-8 text-center">
           <div
-            class="grid size-16 place-items-center rounded-full border-3 border-black bg-nb-danger text-3xl shadow-hard-sm"
+            class="medallion grid size-16 place-items-center rounded-full border-3 border-black bg-nb-danger text-3xl shadow-hard-sm"
             aria-hidden="true"
           >
             🔒
           </div>
           <h2
-            class="m-0 text-lg leading-tight font-bold text-balance"
+            class="m-0 text-2xl leading-tight font-black text-balance"
             i18n="@@lockedTitle"
           >
             Out of tries
@@ -209,41 +220,67 @@
             size="lg"
             radius="md"
             tone="lavender"
-            i18n="@@startOver"
+            class="mt-2"
             (click)="restart()"
           >
-            Start over
+            <span i18n="@@startOver">Start over</span>
+            <ng-icon aria-hidden="true" size="20" name="tablerRefresh" />
           </button>
         </div>
       }
 
       <!-- PASSED -->
       @if (phase() === 'passed') {
-        <div
-          class="flex flex-1 flex-col items-center justify-center gap-4 text-center"
+        <p
+          nbText
+          tone="muted"
+          size="xs"
+          weight="bold"
+          transform="uppercase"
+          tracking="wider"
+          class="m-0 text-center"
+          i18n="@@quizCompleteEyebrow"
         >
+          Quiz complete
+        </p>
+
+        <div class="flex flex-col items-center gap-4 pt-8 text-center">
           <div
-            class="grid size-16 place-items-center rounded-full border-3 border-black bg-nb-mint text-3xl shadow-hard-sm"
+            class="medallion grid size-16 place-items-center rounded-full border-3 border-black bg-nb-mint text-3xl shadow-hard-sm"
             aria-hidden="true"
           >
             🎉
           </div>
           <h2
-            class="m-0 text-lg leading-tight font-bold text-balance"
+            nbTitle
+            class="m-0 self-center! text-2xl leading-tight font-black text-balance [--nb-title-wave-color:var(--nb-mint)] [&::after]:mx-auto"
             i18n="@@passedTitle"
           >
             You passed!
           </h2>
+
+          <p
+            nbText
+            tone="subtle"
+            size="sm"
+            weight="medium"
+            class="m-0"
+            i18n="@@passedMessage"
+          >
+            Signal forms mastered. You're a great Angular dev!
+          </p>
+
           <button
             nbButton
             type="button"
             size="lg"
             radius="md"
             tone="lavender"
-            i18n="@@playAgain"
+            class="mt-2"
             (click)="restart()"
           >
-            Play again
+            <span i18n="@@playAgain">Play again</span>
+            <ng-icon aria-hidden="true" size="20" name="tablerRefresh" />
           </button>
         </div>
       }

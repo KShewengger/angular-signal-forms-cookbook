@@ -1,30 +1,14 @@
-import { Injectable, InjectionToken, inject } from '@angular/core';
+import { Service } from '@angular/core';
+import { Observable, delay, of } from 'rxjs';
 import { QUESTIONS } from './app.data';
 
-export const GRADER_LATENCY_MS = new InjectionToken<number>(
-  'GRADER_LATENCY_MS',
-  {
-    providedIn: 'root',
-    factory: () => 700,
-  },
-);
-
-@Injectable({ providedIn: 'root' })
+@Service()
 export class GraderService {
-  private readonly latencyMs = inject(GRADER_LATENCY_MS);
-
-  async grade(questionId: string, answer: string): Promise<boolean> {
-    await this.delay();
-
+  grade(questionId: string, answer: string): Observable<boolean> {
     const question = QUESTIONS.find((entry) => entry.id === questionId);
-    if (!question) return false;
+    const correct =
+      question !== undefined && answer.trim().toLowerCase() === question.answer;
 
-    return answer.trim().toLowerCase() === question.answer;
-  }
-
-  private delay(): Promise<void> {
-    return this.latencyMs > 0
-      ? new Promise((resolve) => setTimeout(resolve, this.latencyMs))
-      : Promise.resolve();
+    return of(correct).pipe(delay(700));
   }
 }

@@ -14,8 +14,9 @@ import {
   NbText,
   NbTitle,
 } from '@ng-brutalism/ui';
+import { firstValueFrom } from 'rxjs';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { tablerCopyright } from '@ng-icons/tabler-icons';
+import { tablerCopyright, tablerRefresh } from '@ng-icons/tabler-icons';
 import {
   tablerCircleArrowLeftFill,
   tablerCircleArrowRightFill,
@@ -54,6 +55,7 @@ import { GraderService } from './grader.service';
       tablerCircleArrowLeftFill,
       tablerCircleArrowRightFill,
       tablerCopyright,
+      tablerRefresh,
     }),
   ],
 })
@@ -105,6 +107,10 @@ export class App {
         .find((error) => error.kind === 'locked')?.message ?? '',
   );
 
+  protected readonly progressValue = computed(() =>
+    this.phase() === 'passed' ? this.questions.length : this.index(),
+  );
+
   protected selectOption(value: string): void {
     this.answerForm.answer().value.set(value);
   }
@@ -123,9 +129,8 @@ export class App {
 
   private async gradeSubmission(field: FieldTree<QuizAnswer>) {
     const question: Question = this.currentQuestion();
-    const correct = await this.grader.grade(
-      question.id,
-      field.answer().value(),
+    const correct = await firstValueFrom(
+      this.grader.grade(question.id, field.answer().value()),
     );
 
     if (correct) {

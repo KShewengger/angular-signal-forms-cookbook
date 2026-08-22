@@ -1,10 +1,23 @@
 import { Injector, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { form, type FieldTree } from '@angular/forms/signals';
+import { firstValueFrom, of } from 'rxjs';
 import { App } from './app';
+import { QUESTIONS } from './app.data';
 import { INITIAL_ANSWER, QuizAnswer } from './app.model';
 import { answerSchema } from './app.schema';
-import { GRADER_LATENCY_MS, GraderService } from './grader.service';
+import { GraderService } from './grader.service';
+
+const GRADE_DELAY_MS = 700;
+
+const instantGrader: Pick<GraderService, 'grade'> = {
+  grade: (questionId, answer) => {
+    const question = QUESTIONS.find((entry) => entry.id === questionId);
+    return of(
+      question !== undefined && answer.trim().toLowerCase() === question.answer,
+    );
+  },
+};
 
 const buildAnswerForm = (value = ''): FieldTree<QuizAnswer> => {
   const model = signal<QuizAnswer>({ ...INITIAL_ANSWER, answer: value });
@@ -31,23 +44,31 @@ describe('App (09 · Form Submission)', () => {
     let grader: GraderService;
 
     beforeEach(() => {
-      TestBed.configureTestingModule({
-        providers: [{ provide: GRADER_LATENCY_MS, useValue: 0 }],
-      });
+      vi.useFakeTimers();
+      TestBed.configureTestingModule({});
       grader = TestBed.inject(GraderService);
     });
 
+    afterEach(() => vi.useRealTimers());
+
     it('accepts the right answer, case-insensitively and trimmed', async () => {
-      expect(await grader.grade('q1', '  Form ')).toBe(true);
-      expect(await grader.grade('q2', 'submitting')).toBe(true);
+      const q1 = firstValueFrom(grader.grade('q1', '  Form '));
+      const q2 = firstValueFrom(grader.grade('q2', 'submitting'));
+      await vi.advanceTimersByTimeAsync(GRADE_DELAY_MS);
+      expect(await q1).toBe(true);
+      expect(await q2).toBe(true);
     });
 
     it('rejects a wrong answer', async () => {
-      expect(await grader.grade('q1', 'schema')).toBe(false);
+      const result = firstValueFrom(grader.grade('q1', 'schema'));
+      await vi.advanceTimersByTimeAsync(GRADE_DELAY_MS);
+      expect(await result).toBe(false);
     });
 
     it('rejects an unknown question', async () => {
-      expect(await grader.grade('nope', 'form')).toBe(false);
+      const result = firstValueFrom(grader.grade('nope', 'form'));
+      await vi.advanceTimersByTimeAsync(GRADE_DELAY_MS);
+      expect(await result).toBe(false);
     });
   });
 
@@ -68,7 +89,7 @@ describe('App (09 · Form Submission)', () => {
       input.dispatchEvent(new Event('input'));
     };
 
-    const settle = async (): Promise<void> => {
+    const gradeAndSettle = async (): Promise<void> => {
       await fixture.whenStable();
       await Promise.resolve();
       await fixture.whenStable();
@@ -77,12 +98,15 @@ describe('App (09 · Form Submission)', () => {
     beforeEach(async () => {
       await TestBed.configureTestingModule({
         imports: [App],
-        providers: [{ provide: GRADER_LATENCY_MS, useValue: 0 }],
+        providers: [{ provide: GraderService, useValue: instantGrader }],
       }).compileComponents();
       fixture = TestBed.createComponent(App);
       host = fixture.nativeElement as HTMLElement;
       await fixture.whenStable();
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
     });
+
+    afterEach(() => vi.useRealTimers());
 
     it('renders the first card and the counter', () => {
       expect(host.textContent).toContain('builds a form');
@@ -92,7 +116,7 @@ describe('App (09 · Form Submission)', () => {
 
     it('blocks submit and reports the required error when empty (onInvalid)', async () => {
       submitForm();
-      await settle();
+      await gradeAndSettle();
 
       expect(host.textContent).toContain(
         'Answer this question before submitting.',
@@ -103,7 +127,7 @@ describe('App (09 · Form Submission)', () => {
     it('advances to the next card on a correct answer', async () => {
       typeAnswer('form');
       submitForm();
-      await settle();
+      await gradeAndSettle();
 
       expect(host.textContent).toContain('Question 2 / 2');
       expect(host.textContent).toContain('while the submit action runs');
@@ -112,7 +136,7 @@ describe('App (09 · Form Submission)', () => {
     it('shows the field error and stays on the card for a wrong answer', async () => {
       typeAnswer('schema');
       submitForm();
-      await settle();
+      await gradeAndSettle();
 
       expect(host.textContent).toContain('Not quite, try again.');
       expect(host.textContent).toContain('Question 1 / 2');
@@ -123,7 +147,7 @@ describe('App (09 · Form Submission)', () => {
       for (const wrong of wrongTries) {
         typeAnswer(wrong);
         submitForm();
-        await settle();
+        await gradeAndSettle();
       }
 
       expect(host.textContent).toContain('Out of tries');
