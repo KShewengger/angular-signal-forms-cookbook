@@ -10,12 +10,3 @@ input[type='number'] {
   appearance: textfield;
   -moz-appearance: textfield;
 }
-
-.error {
-  --nb-border: red;
-}
-
-.readonly {
-  opacity: 0.5;
-  cursor: not-allowed;
-}

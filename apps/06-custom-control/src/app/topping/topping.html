@@ -2,8 +2,9 @@
 <div nbStack gap="xs">
   <nb-input-group
     class="w-32!"
-    [class.error]="dirty() && invalid()"
-    [class.readonly]="readonly()"
+    [class.cursor-not-allowed]="readonly()"
+    [class.opacity-50]="readonly()"
+    [style.--nb-border]="dirty() && invalid() ? 'var(--nb-danger)' : null"
   >
     <div nbInputPrefix>
       <img

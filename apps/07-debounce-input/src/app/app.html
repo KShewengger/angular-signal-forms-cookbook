@@ -85,7 +85,9 @@
       <div nbStack gap="lg" class="px-6 pb-6">
         <!-- SEARCH -->
         <div nbStack gap="xs" class="w-full">
-          <nb-input-group [class.error]="queryInvalid()">
+          <nb-input-group
+            [style.--nb-border]="queryInvalid() ? 'var(--nb-danger)' : null"
+          >
             <span nbInputPrefix>
               <ng-icon name="tablerSearch" size="24" />
             </span>

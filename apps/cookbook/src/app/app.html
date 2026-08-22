@@ -106,12 +106,13 @@
 </nb-card>
 
 <!-- RECIPE GRID -->
-<section
+<ul
+  role="list"
   class="recipe-grid grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-7xl"
 >
   <!-- RECIPE CARD -->
   @for (example of examples; track example.link) {
-    <div class="relative">
+    <li class="recipe-grid__card relative">
       <nb-card
         class="relative overflow-hidden !py-0 !gap-0 transition-transform duration-200 motion-safe:hover:-translate-x-1 motion-safe:hover:-translate-y-1"
       >
@@ -197,6 +198,6 @@
           </div>
         </div>
       </nb-card>
-    </div>
+    </li>
   }
-</section>
+</ul>

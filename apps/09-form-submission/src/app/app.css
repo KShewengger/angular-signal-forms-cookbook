@@ -1,10 +1,10 @@
 /* Stacked backing cards: transforms are the one thing Tailwind can't express. */
-.deck-layer-near {
+.deck-layer--near {
   background: #f2ead6;
   transform: translate(7px, 9px) rotate(2deg) scale(0.99);
   z-index: 1;
 }
-.deck-layer-far {
+.deck-layer--far {
   background: #ede3ca;
   transform: translate(15px, 18px) rotate(4deg) scale(0.98);
   z-index: 0;
@@ -19,10 +19,10 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .cardbody {
+  .card__body {
     animation: deal-in 0.3s ease;
   }
-  .shake {
+  .card--shake {
     animation: shake 0.4s ease;
   }
   .spinner {

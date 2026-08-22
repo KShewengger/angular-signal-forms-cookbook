@@ -45,19 +45,19 @@
 
     <!-- STACK LAYERS -->
     <div
-      class="deck-layer-far absolute inset-0 rounded-2xl border-3 border-black shadow-hard-sm"
+      class="deck-layer deck-layer--far absolute inset-0 rounded-2xl border-3 border-black shadow-hard-sm"
       aria-hidden="true"
     ></div>
     <div
-      class="deck-layer-near absolute inset-0 rounded-2xl border-3 border-black shadow-hard-sm"
+      class="deck-layer deck-layer--near absolute inset-0 rounded-2xl border-3 border-black shadow-hard-sm"
       aria-hidden="true"
     ></div>
 
     <!-- ACTIVE CARD -->
     <form
       [formRoot]="answerForm"
-      class="relative z-10 flex flex-col gap-2 rounded-2xl border-3 border-black bg-nb-card p-5 shadow-hard"
-      [class.shake]="shaking()"
+      class="card relative z-10 flex flex-col gap-2 rounded-2xl border-3 border-black bg-nb-card p-5 shadow-hard"
+      [class.card--shake]="shaking()"
     >
       <nb-progress
         [value]="index()"
@@ -82,7 +82,7 @@
 
         <div class="flex flex-col gap-6 pt-8">
           @for (question of [currentQuestion()]; track index()) {
-            <div class="cardbody flex flex-col gap-6 text-center">
+            <div class="card__body flex flex-col gap-6 text-center">
               <h2
                 nbTitle
                 class="m-0 text-lg leading-tight font-bold text-balance [--nb-title-wave-color:var(--nb-lavender)] [&::after]:mx-auto"

@@ -220,8 +220,8 @@
           type="button"
           nbButton
           size="sm"
-          class="w-14"
-          [class.seat-taken]="seat.taken"
+          class="seat w-14"
+          [class.seat--taken]="seat.taken"
           [tone]="selectedSeats().has(seat.id) ? 'blue' : 'white'"
           [disabled]="seat.taken"
           [attr.aria-pressed]="selectedSeats().has(seat.id)"

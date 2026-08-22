@@ -1,4 +1,4 @@
-.seat-taken {
+.seat--taken {
   background-color: color-mix(
     in srgb,
     var(--nb-foreground) 18%,
