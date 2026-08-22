@@ -1,18 +1,12 @@
 import { Injector, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { form, type FieldTree } from '@angular/forms/signals';
-import { firstValueFrom, of } from 'rxjs';
 import { App } from './app';
 import { INITIAL_ANSWER, QuizAnswer } from './app.model';
 import { answerSchema } from './app.schema';
 import { GraderService } from './grader.service';
-import { evaluateAnswer } from './app.utils';
 
-const GRADE_DELAY_MS = 700;
-
-const instantGrader: Pick<GraderService, 'grade'> = {
-  grade: (questionId, answer) => of(evaluateAnswer(questionId, answer)),
-};
+const GRADE_DELAY_MS = 500;
 
 const buildAnswerForm = (value = ''): FieldTree<QuizAnswer> => {
   const model = signal<QuizAnswer>({ ...INITIAL_ANSWER, answer: value });
@@ -35,24 +29,6 @@ describe('App (09 · Form Submission)', () => {
     });
   });
 
-  describe('answer scoring (pure)', () => {
-    it('accepts the right answer, case-insensitively and trimmed', () => {
-      expect(evaluateAnswer('q1', '  Form ')).toEqual({ correct: true });
-      expect(evaluateAnswer('q2', 'submitting')).toEqual({ correct: true });
-    });
-
-    it('reports a wrong answer', () => {
-      expect(evaluateAnswer('q1', 'schema')).toEqual({
-        correct: false,
-        message: 'Not quite, try again.',
-      });
-    });
-
-    it('treats an unknown question as wrong', () => {
-      expect(evaluateAnswer('nope', 'form')).toMatchObject({ correct: false });
-    });
-  });
-
   describe('grader service (the mock server)', () => {
     let grader: GraderService;
 
@@ -64,10 +40,27 @@ describe('App (09 · Form Submission)', () => {
 
     afterEach(() => vi.useRealTimers());
 
-    it('resolves the scored result after the server delay', async () => {
-      const result = firstValueFrom(grader.grade('q1', 'form'));
+    it('accepts the right answer, case-insensitively and trimmed', async () => {
+      const q1 = grader.grade('q1', '  Form ');
+      const q2 = grader.grade('q2', 'submitting');
       await vi.advanceTimersByTimeAsync(GRADE_DELAY_MS);
-      expect(await result).toEqual({ correct: true });
+      expect(await q1).toEqual({ correct: true });
+      expect(await q2).toEqual({ correct: true });
+    });
+
+    it('reports a wrong answer', async () => {
+      const result = grader.grade('q1', 'schema');
+      await vi.advanceTimersByTimeAsync(GRADE_DELAY_MS);
+      expect(await result).toEqual({
+        correct: false,
+        message: 'Not quite, try again.',
+      });
+    });
+
+    it('treats an unknown question as wrong', async () => {
+      const result = grader.grade('nope', 'form');
+      await vi.advanceTimersByTimeAsync(GRADE_DELAY_MS);
+      expect(await result).toMatchObject({ correct: false });
     });
   });
 
@@ -89,6 +82,7 @@ describe('App (09 · Form Submission)', () => {
     };
 
     const gradeAndSettle = async (): Promise<void> => {
+      await vi.advanceTimersByTimeAsync(GRADE_DELAY_MS);
       await fixture.whenStable();
       await Promise.resolve();
       await fixture.whenStable();
@@ -97,7 +91,6 @@ describe('App (09 · Form Submission)', () => {
     beforeEach(async () => {
       await TestBed.configureTestingModule({
         imports: [App],
-        providers: [{ provide: GraderService, useValue: instantGrader }],
       }).compileComponents();
       fixture = TestBed.createComponent(App);
       host = fixture.nativeElement as HTMLElement;

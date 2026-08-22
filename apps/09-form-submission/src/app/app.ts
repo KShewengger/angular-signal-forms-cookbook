@@ -14,7 +14,6 @@ import {
   NbText,
   NbTitle,
 } from '@ng-brutalism/ui';
-import { firstValueFrom } from 'rxjs';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { tablerCopyright, tablerRefresh } from '@ng-icons/tabler-icons';
 import {
@@ -118,17 +117,27 @@ export class App {
     this.index.set(0);
     this.phase.set('answering');
     this.hintShown.set(false);
+
     this.answerForm().reset({ ...INITIAL_ANSWER });
   }
 
   private async gradeSubmission(field: FieldTree<QuizAnswer>) {
     const question: Question = this.currentQuestion();
-    const result = await firstValueFrom(
-      this.grader.grade(question.id, field.answer().value()),
-    );
+
+    const result = await this.grader.grade(question.id, field.answer().value());
 
     if (result.correct) {
-      queueMicrotask(() => this.advance());
+      const next = this.index() + 1;
+
+      this.hintShown.set(false);
+
+      if (next >= this.questions.length) {
+        this.phase.set('passed');
+      } else {
+        this.index.set(next);
+        this.answerForm().reset({ ...INITIAL_ANSWER });
+      }
+
       return undefined;
     }
 
@@ -137,18 +146,5 @@ export class App {
       message: result.message,
       fieldTree: field.answer,
     };
-  }
-
-  private advance(): void {
-    const next = this.index() + 1;
-    this.hintShown.set(false);
-
-    if (next >= this.questions.length) {
-      this.phase.set('passed');
-      return;
-    }
-
-    this.index.set(next);
-    this.answerForm().reset({ ...INITIAL_ANSWER });
   }
 }
