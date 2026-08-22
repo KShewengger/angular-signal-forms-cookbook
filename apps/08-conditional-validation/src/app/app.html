@@ -78,10 +78,10 @@
     <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
       @for (experience of experiences; track experience.format) {
         <button
-          type="button"
           nbButton
-          size="md"
           fullWidth
+          type="button"
+          size="md"
           class="h-auto! items-stretch! text-left!"
           [tone]="
             experience.format === selectedFormat() ? 'lavender' : 'background'
@@ -217,8 +217,8 @@
     >
       @for (seat of seats; track seat.id) {
         <button
-          type="button"
           nbButton
+          type="button"
           size="sm"
           class="seat w-14"
           [class.seat--taken]="seat.taken"
@@ -271,8 +271,8 @@
         class="mt-2 w-fit cursor-pointer px-2"
       >
         <input
-          type="checkbox"
           nbCheckbox
+          type="checkbox"
           size="lg"
           [formField]="bookingForm.addSnacks"
         />
@@ -290,8 +290,8 @@
           <nb-select
             id="combo"
             aria-labelledby="combo-label"
-            [attr.aria-invalid]="comboInvalid()"
             placeholder="Choose size…"
+            [attr.aria-invalid]="comboInvalid()"
             [formField]="bookingForm.comboSize"
             (openChange)="markComboTouched($event)"
           >
@@ -377,9 +377,9 @@
     </div>
 
     <button
-      type="button"
       nbButton
       fullWidth
+      type="button"
       [tone]="booked() ? 'accent' : 'success'"
       [disabled]="!booked() && !canBook()"
       (click)="book()"
@@ -485,13 +485,13 @@
     <hr nbSeparator orientation="vertical" aria-hidden="true" />
 
     <a
-      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/08-conditional-validation"
       nbText
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/08-conditional-validation"
       tone="danger"
       size="xs"
-      i18n="@@githubRepository"
       target="_blank"
       rel="noopener noreferrer"
+      i18n="@@githubRepository"
       >GitHub Repo</a
     >
   </footer>

@@ -40,8 +40,8 @@
 
           <nb-card-title>
             <h1
-              id="registration-title"
               nbDisplay
+              id="registration-title"
               size="lg"
               class="font-mono font-black uppercase leading-tight"
             >
@@ -72,7 +72,7 @@
       <hr nbSeparator variant="dashed" aria-hidden="true" />
 
       <!-- FORM -->
-      <form [formRoot]="userForm" nbStack gap="none" class="mb-4">
+      <form nbStack gap="none" class="mb-4" [formRoot]="userForm">
         <nb-card-content>
           <fieldset nbStack gap="md">
             <legend class="sr-only" i18n="@@registrationLabel">
@@ -89,16 +89,16 @@
                 id="username"
                 type="text"
                 placeholder="Enter your username"
+                aria-describedby="username-errors"
                 [formField]="userForm.username"
                 [attr.aria-invalid]="
                   userForm.username().touched() && userForm.username().invalid()
                 "
-                aria-describedby="username-errors"
               />
 
               <app-validation-errors
-                [field]="userForm.username"
                 messageId="username-errors"
+                [field]="userForm.username"
               />
             </div>
 
@@ -112,16 +112,16 @@
                 inputmode="email"
                 autocomplete="email"
                 placeholder="Enter your email"
+                aria-describedby="email-errors"
                 [formField]="userForm.email"
                 [attr.aria-invalid]="
                   userForm.email().touched() && userForm.email().invalid()
                 "
-                aria-describedby="email-errors"
               />
 
               <app-validation-errors
-                [field]="userForm.email"
                 messageId="email-errors"
+                [field]="userForm.email"
               />
             </div>
 
@@ -134,16 +134,16 @@
                 type="number"
                 inputmode="numeric"
                 placeholder="Enter your age"
+                aria-describedby="age-errors"
                 [formField]="userForm.age"
                 [attr.aria-invalid]="
                   userForm.age().touched() && userForm.age().invalid()
                 "
-                aria-describedby="age-errors"
               />
 
               <app-validation-errors
-                [field]="userForm.age"
                 messageId="age-errors"
+                [field]="userForm.age"
               />
             </div>
 
@@ -156,10 +156,10 @@
                 id="role"
                 aria-labelledby="role-label"
                 aria-describedby="role-errors"
+                placeholder="Select a role"
                 [attr.aria-invalid]="
                   userForm.role().touched() && userForm.role().invalid()
                 "
-                placeholder="Select a role"
                 [formField]="userForm.role"
               >
                 @for (role of roles; track role.value) {
@@ -170,8 +170,8 @@
               </nb-select>
 
               <app-validation-errors
-                [field]="userForm.role"
                 messageId="role-errors"
+                [field]="userForm.role"
               />
             </div>
 
@@ -183,16 +183,16 @@
                 id="bio"
                 rows="4"
                 placeholder="Tell us a little about yourself"
+                aria-describedby="bio-errors"
                 [formField]="userForm.bio"
                 [attr.aria-invalid]="
                   userForm.bio().touched() && userForm.bio().invalid()
                 "
-                aria-describedby="bio-errors"
               ></textarea>
 
               <app-validation-errors
-                [field]="userForm.bio"
                 messageId="bio-errors"
+                [field]="userForm.bio"
               />
             </div>
 
@@ -358,13 +358,13 @@
     <hr nbSeparator orientation="vertical" aria-hidden="true" />
 
     <a
-      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/02-built-in-validations"
       nbText
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/02-built-in-validations"
       tone="danger"
       size="xs"
-      i18n="@@githubRepository"
       target="_blank"
       rel="noopener noreferrer"
+      i18n="@@githubRepository"
       >GitHub Repo</a
     >
   </footer>

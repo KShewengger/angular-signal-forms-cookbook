@@ -49,8 +49,8 @@
         shape="burst-wide"
         tone="primary"
         class="self-start max-lg:hidden!"
-        [rotate]="5"
         i18n="@@hero.testIt"
+        [rotate]="5"
       >
         TEST<br />
         IT!
@@ -131,7 +131,7 @@
         ></div>
 
         <div nbStack gap="md" class="py-6 pr-6 pl-8">
-          <nb-avatar [tone]="example.tone" class="self-start">
+          <nb-avatar class="self-start" [tone]="example.tone">
             {{ $index + 1 | number: '2.0-0' }}
           </nb-avatar>
 

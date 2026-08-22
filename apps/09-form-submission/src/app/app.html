@@ -55,15 +55,15 @@
 
     <!-- ACTIVE CARD -->
     <form
-      [formRoot]="answerForm"
       class="card relative z-10 flex flex-col gap-2 rounded-2xl border-3 border-black bg-nb-card p-5 shadow-hard"
+      [formRoot]="answerForm"
       [class.card--shake]="shaking()"
     >
       <nb-progress
-        [value]="index()"
-        [max]="questions.length"
         tone="success"
         aria-hidden="true"
+        [value]="index()"
+        [max]="questions.length"
       />
 
       @if (phase() === 'answering') {
@@ -98,8 +98,8 @@
                       class="text-center font-bold"
                       autocomplete="off"
                       spellcheck="false"
-                      i18n-placeholder="@@answerPlaceholder"
                       placeholder="your answer"
+                      i18n-placeholder="@@answerPlaceholder"
                       [formField]="answerField"
                     />
                   }
@@ -107,9 +107,9 @@
                     <div class="flex flex-col gap-2">
                       @for (option of question.options; track option.value) {
                         <button
-                          type="button"
                           nbButton
                           fullWidth
+                          type="button"
                           radius="md"
                           [tone]="
                             option.value === selectedValue()
@@ -146,14 +146,14 @@
                   </p>
                 } @else {
                   <button
-                    type="button"
                     nbText
+                    type="button"
                     tone="subtle"
                     size="sm"
                     weight="medium"
                     class="cursor-pointer self-center border-0 bg-transparent p-0 transition-opacity hover:opacity-70"
-                    (click)="revealHint()"
                     i18n="@@needHint"
+                    (click)="revealHint()"
                   >
                     Need a hint?
                   </button>
@@ -163,9 +163,9 @@
           }
 
           <button
-            type="submit"
             nbButton
             fullWidth
+            type="submit"
             size="lg"
             radius="md"
             tone="yellow"
@@ -203,13 +203,13 @@
             {{ formErrorMessage() }}
           </p>
           <button
-            type="button"
             nbButton
+            type="button"
             size="lg"
             radius="md"
             tone="lavender"
-            (click)="restart()"
             i18n="@@startOver"
+            (click)="restart()"
           >
             Start over
           </button>
@@ -234,13 +234,13 @@
             You passed!
           </h2>
           <button
-            type="button"
             nbButton
+            type="button"
             size="lg"
             radius="md"
             tone="lavender"
-            (click)="restart()"
             i18n="@@playAgain"
+            (click)="restart()"
           >
             Play again
           </button>
@@ -326,13 +326,13 @@
   <hr nbSeparator orientation="vertical" aria-hidden="true" />
 
   <a
-    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/09-form-submission"
     nbText
+    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/09-form-submission"
     tone="danger"
     size="xs"
-    i18n="@@githubRepository"
     target="_blank"
     rel="noopener noreferrer"
+    i18n="@@githubRepository"
     >GitHub Repo</a
   >
 </footer>

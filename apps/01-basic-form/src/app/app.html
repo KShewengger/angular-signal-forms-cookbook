@@ -41,8 +41,8 @@
 
           <nb-card-title>
             <h1
-              id="registration-title"
               nbDisplay
+              id="registration-title"
               size="lg"
               class="font-mono font-black uppercase leading-tight"
             >
@@ -73,7 +73,7 @@
       <hr nbSeparator variant="dashed" aria-hidden="true" />
 
       <!-- FORM -->
-      <form [formRoot]="userForm" nbStack gap="md">
+      <form nbStack gap="md" [formRoot]="userForm">
         <nb-card-content>
           <fieldset nbStack gap="md">
             <legend class="sr-only" i18n="@@registrationLabel">
@@ -289,13 +289,13 @@
     <hr nbSeparator orientation="vertical" aria-hidden="true" />
 
     <a
-      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/01-basic-form"
       nbText
+      href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/01-basic-form"
       tone="danger"
       size="xs"
-      i18n="@@githubRepository"
       target="_blank"
       rel="noopener noreferrer"
+      i18n="@@githubRepository"
       >GitHub Repo</a
     >
   </footer>
