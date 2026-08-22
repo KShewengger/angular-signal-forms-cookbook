@@ -1,15 +1,15 @@
-<div nbStack gap="lg" class="px-6">
+<article nbStack gap="lg" class="px-6">
   <!-- BOOKING SUMMARY -->
   <div nbCluster gap="md" align="start" justify="between">
-    <div nbStack gap="none" align="start">
-      <span nbText size="sm" weight="extrabold" i18n="@@bookingReferenceLabel">
+    <dl nbStack gap="none" align="start">
+      <dt nbText size="sm" weight="extrabold" i18n="@@bookingReferenceLabel">
         Booking Reference
-      </span>
+      </dt>
 
-      <span nbText size="lg" tone="warning" weight="bold">{{
-        booking().reference
-      }}</span>
-    </div>
+      <dd nbText size="lg" tone="warning" weight="bold">
+        {{ booking().reference }}
+      </dd>
+    </dl>
 
     <div
       nbChip
@@ -61,33 +61,31 @@
       <div nbCluster gap="lg" align="center" wrap="nowrap" class="pr-4!">
         <ng-icon aria-hidden="true" size="20" name="tablerPlaneDeparture" />
 
-        <div nbStack gap="sm" align="start">
-          <span nbText size="xs" weight="bold" i18n="@@departureLabel">
+        <dl nbStack gap="sm" align="start" class="m-0">
+          <dt nbText size="xs" weight="bold" i18n="@@departureLabel">
             Departure
-          </span>
+          </dt>
 
-          <div nbStack gap="none" align="start">
+          <dd nbStack gap="none" align="start" class="m-0">
             <span nbText size="xs"> {{ flight.origin }} </span>
 
             <span nbText size="xs"> {{ flight.departureAt }} </span>
-          </div>
-        </div>
+          </dd>
+        </dl>
       </div>
 
       <div nbCluster gap="lg" align="center" wrap="nowrap" class="pr-4!">
         <ng-icon aria-hidden="true" size="20" name="tablerPlaneArrival" />
 
-        <div nbStack gap="sm" align="start">
-          <span nbText size="xs" weight="bold" i18n="@@arrivalLabel">
-            Arrival
-          </span>
+        <dl nbStack gap="sm" align="start" class="m-0">
+          <dt nbText size="xs" weight="bold" i18n="@@arrivalLabel">Arrival</dt>
 
-          <div nbStack gap="none" align="start">
+          <dd nbStack gap="none" align="start" class="m-0">
             <span nbText size="xs"> {{ flight.destination }} </span>
 
             <span nbText size="xs"> {{ flight.arrivalAt }} </span>
-          </div>
-        </div>
+          </dd>
+        </dl>
       </div>
     </div>
   </div>
@@ -97,4 +95,4 @@
     <ng-icon aria-hidden="true" size="20" name="tablerArrowLeft" />
     <span i18n="@@backLabel">Back</span>
   </button>
-</div>
+</article>
