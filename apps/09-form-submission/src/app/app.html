@@ -81,8 +81,11 @@
         </p>
 
         <div class="flex flex-col gap-4 pt-8">
-          @for (question of [currentQuestion()]; track index()) {
-            <div class="card__body flex flex-col gap-6 text-center">
+          @for (question of [currentQuestion()]; track question.id) {
+            <div
+              class="flex flex-col gap-6 text-center"
+              animate.enter="card-enter"
+            >
               <h2
                 nbTitle
                 class="m-0 text-lg leading-tight font-bold text-balance [--nb-title-wave-color:var(--nb-lavender)] [&::after]:mx-auto"

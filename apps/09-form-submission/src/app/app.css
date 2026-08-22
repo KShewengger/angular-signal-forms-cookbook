@@ -18,8 +18,8 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .card__body {
-    animation: deal-in 0.3s ease;
+  .card-enter {
+    animation: card-enter 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .card--shake {
     animation: shake 0.4s ease;
@@ -43,10 +43,14 @@
       transform: scale(1);
     }
   }
-  @keyframes deal-in {
+  @keyframes card-enter {
     from {
       opacity: 0;
-      transform: translateY(14px);
+      transform: translateX(64px) rotate(4deg);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0) rotate(0);
     }
   }
   @keyframes shake {
