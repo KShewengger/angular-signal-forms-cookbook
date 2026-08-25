@@ -1,12 +1,4 @@
-import type { Application, EngagementKind, RoleId } from './app.model';
-
-export type RoleOption = {
-  id: RoleId;
-  emoji: string;
-  label: string;
-  skills: string[];
-  placeholder: string;
-};
+import type { Application, EngagementOption, RoleOption } from './app.model';
 
 export const ROLES: RoleOption[] = [
   {
@@ -25,11 +17,6 @@ export const ROLES: RoleOption[] = [
   },
 ];
 
-export type EngagementOption = {
-  kind: EngagementKind;
-  label: string;
-};
-
 export const ENGAGEMENTS: EngagementOption[] = [
   {
     kind: 'fulltime',
@@ -46,5 +33,5 @@ export const INITIAL_APPLICATION: Application = {
   name: '',
   years: null,
   engagement: { kind: 'fulltime' },
-  skills: [],
+  skills: [...(ROLES.find((role) => role.id === 'frontend')?.skills ?? [])],
 };

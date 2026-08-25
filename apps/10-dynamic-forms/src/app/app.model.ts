@@ -26,3 +26,16 @@ export type Application = FrontendApplication | DesignerApplication;
 
 export type RoleId = Application['role'];
 export type EngagementKind = Engagement['kind'];
+
+export type RoleOption = {
+  id: RoleId;
+  emoji: string;
+  label: string;
+  skills: string[];
+  placeholder: string;
+};
+
+export type EngagementOption = {
+  kind: EngagementKind;
+  label: string;
+};
