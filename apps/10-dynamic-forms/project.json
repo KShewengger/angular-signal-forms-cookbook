@@ -1,0 +1,82 @@
+{
+  "name": "10-dynamic-forms",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/10-dynamic-forms/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/10-dynamic-forms",
+        "browser": "apps/10-dynamic-forms/src/main.ts",
+        "polyfills": ["@angular/localize/init"],
+        "tsConfig": "apps/10-dynamic-forms/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/10-dynamic-forms/public"
+          }
+        ],
+        "styles": ["apps/10-dynamic-forms/src/styles.css"]
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kb",
+              "maximumError": "8kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      }
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "configurations": {
+        "production": {
+          "buildTarget": "10-dynamic-forms:build:production"
+        },
+        "development": {
+          "buildTarget": "10-dynamic-forms:build:development"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "options": {
+        "watch": false,
+        "setupFiles": ["apps/10-dynamic-forms/src/test-setup.ts"]
+      }
+    },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "dynamic-forms:build",
+        "staticFilePath": "dist/apps/10-dynamic-forms/browser",
+        "spa": true
+      }
+    }
+  }
+}
