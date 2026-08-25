@@ -93,17 +93,16 @@ export class App {
     );
 
     if (!exists) {
-      this.applicationForm.skills().value.set([...skills, skill]);
+      this.applicationForm
+        .skills()
+        .value.update((skills) => [...skills, skill]);
     }
   }
 
   protected removeSkill(skill: string): void {
-    this.applicationForm.skills().value.set(
-      this.applicationForm
-        .skills()
-        .value()
-        .filter((item) => item !== skill),
-    );
+    this.applicationForm
+      .skills()
+      .value.update((skills) => skills.filter((item) => item !== skill));
   }
 
   protected reset(): void {
