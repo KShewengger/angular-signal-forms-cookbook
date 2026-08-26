@@ -38,7 +38,6 @@ import { DesignerForm } from './designer-form';
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
-  styleUrl: './app.css',
   imports: [
     NbButton,
     NbButtonTrailingIcon,
