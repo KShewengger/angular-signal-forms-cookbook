@@ -27,7 +27,7 @@ export const applicationSchema = schema<Application>((path) => {
 
   applyEach(path.skills, (skill) => {
     pattern(skill, SKILL_PATTERN, {
-      message: 'Letters only — no numbers or special characters.',
+      message: 'Letters only. No numbers or special characters.',
     });
   });
 
