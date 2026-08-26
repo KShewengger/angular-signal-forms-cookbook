@@ -32,8 +32,6 @@ describe('ValidationErrors (10 · Dynamic Forms)', () => {
     });
   };
 
-  // Application / Engagement are discriminated unions, so FieldTree only
-  // exposes shared keys. Narrow to reach a variant's own field.
   const portfolioOf = (
     applicationForm: FieldTree<Application>,
   ): FieldTree<string> =>
@@ -173,6 +171,19 @@ describe('ValidationErrors (10 · Dynamic Forms)', () => {
       await fixture.whenStable();
 
       expect(host.textContent).toContain('Enter a valid URL.');
+    });
+
+    it('surfaces the skill letters-only message', async () => {
+      const skillField = buildApplicationForm({
+        ...INITIAL_APPLICATION,
+        skills: ['---'],
+      }).skills[0];
+      skillField().markAsTouched();
+      await showErrorsFor(skillField);
+
+      expect(host.textContent).toContain(
+        'Letters only — no numbers or special characters.',
+      );
     });
 
     it('renders a flat list for a single error', async () => {

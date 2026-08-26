@@ -1,6 +1,6 @@
 @if (visible()) {
   <ul
-    class="space-y-1 text-sm text-red-600"
+    class="space-y-1 text-sm"
     role="alert"
     aria-live="polite"
     [class.list-disc]="hasMultipleErrors()"
@@ -8,7 +8,7 @@
   >
     @for (error of errors(); track error.kind) {
       <li>
-        <span nbText size="xs" tone="danger">{{ error.message }}</span>
+        <span nbText size="xs" class="text-red-600!">{{ error.message }}</span>
       </li>
     }
   </ul>

@@ -1,7 +1,9 @@
 import {
+  applyEach,
   applyWhenValue,
   max,
   min,
+  pattern,
   required,
   schema,
   validate,
@@ -12,6 +14,8 @@ import {
   DesignerApplication,
 } from './app.model';
 
+export const SKILL_PATTERN = /^[A-Za-z]+$/;
+
 export const applicationSchema = schema<Application>((path) => {
   required(path.name, { message: 'Name is required.' });
 
@@ -20,6 +24,12 @@ export const applicationSchema = schema<Application>((path) => {
   });
   min(path.years, 0, { message: 'Keep years between 0 and 10.' });
   max(path.years, 10, { message: 'Keep years between 0 and 10.' });
+
+  applyEach(path.skills, (skill) => {
+    pattern(skill, SKILL_PATTERN, {
+      message: 'Letters only — no numbers or special characters.',
+    });
+  });
 
   applyWhenValue(
     path.engagement,

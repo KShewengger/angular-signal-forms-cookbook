@@ -15,7 +15,7 @@
     </nb-sticker>
   </div>
 
-  <nb-card class="relative overflow-hidden! bg-nb-success/20! py-0!">
+  <nb-card class="relative overflow-hidden! bg-nb-success/20! py-0! gap-0!">
     <!-- HEADER -->
     <nb-card-header
       class="relative flex items-center gap-3 border-b-3 border-black bg-nb-success! px-4.5! py-3.5!"
@@ -65,7 +65,240 @@
       ></div>
     </nb-card-header>
 
-    <!-- CONTENT (fields later) -->
-    <nb-card-content class="min-h-48 p-4.5"></nb-card-content>
+    <!-- CONTENT -->
+    <nb-card-content class="p-4.5">
+      <form nbStack gap="none" [formRoot]="form()">
+        <fieldset nbStack gap="xl">
+          <legend class="sr-only" i18n="@@frontendApplicationFieldsLabel">
+            Frontend application fields
+          </legend>
+
+          <!-- NAME -->
+          <div nbStack gap="sm" align="stretch">
+            <label nbLabel for="frontend-name" i18n="@@fullNameLabel">
+              Full name <span aria-hidden="true">*</span>
+            </label>
+
+            <input
+              nbInput
+              id="frontend-name"
+              type="text"
+              autocomplete="name"
+              placeholder="Enter your full name"
+              i18n-placeholder="@@fullNamePlaceholder"
+              aria-describedby="frontend-name-errors"
+              [formField]="form().name"
+              [attr.aria-invalid]="
+                form().name().touched() && form().name().invalid()
+              "
+            />
+
+            <app-validation-errors
+              id="frontend-name-errors"
+              [field]="form().name"
+            />
+          </div>
+
+          <!-- YEARS -->
+          <div nbStack gap="sm" align="stretch">
+            <label nbLabel for="frontend-years" i18n="@@yearsLabel">
+              Years of experience <span aria-hidden="true">*</span>
+            </label>
+
+            <nb-input-group>
+              <input
+                nbInput
+                id="frontend-years"
+                type="number"
+                inputmode="numeric"
+                step="1"
+                placeholder="Enter your years of experience"
+                i18n-placeholder="@@yearsPlaceholder"
+                aria-describedby="frontend-years-errors"
+                [formField]="form().years"
+                [attr.aria-invalid]="
+                  form().years().touched() && form().years().invalid()
+                "
+              />
+              <span
+                nbInputSuffix
+                class="min-w-11 px-3 font-mono text-xs font-extrabold uppercase tracking-wide"
+                aria-hidden="true"
+              >
+                yrs
+              </span>
+            </nb-input-group>
+
+            <app-validation-errors
+              id="frontend-years-errors"
+              [field]="form().years"
+            />
+          </div>
+
+          <!-- ENGAGEMENT -->
+          <div nbStack gap="sm" align="stretch">
+            <p
+              nbLabel
+              id="frontend-engagement-label"
+              class="m-0"
+              i18n="@@engagementLabel"
+            >
+              Engagement
+            </p>
+
+            <div
+              role="group"
+              class="grid grid-cols-2 gap-2"
+              aria-labelledby="frontend-engagement-label"
+            >
+              @for (engagement of engagementTabs(); track engagement.kind) {
+                <button
+                  nbButton
+                  fullWidth
+                  type="button"
+                  size="sm"
+                  [tone]="engagement.tone"
+                  [attr.aria-pressed]="engagement.selected"
+                  (click)="selectEngagement(engagement.kind)"
+                >
+                  <span
+                    nbText
+                    size="xs"
+                    weight="black"
+                    transform="uppercase"
+                    tracking="wide"
+                  >
+                    {{ engagement.label }}
+                  </span>
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- DAY RATE (contract only) -->
+          @if (isContract()) {
+            <div nbStack gap="sm" align="stretch">
+              <label nbLabel for="frontend-day-rate" i18n="@@dayRateLabel">
+                Day rate (USD)
+              </label>
+
+              <nb-input-group>
+                <span
+                  nbInputPrefix
+                  class="min-w-11 px-3 font-mono text-xs font-extrabold"
+                  aria-hidden="true"
+                >
+                  $
+                </span>
+                <input
+                  nbInput
+                  id="frontend-day-rate"
+                  type="number"
+                  inputmode="numeric"
+                  step="1"
+                  placeholder="Enter your daily rate"
+                  i18n-placeholder="@@dayRatePlaceholder"
+                  aria-describedby="frontend-day-rate-errors"
+                  [formField]="dayRateField"
+                  [attr.aria-invalid]="
+                    dayRateField().touched() && dayRateField().invalid()
+                  "
+                />
+              </nb-input-group>
+
+              <app-validation-errors
+                id="frontend-day-rate-errors"
+                [field]="dayRateField"
+              />
+            </div>
+          }
+
+          <!-- SKILLS -->
+          <div nbStack gap="sm" align="stretch" class="mt-1">
+            <label nbLabel for="frontend-skill" i18n="@@skillsLabel">
+              Core skills
+            </label>
+
+            <div
+              nbSurface
+              nbStack
+              gap="md"
+              tone="success"
+              radius="lg"
+              border="thick"
+              shadow="sm"
+              padding="sm"
+              class="focus-within:outline-3 focus-within:outline-offset-3 focus-within:outline-black"
+            >
+              <div
+                nbChipGroup
+                nbCluster
+                gap="sm"
+                class="flex flex-wrap"
+                aria-label="Selected skills"
+                i18n-aria-label="@@selectedSkillsLabel"
+              >
+                @for (skill of form().skills().value(); track skill) {
+                  <span nbChip tone="background" class="gap-1.5! pr-1!">
+                    {{ skill }}
+                    <button
+                      type="button"
+                      class="grid size-5 place-items-center rounded-full border-2 border-black bg-nb-success text-xs leading-none font-black text-black"
+                      [attr.aria-label]="'Remove ' + skill"
+                      (click)="removeSkill(skill)"
+                    >
+                      ×
+                    </button>
+                  </span>
+                }
+              </div>
+
+              <div class="grid grid-cols-[1fr_auto] items-center gap-2">
+                <input
+                  nbInput
+                  id="frontend-skill"
+                  type="text"
+                  autocomplete="off"
+                  class="h-11!"
+                  [placeholder]="skillPlaceholder"
+                  [value]="skill()"
+                  (input)="skill.set($event.target.value)"
+                />
+
+                <button
+                  nbButton
+                  type="button"
+                  size="md"
+                  tone="yellow"
+                  class="h-11!"
+                  [disabled]="!canAddSkill()"
+                  (click)="addSkill()"
+                  i18n="@@addSkillLabel"
+                >
+                  Add
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUBMIT -->
+          <button
+            nbButton
+            fullWidth
+            type="submit"
+            size="lg"
+            tone="yellow"
+            class="mt-1"
+            [disabled]="submitting() || form()().invalid()"
+            i18n="@@submitApplication"
+          >
+            {submitting(), select,
+              true {Submitting…}
+              false {Submit application}
+            }
+          </button>
+        </fieldset>
+      </form>
+    </nb-card-content>
   </nb-card>
 </div>

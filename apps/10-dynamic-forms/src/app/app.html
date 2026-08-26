@@ -58,7 +58,7 @@
 <!-- FORM -->
 @switch (selectedRole()) {
   @case ('frontend') {
-    <app-frontend-form />
+    <app-frontend-form [form]="applicationForm" [submitting]="submitting()" />
   }
   @case ('designer') {
     <app-designer-form />

@@ -76,7 +76,7 @@ export class App {
     applicationSchema,
     {
       submission: {
-        action: async () => undefined,
+        action: async () => console.log('submitted'),
         onInvalid: (field) =>
           field().errorSummary()[0]?.fieldTree().focusBoundControl(),
         ignoreValidators: 'none',
@@ -133,24 +133,6 @@ export class App {
     if (this.applicationModel().engagement.kind === kind) return;
 
     this.applicationForm.engagement().value.set(createEngagement(kind));
-  }
-
-  protected addSkill(raw: string): void {
-    const skill = raw.trim();
-
-    this.applicationForm
-      .skills()
-      .value.update((skills) =>
-        skills.some((item) => item.toLowerCase() === skill.toLowerCase())
-          ? skills
-          : [...skills, skill],
-      );
-  }
-
-  protected removeSkill(skill: string): void {
-    this.applicationForm
-      .skills()
-      .value.update((skills) => skills.filter((item) => item !== skill));
   }
 
   protected reset(): void {
