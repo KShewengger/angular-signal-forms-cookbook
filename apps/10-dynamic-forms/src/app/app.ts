@@ -15,11 +15,13 @@ import {
   skillsForRole,
   switchApplicationRole,
 } from './app.utils';
+import { ValidationErrors } from './validation-errors/validation-errors';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.css',
+  imports: [ValidationErrors],
 })
 export class App {
   protected readonly roles = ROLES;
@@ -85,18 +87,13 @@ export class App {
   protected addSkill(raw: string): void {
     const skill = raw.trim();
 
-    if (!skill) return;
-
-    const skills = this.applicationForm.skills().value();
-    const exists = skills.some(
-      (item) => item.toLowerCase() === skill.toLowerCase(),
-    );
-
-    if (!exists) {
-      this.applicationForm
-        .skills()
-        .value.update((skills) => [...skills, skill]);
-    }
+    this.applicationForm
+      .skills()
+      .value.update((skills) =>
+        skills.some((item) => item.toLowerCase() === skill.toLowerCase())
+          ? skills
+          : [...skills, skill],
+      );
   }
 
   protected removeSkill(skill: string): void {
