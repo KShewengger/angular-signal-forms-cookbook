@@ -15,13 +15,15 @@ import {
   skillsForRole,
   switchApplicationRole,
 } from './app.utils';
-import { ValidationErrors } from './validation-errors/validation-errors';
 import {
+  NbButton,
   NbCallout,
   NbChip,
   NbChipGroup,
   NbCluster,
   NbSeparator,
+  NbText,
+  type NbToneToken,
 } from '@ng-brutalism/ui';
 
 @Component({
@@ -29,15 +31,16 @@ import {
   templateUrl: './app.html',
   styleUrl: './app.css',
   imports: [
-    ValidationErrors,
+    NbButton,
     NbCallout,
     NbChipGroup,
     NbCluster,
     NbChip,
     NbSeparator,
+    NbText,
   ],
   host: {
-    class: 'relative mx-auto flex w-2xl max-w-full shrink-0 flex-col gap-4',
+    class: 'relative mx-auto flex w-3xl max-w-full shrink-0 flex-col gap-4',
   },
 })
 export class App {
@@ -78,6 +81,17 @@ export class App {
       this.roles.find((role) => role.id === this.selectedRole()) ??
       this.roles[0],
   );
+
+  protected readonly roleTabs = computed(() => {
+    const selected = this.selectedRole();
+
+    return this.roles.map((role) => {
+      const selectedTab = role.id === selected;
+      const tone: NbToneToken = selectedTab ? role.selectedTone : 'background';
+
+      return { ...role, selected: selectedTab, tone };
+    });
+  });
 
   protected readonly isDesigner = computed(
     () => this.selectedRole() === 'designer',

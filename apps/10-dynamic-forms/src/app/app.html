@@ -1,8 +1,5 @@
 <!-- HERO -->
-<header
-  class="mx-auto flex w-120 max-w-full flex-col gap-3"
-  aria-label="Lesson header"
->
+<header class="flex flex-col gap-3" aria-label="Lesson header">
   <div
     nbCallout
     tone="lavender"
@@ -23,3 +20,37 @@
     <span nbChip tone="black" i18n="@@basicLabel"> Ng-Brutalism </span>
   </div>
 </header>
+
+<!-- ROLE TABS -->
+<div
+  role="group"
+  class="grid grid-cols-2 gap-2.5"
+  aria-label="Choose a role"
+  i18n-aria-label="@@chooseRoleLabel"
+>
+  @for (role of roleTabs(); track role.id) {
+    <button
+      nbButton
+      fullWidth
+      type="button"
+      size="md"
+      class="h-auto! min-h-19 flex-col! gap-1!"
+      [tone]="role.tone"
+      [attr.aria-pressed]="role.selected"
+      (click)="selectRole(role.id)"
+    >
+      <span class="text-xl leading-none" aria-hidden="true">{{
+        role.emoji
+      }}</span>
+      <span
+        nbText
+        size="xs"
+        weight="black"
+        transform="uppercase"
+        tracking="wide"
+      >
+        {{ role.label }}
+      </span>
+    </button>
+  }
+</div>

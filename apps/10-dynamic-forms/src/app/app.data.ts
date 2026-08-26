@@ -7,6 +7,7 @@ export const ROLES: RoleOption[] = [
     label: $localize`:@@roleFrontendLabel:Frontend`,
     skills: ['Angular', 'TypeScript', 'RxJS'],
     placeholder: $localize`:@@skillPlaceholderFrontend:e.g. Signals`,
+    selectedTone: 'success',
   },
   {
     id: 'designer',
@@ -14,6 +15,7 @@ export const ROLES: RoleOption[] = [
     label: $localize`:@@roleDesignerLabel:Designer`,
     skills: ['Angular', 'Figma', 'Sass'],
     placeholder: $localize`:@@skillPlaceholderDesigner:e.g. CDK`,
+    selectedTone: 'pink',
   },
 ];
 

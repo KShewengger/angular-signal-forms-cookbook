@@ -33,6 +33,7 @@ export type RoleOption = {
   label: string;
   skills: string[];
   placeholder: string;
+  selectedTone: 'success' | 'pink';
 };
 
 export type EngagementOption = {
