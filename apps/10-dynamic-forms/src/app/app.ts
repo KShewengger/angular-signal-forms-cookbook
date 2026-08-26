@@ -25,6 +25,8 @@ import {
   NbText,
   type NbToneToken,
 } from '@ng-brutalism/ui';
+import { FrontendForm } from './frontend-form';
+import { DesignerForm } from './designer-form';
 
 @Component({
   selector: 'app-root',
@@ -38,6 +40,8 @@ import {
     NbChip,
     NbSeparator,
     NbText,
+    FrontendForm,
+    DesignerForm,
   ],
   host: {
     class: 'relative mx-auto flex w-3xl max-w-full shrink-0 flex-col gap-4',
