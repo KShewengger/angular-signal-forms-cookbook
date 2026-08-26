@@ -1,1 +1,71 @@
-<h1>Frontend Form</h1>
+<div class="relative">
+  <!-- STAR STICKER -->
+  <div
+    class="absolute -top-7 -right-10 z-20 origin-top-right scale-68"
+    aria-hidden="true"
+  >
+    <nb-sticker
+      shape="burst-wide"
+      tone="yellow"
+      i18n="@@testItLabel"
+      [rotate]="5"
+    >
+      TEST<br />
+      IT!
+    </nb-sticker>
+  </div>
+
+  <nb-card class="relative overflow-hidden! bg-nb-success/20! py-0!">
+    <!-- HEADER -->
+    <nb-card-header
+      class="relative flex items-center gap-3 border-b-3 border-black bg-nb-success! px-4.5! py-3.5!"
+    >
+      <div
+        class="grid size-11 shrink-0 place-items-center rounded-xl border-2 border-black bg-white text-xl leading-none shadow-hard-sm"
+        aria-hidden="true"
+      >
+        💻
+      </div>
+
+      <div class="min-w-0 flex-1">
+        <nb-card-title>
+          <h2
+            nbText
+            size="lg"
+            weight="black"
+            transform="uppercase"
+            class="m-0 leading-tight"
+            i18n="@@roleBuilderTitle"
+          >
+            Role Builder
+          </h2>
+        </nb-card-title>
+        <nb-card-description>
+          <p
+            nbText
+            size="xs"
+            weight="bold"
+            transform="uppercase"
+            tracking="wide"
+            class="m-0"
+            i18n="@@frontendApplicationLabel"
+          >
+            Frontend application
+          </p>
+        </nb-card-description>
+      </div>
+
+      <div
+        nbHalftone
+        shape="rectangle"
+        class="absolute -right-1 -bottom-2 opacity-40"
+        aria-hidden="true"
+        [rows]="3"
+        [columns]="7"
+      ></div>
+    </nb-card-header>
+
+    <!-- CONTENT (fields later) -->
+    <nb-card-content class="min-h-48 p-4.5"></nb-card-content>
+  </nb-card>
+</div>

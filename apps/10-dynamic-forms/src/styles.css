@@ -18,6 +18,7 @@
   --color-nb-lavender: var(--nb-lavender);
   --color-nb-blue: var(--nb-blue);
   --color-nb-danger: var(--nb-danger);
+  --color-nb-success: var(--nb-success);
   --color-nb-card: var(--nb-card-bg);
   --shadow-hard: 6px 6px 0 0 var(--nb-shadow);
   --shadow-hard-sm: 3px 3px 0 0 var(--nb-shadow);
