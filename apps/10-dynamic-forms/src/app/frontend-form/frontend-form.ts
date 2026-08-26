@@ -22,6 +22,8 @@ import {
   NbText,
   type NbToneToken,
 } from '@ng-brutalism/ui';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { tablerX } from '@ng-icons/tabler-icons';
 import { ENGAGEMENTS, ROLES } from '../app.data';
 import {
   Application,
@@ -58,8 +60,10 @@ import { ValidationErrors } from '../validation-errors';
     NbSticker,
     NbSurface,
     NbText,
+    NgIcon,
     ValidationErrors,
   ],
+  viewProviders: [provideIcons({ tablerX })],
   host: {
     class: 'block w-full',
   },
@@ -119,15 +123,6 @@ export class FrontendForm {
       );
 
     this.skill.set('');
-  }
-
-  protected onSkillInput(event: Event): void {
-    this.skill.set((event.target as HTMLInputElement).value);
-  }
-
-  protected onSkillEnter(event: Event): void {
-    event.preventDefault();
-    this.addSkill();
   }
 
   protected removeSkill(skill: string): void {

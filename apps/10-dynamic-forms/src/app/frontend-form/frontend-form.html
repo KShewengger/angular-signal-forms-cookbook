@@ -243,11 +243,11 @@
                     {{ skill }}
                     <button
                       type="button"
-                      class="grid size-5 place-items-center rounded-full border-2 border-black bg-nb-success text-xs leading-none font-black text-black"
+                      class="grid size-5 place-items-center rounded-full border-2 border-black bg-nb-success text-black"
                       [attr.aria-label]="'Remove ' + skill"
                       (click)="removeSkill(skill)"
                     >
-                      ×
+                      <ng-icon aria-hidden="true" size="12" name="tablerX" />
                     </button>
                   </span>
                 }
