@@ -2,9 +2,9 @@ import {
   applyWhenValue,
   max,
   min,
-  pattern,
   required,
   schema,
+  validate,
 } from '@angular/forms/signals';
 import {
   Application,
@@ -39,8 +39,17 @@ export const applicationSchema = schema<Application>((path) => {
       required(designer.portfolio, {
         message: 'Portfolio URL is required.',
       });
-      pattern(designer.portfolio, /^https?:\/\/.+/i, {
-        message: 'Enter a valid URL.',
+      validate(designer.portfolio, ({ value }) => {
+        const url = value().trim();
+
+        if (!url) return null;
+
+        try {
+          new URL(url);
+          return null;
+        } catch {
+          return { kind: 'invalidUrl', message: 'Enter a valid URL.' };
+        }
       });
     },
   );
