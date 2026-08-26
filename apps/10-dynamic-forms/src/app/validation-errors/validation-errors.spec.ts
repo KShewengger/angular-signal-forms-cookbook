@@ -1,23 +1,52 @@
 import { Injector, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { form, type FieldTree } from '@angular/forms/signals';
-import { INITIAL_ANSWER, QuizAnswer } from '../app.model';
-import { answerSchema } from '../app.schema';
+import {
+  Application,
+  ContractEngagement,
+  DesignerApplication,
+} from '../app.model';
+import { applicationSchema } from '../app.schema';
+import { INITIAL_APPLICATION } from '../app.data';
 import { ValidationErrors } from './validation-errors';
 
-describe('ValidationErrors (09 · Form Submission)', () => {
+const EMPTY_DESIGNER: DesignerApplication = {
+  role: 'designer',
+  name: '',
+  years: null,
+  engagement: { kind: 'fulltime' },
+  skills: [],
+  portfolio: '',
+};
+
+describe('ValidationErrors (10 · Dynamic Forms)', () => {
   let fixture: ComponentFixture<ValidationErrors>;
   let host: HTMLElement;
 
-  const buildAnswerForm = (value = ''): FieldTree<QuizAnswer> => {
-    const model = signal<QuizAnswer>({ ...INITIAL_ANSWER, answer: value });
-    return form(model, answerSchema, { injector: TestBed.inject(Injector) });
+  const buildApplicationForm = (
+    initial: Application = { ...INITIAL_APPLICATION },
+  ): FieldTree<Application> => {
+    const model = signal<Application>({ ...initial });
+    return form(model, applicationSchema, {
+      injector: TestBed.inject(Injector),
+    });
   };
 
-  const showErrorsFor = async (
-    answerForm: FieldTree<QuizAnswer>,
-  ): Promise<void> => {
-    fixture.componentRef.setInput('field', answerForm.answer);
+  // Application / Engagement are discriminated unions, so FieldTree only
+  // exposes shared keys. Narrow to reach a variant's own field.
+  const portfolioOf = (
+    applicationForm: FieldTree<Application>,
+  ): FieldTree<string> =>
+    (applicationForm as unknown as FieldTree<DesignerApplication>).portfolio;
+
+  const dayRateOf = (
+    applicationForm: FieldTree<Application>,
+  ): FieldTree<number | null> =>
+    (applicationForm.engagement as unknown as FieldTree<ContractEngagement>)
+      .dayRate;
+
+  const showErrorsFor = async (field: FieldTree<unknown>): Promise<void> => {
+    fixture.componentRef.setInput('field', field);
     await fixture.whenStable();
   };
 
@@ -31,51 +60,125 @@ describe('ValidationErrors (09 · Form Submission)', () => {
 
   describe('visibility', () => {
     it('renders nothing while the field is pristine and untouched', async () => {
-      await showErrorsFor(buildAnswerForm(''));
+      await showErrorsFor(buildApplicationForm().name);
 
       expect(errorList()).toBeNull();
     });
 
-    it('renders nothing for a valid answer, even after it is touched', async () => {
-      const answerForm = buildAnswerForm('form');
-      answerForm.answer().markAsTouched();
-      await showErrorsFor(answerForm);
+    it('renders nothing for a valid field, even after it is touched', async () => {
+      const nameField = buildApplicationForm({
+        ...INITIAL_APPLICATION,
+        name: 'Ada Lovelace',
+      }).name;
+      nameField().markAsTouched();
+      await showErrorsFor(nameField);
 
       expect(errorList()).toBeNull();
     });
 
-    it('shows the error once an empty answer is touched', async () => {
-      const answerForm = buildAnswerForm('');
-      answerForm.answer().markAsTouched();
-      await showErrorsFor(answerForm);
+    it('shows the errors once an invalid field is touched', async () => {
+      const nameField = buildApplicationForm().name;
+      nameField().markAsTouched();
+      await showErrorsFor(nameField);
 
       expect(errorList()).not.toBeNull();
     });
 
-    it('shows the error once an empty answer is dirty', async () => {
-      const answerForm = buildAnswerForm('');
-      answerForm.answer().markAsDirty();
-      await showErrorsFor(answerForm);
+    it('shows the errors once an invalid field is dirty', async () => {
+      const nameField = buildApplicationForm().name;
+      nameField().markAsDirty();
+      await showErrorsFor(nameField);
 
       expect(errorList()).not.toBeNull();
+    });
+
+    it('hides the errors once the field becomes valid', async () => {
+      const nameField = buildApplicationForm().name;
+      nameField().markAsTouched();
+      await showErrorsFor(nameField);
+
+      expect(errorList()).not.toBeNull();
+
+      nameField().value.set('Ada Lovelace');
+      await fixture.whenStable();
+
+      expect(errorList()).toBeNull();
     });
   });
 
-  describe('rendering the real recipe error', () => {
-    it('surfaces the required message (via errorSummary)', async () => {
-      const answerForm = buildAnswerForm('');
-      answerForm.answer().markAsTouched();
-      await showErrorsFor(answerForm);
+  describe('rendering the real recipe errors', () => {
+    it("surfaces the name 'required' message", async () => {
+      const nameField = buildApplicationForm().name;
+      nameField().markAsTouched();
+      await showErrorsFor(nameField);
 
-      expect(host.textContent).toContain(
-        'Answer this question before submitting.',
+      expect(host.textContent).toContain('Name is required.');
+    });
+
+    it("surfaces the years 'required' message", async () => {
+      const yearsField = buildApplicationForm().years;
+      yearsField().markAsTouched();
+      await showErrorsFor(yearsField);
+
+      expect(host.textContent).toContain('Years of experience is required.');
+    });
+
+    it('surfaces the years range message', async () => {
+      const yearsField = buildApplicationForm({
+        ...INITIAL_APPLICATION,
+        years: 11,
+      }).years;
+      yearsField().markAsTouched();
+      await showErrorsFor(yearsField);
+
+      expect(host.textContent).toContain('Keep years between 0 and 10.');
+    });
+
+    it("surfaces the contract day rate 'required' message", async () => {
+      const dayRateField = dayRateOf(
+        buildApplicationForm({
+          ...INITIAL_APPLICATION,
+          engagement: { kind: 'contract', dayRate: null },
+        }),
       );
+      dayRateField().markAsTouched();
+      await showErrorsFor(dayRateField);
+
+      expect(host.textContent).toContain('Enter a day rate.');
+    });
+
+    it("surfaces the designer portfolio 'required' message", async () => {
+      const portfolioField = portfolioOf(
+        buildApplicationForm({ ...EMPTY_DESIGNER }),
+      );
+      portfolioField().markAsTouched();
+      await showErrorsFor(portfolioField);
+
+      expect(host.textContent).toContain('Portfolio URL is required.');
+    });
+
+    it('surfaces the designer portfolio URL message', async () => {
+      const portfolioField = portfolioOf(
+        buildApplicationForm({
+          ...EMPTY_DESIGNER,
+          portfolio: 'https://ada.dev',
+        }),
+      );
+      portfolioField().markAsTouched();
+      await showErrorsFor(portfolioField);
+
+      expect(errorList()).toBeNull();
+
+      portfolioField().value.set('not-a-url');
+      await fixture.whenStable();
+
+      expect(host.textContent).toContain('Enter a valid URL.');
     });
 
     it('renders a flat list for a single error', async () => {
-      const answerForm = buildAnswerForm('');
-      answerForm.answer().markAsTouched();
-      await showErrorsFor(answerForm);
+      const nameField = buildApplicationForm().name;
+      nameField().markAsTouched();
+      await showErrorsFor(nameField);
 
       const list = errorList();
       expect(list?.classList.contains('list-disc')).toBe(false);
@@ -84,10 +187,10 @@ describe('ValidationErrors (09 · Form Submission)', () => {
   });
 
   describe('accessibility', () => {
-    it('exposes the error to assistive technology', async () => {
-      const answerForm = buildAnswerForm('');
-      answerForm.answer().markAsTouched();
-      await showErrorsFor(answerForm);
+    it('exposes the errors to assistive technology', async () => {
+      const nameField = buildApplicationForm().name;
+      nameField().markAsTouched();
+      await showErrorsFor(nameField);
 
       const list = errorList();
       expect(list?.getAttribute('role')).toBe('alert');
