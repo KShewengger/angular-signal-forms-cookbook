@@ -64,3 +64,92 @@
     <app-designer-form />
   }
 }
+
+<!-- LESSON NAVIGATION -->
+<nav
+  nbCluster
+  gap="md"
+  align="center"
+  justify="between"
+  class="mt-6 mb-4"
+  aria-label="Lesson navigation"
+>
+  <a
+    nbButton
+    tone="warning"
+    size="md"
+    radius="md"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Go to the previous lesson"
+    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/09-form-submission"
+  >
+    <span nbButtonTrailingIcon shape="circle" class="grid place-items-center">
+      <ng-icon aria-hidden="true" size="20" name="tablerCircleArrowLeftFill" />
+    </span>
+
+    <span
+      nbText
+      size="md"
+      weight="black"
+      transform="uppercase"
+      tracking="wide"
+      i18n="@@prevFormSubmission"
+    >
+      Prev: Form Submission
+    </span>
+  </a>
+
+  <a
+    nbButton
+    tone="success"
+    size="md"
+    radius="md"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Go to the next lesson"
+    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps"
+  >
+    <span
+      nbText
+      size="md"
+      weight="black"
+      transform="uppercase"
+      tracking="wide"
+      i18n="@@nextZodSchema"
+    >
+      Next: Zod Schema Validation
+    </span>
+
+    <span nbButtonTrailingIcon shape="circle" class="grid place-items-center">
+      <ng-icon aria-hidden="true" size="20" name="tablerCircleArrowRightFill" />
+    </span>
+  </a>
+</nav>
+
+<!-- FOOTER -->
+<footer nbCluster gap="sm" align="center" justify="center" class="w-full pt-4">
+  <ng-icon
+    aria-hidden="true"
+    class="text-gray-300"
+    size="16"
+    name="tablerCopyright"
+  />
+
+  <small nbText tone="muted" size="xs" i18n="@@authorLabel">
+    Kristy Mae Almuete
+  </small>
+
+  <hr nbSeparator orientation="vertical" aria-hidden="true" />
+
+  <a
+    nbText
+    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/10-dynamic-forms"
+    tone="danger"
+    size="xs"
+    target="_blank"
+    rel="noopener noreferrer"
+    i18n="@@githubRepository"
+    >GitHub Repo</a
+  >
+</footer>

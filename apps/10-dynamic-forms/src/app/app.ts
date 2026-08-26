@@ -17,6 +17,7 @@ import {
 } from './app.utils';
 import {
   NbButton,
+  NbButtonTrailingIcon,
   NbCallout,
   NbChip,
   NbChipGroup,
@@ -25,6 +26,12 @@ import {
   NbText,
   type NbToneToken,
 } from '@ng-brutalism/ui';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { tablerCopyright } from '@ng-icons/tabler-icons';
+import {
+  tablerCircleArrowLeftFill,
+  tablerCircleArrowRightFill,
+} from '@ng-icons/tabler-icons/fill';
 import { FrontendForm } from './frontend-form';
 import { DesignerForm } from './designer-form';
 
@@ -34,17 +41,26 @@ import { DesignerForm } from './designer-form';
   styleUrl: './app.css',
   imports: [
     NbButton,
+    NbButtonTrailingIcon,
     NbCallout,
     NbChipGroup,
     NbCluster,
     NbChip,
     NbSeparator,
     NbText,
+    NgIcon,
     FrontendForm,
     DesignerForm,
   ],
+  viewProviders: [
+    provideIcons({
+      tablerCircleArrowLeftFill,
+      tablerCircleArrowRightFill,
+      tablerCopyright,
+    }),
+  ],
   host: {
-    class: 'relative mx-auto flex w-3xl max-w-full shrink-0 flex-col gap-4',
+    class: 'relative mx-auto flex w-2xl max-w-full shrink-0 flex-col gap-4',
   },
 })
 export class App {
