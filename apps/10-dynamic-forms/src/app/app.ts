@@ -16,12 +16,29 @@ import {
   switchApplicationRole,
 } from './app.utils';
 import { ValidationErrors } from './validation-errors/validation-errors';
+import {
+  NbCallout,
+  NbChip,
+  NbChipGroup,
+  NbCluster,
+  NbSeparator,
+} from '@ng-brutalism/ui';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.css',
-  imports: [ValidationErrors],
+  imports: [
+    ValidationErrors,
+    NbCallout,
+    NbChipGroup,
+    NbCluster,
+    NbChip,
+    NbSeparator,
+  ],
+  host: {
+    class: 'relative mx-auto flex w-2xl max-w-full shrink-0 flex-col gap-4',
+  },
 })
 export class App {
   protected readonly roles = ROLES;
