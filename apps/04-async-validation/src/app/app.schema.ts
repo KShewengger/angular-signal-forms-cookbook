@@ -1,12 +1,12 @@
 import {
   debounce,
   required,
-  schema,
+  SchemaPathTree,
   validateHttp,
 } from '@angular/forms/signals';
 import { BookingFormModel } from './app.model';
 
-export const bookingSchema = schema<BookingFormModel>((path) => {
+export function bookingSchema(path: SchemaPathTree<BookingFormModel>): void {
   required(path.reference, {
     message: 'Please enter your booking reference.',
   });
@@ -33,4 +33,4 @@ export const bookingSchema = schema<BookingFormModel>((path) => {
   required(path.lastName, {
     message: 'Please enter your last name.',
   });
-});
+}

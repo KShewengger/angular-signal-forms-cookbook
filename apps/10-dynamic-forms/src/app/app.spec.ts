@@ -1,6 +1,12 @@
 import { Injector, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { form, type FieldTree } from '@angular/forms/signals';
+import {
+  apply,
+  debounce,
+  form,
+  required,
+  type FieldTree,
+} from '@angular/forms/signals';
 import { App } from './app';
 import { INITIAL_APPLICATION } from './app.data';
 import {
@@ -8,7 +14,7 @@ import {
   ContractEngagement,
   DesignerApplication,
 } from './app.model';
-import { applicationSchema, skillDraftSchema } from './app.schema';
+import { applicationSchema, skillItemSchema } from './app.schema';
 import { createApplication } from './app.utils';
 
 const SUBMIT_DELAY_MS = 500;
@@ -212,9 +218,17 @@ describe('App (10 · Dynamic Forms)', () => {
     describe('skill draft (composer form)', () => {
       const buildSkillDraftForm = (initial = ''): FieldTree<string> => {
         const model = signal(initial);
-        return form(model, skillDraftSchema, {
-          injector: TestBed.inject(Injector),
-        });
+        return form(
+          model,
+          (path) => {
+            required(path, { message: 'A skill is required.' });
+            apply(path, skillItemSchema);
+            debounce(path, 500);
+          },
+          {
+            injector: TestBed.inject(Injector),
+          },
+        );
       };
 
       it('is required', () => {

@@ -1,13 +1,12 @@
 import {
-  apply,
   applyEach,
   applyWhenValue,
-  debounce,
   max,
   min,
   pattern,
   required,
   schema,
+  SchemaPathTree,
 } from '@angular/forms/signals';
 import {
   Application,
@@ -21,13 +20,7 @@ export const skillItemSchema = schema<string>((path) => {
   });
 });
 
-export const skillDraftSchema = schema<string>((path) => {
-  required(path, { message: 'A skill is required.' });
-  apply(path, skillItemSchema);
-  debounce(path, 500);
-});
-
-export const applicationSchema = schema<Application>((path) => {
+export function applicationSchema(path: SchemaPathTree<Application>): void {
   required(path.name, { message: 'Name is required.' });
 
   required(path.years, {
@@ -61,4 +54,4 @@ export const applicationSchema = schema<Application>((path) => {
       });
     },
   );
-});
+}

@@ -1,8 +1,7 @@
 import { Injector, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { form, type FieldTree } from '@angular/forms/signals';
+import { form, required, type FieldTree } from '@angular/forms/signals';
 import { INITIAL_ANSWER, QuizAnswer } from '../app.model';
-import { answerSchema } from '../app.schema';
 import { ValidationErrors } from './validation-errors';
 
 describe('ValidationErrors (09 · Form Submission)', () => {
@@ -11,7 +10,15 @@ describe('ValidationErrors (09 · Form Submission)', () => {
 
   const buildAnswerForm = (value = ''): FieldTree<QuizAnswer> => {
     const model = signal<QuizAnswer>({ ...INITIAL_ANSWER, answer: value });
-    return form(model, answerSchema, { injector: TestBed.inject(Injector) });
+    return form(
+      model,
+      (path) => {
+        required(path.answer, {
+          message: 'Answer this question before submitting.',
+        });
+      },
+      { injector: TestBed.inject(Injector) },
+    );
   };
 
   const showErrorsFor = async (

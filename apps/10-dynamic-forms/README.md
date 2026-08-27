@@ -40,6 +40,7 @@ all projects share a single root `package.json`.
 | ------------------------------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------- |
 | `applyWhenValue(path, guard, fn)`     | Applies rules to a **discriminated-union** variant, with narrowing                 | designer `portfolio`, contract `dayRate`           |
 | `applyEach(path, itemSchema)`         | Applies rules to **every element** of an array field                               | `skillItemSchema` on each chip                     |
+| `schema<T>()`                         | Builds a reusable `Schema` object for rules shared across paths or forms           | `skillItemSchema` on chips and the composer draft  |
 | `debounce(path, ms)`                  | Delays UI-to-model sync until the user pauses typing                               | skill composer draft                               |
 | `form(model, schema, { submission })` | Configures the submission `action`, `onInvalid`, and `ignoreValidators`            | `applicationForm`                                  |
 | `[formRoot]`                          | Wires a native `<form>` to submit (sets `novalidate`, prevents default)            | child `<form [formRoot]="form()">`                 |
@@ -84,7 +85,13 @@ from the current role and engagement, and the template mounts a matching child s
 controls match that shape.
 
 ```ts
-export const applicationSchema = schema<Application>((path) => {
+export const skillItemSchema = schema<string>((path) => {
+  pattern(path, /^[A-Za-z]+$/, {
+    message: 'Letters only. No numbers or special characters.',
+  });
+});
+
+export function applicationSchema(path: SchemaPathTree<Application>): void {
   required(path.name, { message: 'Name is required.' });
   required(path.years, { message: 'Years of experience is required.' });
   min(path.years, 0, { message: 'Keep years between 0 and 10.' });
@@ -111,7 +118,7 @@ export const applicationSchema = schema<Application>((path) => {
       });
     },
   );
-});
+}
 ```
 
 | Operator         | Depends on        | Effect when the condition flips                                     |
@@ -121,10 +128,11 @@ export const applicationSchema = schema<Application>((path) => {
 | `applyEach`      | `skills` length   | every chip, including ones added later, must be letters-only        |
 
 The add box is **not** on `Application`. `SkillComposer` owns a sibling
-`form(skillDraft, skillDraftSchema)` with `required`, the same `skillItemSchema`, and
-`debounce(300)`. Add is enabled when that draft is `valid()` **and**
-`controlValue() === value()` (debounce has flushed). Errors stay hidden while those two
-differ, otherwise `required` flashes on the still-empty model for 300ms.
+`form(skillDraft, (path) => { ... })` with `required`, `apply(path, skillItemSchema)`,
+and `debounce(500)`. `skillItemSchema` is the one `schema()` in this recipe, reused on
+the chips via `applyEach` and on the draft via `apply`. Add is enabled when that draft is
+`valid()` **and** `controlValue() === value()` (debounce has flushed). Errors stay hidden
+while those two differ, otherwise `required` flashes on the still-empty model for 500ms.
 `markAsTouched()` on Add calls `flushSync()` so Enter/click commits the typed value.
 `applyEach` on `skills[]` stays the model invariant.
 
@@ -238,8 +246,8 @@ export type Application = FrontendApplication | DesignerApplication;
 
 **2. Keep the schema testable** (`app.schema.ts`)
 
-`applicationSchema` is exported. The component builds its form from it, and the tests
-build the same form in isolation (`form(model, applicationSchema, { injector })`).
+`skillItemSchema` is the reusable `schema()` object (`applyEach` on chips, `apply` on the
+composer draft). `applicationSchema` is a named function. Isolated tests import both.
 
 **3. Build the form and configure submission** (`app.ts`)
 

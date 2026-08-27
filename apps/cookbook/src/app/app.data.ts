@@ -48,7 +48,7 @@ export const SIGNAL_EXAMPLES: {
     description: $localize`:@@recipe.03.desc:Validate one field against another across the form tree.`,
     api: 'validate()',
     level: 'Core',
-    tags: ['validate()', 'apply()', 'valueOf'],
+    tags: ['validate()', 'apply()', 'schema()'],
     link: '03-cross-field-validation/',
     tone: 'blue',
   },

@@ -1,8 +1,13 @@
-import { debounce, pattern, schema, validate } from '@angular/forms/signals';
+import {
+  debounce,
+  pattern,
+  SchemaPathTree,
+  validate,
+} from '@angular/forms/signals';
 import { ALLOWED_FRUITS, FRUITS, QUERY_PATTERN } from './app.data';
 import { SearchFormModel } from './app.model';
 
-export const searchSchema = schema<SearchFormModel>((path) => {
+export function searchSchema(path: SchemaPathTree<SearchFormModel>): void {
   pattern(path.query, QUERY_PATTERN, {
     message: 'No special characters allowed.',
   });
@@ -22,4 +27,4 @@ export const searchSchema = schema<SearchFormModel>((path) => {
   });
 
   debounce(path.query, 400);
-});
+}

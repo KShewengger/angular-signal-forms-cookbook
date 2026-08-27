@@ -1,8 +1,8 @@
 # 01 · Basic Form
 
 > The foundational **Angular Signal Forms** recipe: a neo-brutalist **Registration
-> form** that models its data as a `signal`, declares its one rule in a reusable
-> `schema()`, assembles the form with `form()`, binds native inputs through
+> form** that models its data as a `signal`, declares its one rule as a named schema
+> function next to `form()`, binds native inputs through
 > `[formField]`, reflects live **form state** (touched, dirty, valid, invalid) straight
 > from the form's signals, and submits through the Signal Forms **submission API**
 > (`[formRoot]` + `submit()`). No `ReactiveFormsModule`, no `FormBuilder`.
@@ -35,17 +35,16 @@ all projects share a single root `package.json`.
 
 ## Signal Forms API at a glance
 
-| API                                                          | What it does                                                         | Where in this recipe                   |
-| ------------------------------------------------------------ | -------------------------------------------------------------------- | -------------------------------------- |
-| `signal<T>()`                                                | Holds the form's data model as reactive state                        | `userModel` in `app.ts`                |
-| `schema<T>()`                                                | Declares a reusable validation schema, separate from the form        | `registrationSchema` in `app.model.ts` |
-| `form(model, schema, options)`                               | Builds a form from the model signal and the schema                   | `userForm = form(userModel, …)`        |
-| `required(path.field)`                                       | Built-in validator applied inside the schema                         | `required(path.name)`                  |
-| `FormField` / `[formField]`                                  | Directive that binds a native control to a field                     | `[formField]="userForm.name"`          |
-| `FormRoot` / `[formRoot]` + `submission.action`              | Wires `<form>` submit: marks all touched, validates, runs the action | opens the summary dialog on submit     |
-| `userForm().value()`                                         | Snapshot of the current form value                                   | shown in the submit dialog             |
-| `userForm().touched()` · `dirty()` · `valid()` · `invalid()` | Live field-state signals                                             | the status dots + button `disabled`    |
-| `userForm().reset(value)`                                    | Resets the form back to an initial value                             | `Clear` and `All Set!`                 |
+| API                                                          | What it does                                                         | Where in this recipe                |
+| ------------------------------------------------------------ | -------------------------------------------------------------------- | ----------------------------------- |
+| `signal<T>()`                                                | Holds the form's data model as reactive state                        | `userModel` in `app.ts`             |
+| `form(model, schemaFn, options)`                             | Builds a form from the model signal and a schema function            | `userForm = form(userModel, …)`     |
+| `required(path.field)`                                       | Built-in validator applied inside the schema                         | `required(path.name)`               |
+| `FormField` / `[formField]`                                  | Directive that binds a native control to a field                     | `[formField]="userForm.name"`       |
+| `FormRoot` / `[formRoot]` + `submission.action`              | Wires `<form>` submit: marks all touched, validates, runs the action | opens the summary dialog on submit  |
+| `userForm().value()`                                         | Snapshot of the current form value                                   | shown in the submit dialog          |
+| `userForm().touched()` · `dirty()` · `valid()` · `invalid()` | Live field-state signals                                             | the status dots + button `disabled` |
+| `userForm().reset(value)`                                    | Resets the form back to an initial value                             | `Clear` and `All Set!`              |
 
 ---
 
@@ -84,17 +83,17 @@ the dialog only opens once the form is valid.
 
 ## Tech & tools
 
-| Layer     | Tool                                                                | Purpose                                           |
-| --------- | ------------------------------------------------------------------- | ------------------------------------------------- |
-| Framework | **Angular 22** (standalone, signals, new control flow `@for`/`@if`) | Application shell and reactivity                  |
-| Forms     | **`@angular/forms/signals`**                                        | `form()`, `schema()`, `[formField]`, `[formRoot]` |
-| UI kit    | **ng-brutalism** (`@ng-brutalism/ui`)                               | `nb-card`, `nbInput`, `nbSelect`, `nbDialog`, …   |
-| Icons     | **`@ng-icons/tabler-icons`**                                        | Success and copyright icons                       |
-| Styling   | **Tailwind CSS v4** (with the ng-brutalism theme)                   | Utility classes and neo-brutalist tokens          |
-| Images    | **`NgOptimizedImage`**                                              | Optimized hero cover (`public/hero-cover.png`)    |
-| i18n      | **`@angular/localize`**                                             | Translatable user-facing strings                  |
-| Tooling   | **Nx 23** + **esbuild**                                             | Build, serve, and dependency graph                |
-| Tests     | **Vitest 4**                                                        | Isolated schema tests + component tests           |
+| Layer     | Tool                                                                | Purpose                                         |
+| --------- | ------------------------------------------------------------------- | ----------------------------------------------- |
+| Framework | **Angular 22** (standalone, signals, new control flow `@for`/`@if`) | Application shell and reactivity                |
+| Forms     | **`@angular/forms/signals`**                                        | `form()`, `[formField]`, `[formRoot]`           |
+| UI kit    | **ng-brutalism** (`@ng-brutalism/ui`)                               | `nb-card`, `nbInput`, `nbSelect`, `nbDialog`, … |
+| Icons     | **`@ng-icons/tabler-icons`**                                        | Success and copyright icons                     |
+| Styling   | **Tailwind CSS v4** (with the ng-brutalism theme)                   | Utility classes and neo-brutalist tokens        |
+| Images    | **`NgOptimizedImage`**                                              | Optimized hero cover (`public/hero-cover.png`)  |
+| i18n      | **`@angular/localize`**                                             | Translatable user-facing strings                |
+| Tooling   | **Nx 23** + **esbuild**                                             | Build, serve, and dependency graph              |
+| Tests     | **Vitest 4**                                                        | Isolated schema tests + component tests         |
 
 ---
 
@@ -120,32 +119,28 @@ export const INITIAL_REGISTRATION: RegistrationFormModel = {
 };
 ```
 
-**2. Declare the validation schema, separate from the form** (`app.model.ts`)
+**2. Declare the one rule on `form()`** (`app.ts`)
 
-Extracting the schema keeps it reusable: the component builds its form from it, and the
-tests build the same form in isolation without rendering a component.
-
-```ts
-export const registrationSchema = schema<RegistrationFormModel>((path) => {
-  required(path.name); // the only validation rule in this recipe
-});
-```
-
-**3. Build the form and wire submission** (`app.ts`)
+A single-use rule does not need `schema()` or a named SchemaFn. Pass the function
+straight to `form()`. Isolated tests rebuild the same callback.
 
 ```ts
-private readonly userModel = signal<RegistrationFormModel>({ ...INITIAL_REGISTRATION });
-
-protected readonly userForm = form(this.userModel, registrationSchema, {
-  submission: {
-    action: async () => {
-      this.dialog().open(); // valid submit opens the summary dialog
+protected readonly userForm = form(
+  this.userModel,
+  (path) => {
+    required(path.name); // the only validation rule in this recipe
+  },
+  {
+    submission: {
+      action: async () => {
+        this.dialog().open(); // valid submit opens the summary dialog
+      },
     },
   },
-});
+);
 ```
 
-**4. Bind controls and the form root** (`app.html`)
+**3. Bind controls and the form root** (`app.html`)
 
 ```html
 <form [formRoot]="userForm">
@@ -158,7 +153,7 @@ protected readonly userForm = form(this.userModel, registrationSchema, {
 `[formRoot]` sets `novalidate`, prevents the default submit, and calls `submit()` for
 you - which validates first and only runs the action when the form is valid.
 
-**5. Drive the UI from field state** (`app.html`)
+**4. Drive the UI from field state** (`app.html`)
 
 ```html
 <!-- live status dot -->
@@ -168,7 +163,7 @@ you - which validates first and only runs the action when the form is valid.
 <button nbButton type="submit" [disabled]="!userForm().dirty()">Save</button>
 ```
 
-**6. Reset** (`app.ts`)
+**5. Reset** (`app.ts`)
 
 ```ts
 protected clear(): void {
@@ -187,10 +182,10 @@ rendering the captured data directly from the form signal.
 Following the [Signal Forms testing guide](https://angular.dev/guide/forms/signals/testing),
 tests are split by concern:
 
-- **Isolated schema tests** build the form directly from `registrationSchema`
-  (`form(model, registrationSchema, { injector })`) - no component, no DOM - and assert
-  `valid()` / `errors()` for the `required` rule. This is the fast default for validation
-  logic.
+- **Isolated schema tests** build the form with the same inline `required(path.name)`
+  callback (`form(model, (path) => { required(path.name); }, { injector })`) - no
+  component, no DOM - and assert `valid()` / `errors()` for the `required` rule. This
+  is the fast default for validation logic.
 - **Component tests** cover only what the rendered template shows: controls, disabled
   state, values flowing to the model, the submit dialog, and reset.
 

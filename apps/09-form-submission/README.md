@@ -60,10 +60,20 @@ The whole quiz runs on **one reusable single-field form**, reset between cards.
 
 ```ts
 export type QuizAnswer = { answer: string };
+```
 
-export const answerSchema = schema<QuizAnswer>((path) => {
-  required(path.answer, { message: 'Answer this question before submitting.' });
-});
+The one client rule is inlined on `form()`:
+
+```ts
+protected readonly answerForm = form(
+  this.answerModel,
+  (path) => {
+    required(path.answer, {
+      message: 'Answer this question before submitting.',
+    });
+  },
+  { submission: { action, onInvalid, ignoreValidators: 'none' } },
+);
 ```
 
 Each card binds the same field: the text card with `[formField]`, the multiple-choice card
@@ -78,14 +88,22 @@ The `action` is where the server lives: it grades the answer and **returns** the
 validation result, exactly as the guide describes.
 
 ```ts
-protected readonly answerForm = form(this.answerModel, answerSchema, {
-  submission: {
-    action: (field) => this.gradeSubmission(field),
-    onInvalid: (field) =>
-      field().errorSummary()[0]?.fieldTree().focusBoundControl(),
-    ignoreValidators: 'none',
+protected readonly answerForm = form(
+  this.answerModel,
+  (path) => {
+    required(path.answer, {
+      message: 'Answer this question before submitting.',
+    });
   },
-});
+  {
+    submission: {
+      action: (field) => this.gradeSubmission(field),
+      onInvalid: (field) =>
+        field().errorSummary()[0]?.fieldTree().focusBoundControl(),
+      ignoreValidators: 'none',
+    },
+  },
+);
 
 private async gradeSubmission(field: FieldTree<QuizAnswer>) {
   const question = this.currentQuestion();
@@ -183,10 +201,10 @@ disappears as soon as you change your answer.
 One `{ answer: string }` field drives every card; the `QUESTIONS` array holds the prompts,
 the correct answers, and the multiple-choice options.
 
-**2. Keep the schema testable** (`app.schema.ts`)
+**2. Inline the one client rule on `form()`** (`app.ts`)
 
-`answerSchema` exports `required(path.answer)`. The component builds its form from it, and
-the tests build the same form in isolation.
+`required(path.answer)` is passed straight to `form()`. Isolated tests rebuild the same
+callback.
 
 **3. Configure submission** (`app.ts`)
 
@@ -210,8 +228,8 @@ a wrong answer returns a `{ kind, message, fieldTree }` field error.
 Following the [Signal Forms testing guide](https://angular.dev/guide/forms/signals/testing),
 tests are split by concern:
 
-- **Isolated schema tests** build the form directly from `answerSchema` and assert the
-  `required` rule, without a component or DOM.
+- **Isolated schema tests** rebuild the same inline `required(path.answer)` callback and
+  assert the `required` rule, without a component or DOM.
 - **Grader-service tests** exercise the mock server directly (correct answers, case-insensitive
   and whitespace-trimmed matching, wrong answers, unknown questions), advancing Vitest fake
   timers to resolve the delayed `Promise`.

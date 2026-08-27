@@ -92,7 +92,7 @@ The model is an array of `{ id, count }`, and one shared schema runs on every it
 | **Pepperoni**  | `Topping` | `min(0)` · disabled at **5** · hidden while tomato > 1 |
 
 ```ts
-export function pizzaToppingItemSchema(item: SchemaPathTree<PizzaFormModelItem>) {
+export const pizzaToppingItemSchema = schema<PizzaFormModelItem>((item) => {
   min(item.count, 0, { message: 'No negative' });
 
   // Disable the field (and so its stepper) once it reaches the topping's max.
@@ -103,7 +103,7 @@ export function pizzaToppingItemSchema(item: SchemaPathTree<PizzaFormModelItem>)
 
   // A max validator also exists, but see the note below.
   validate(item.count, ({ value, valueOf }) => { … 'toppingMax' … });
-}
+});
 ```
 
 > **Interaction to know:** `disabled` fires at `count >= max` and a **disabled field runs
@@ -190,18 +190,18 @@ export type PizzaFormModelItem = { id: PizzaToppingId; count: number };
 export type PizzaFormModel = { toppings: PizzaFormModelItem[] };
 ```
 
-**2. Declare the schema (validators + state logic)** (`app.model.ts`)
+**2. Declare the schema (validators + state logic)** (`app.schema.ts`)
 
-Extracting the schema keeps it reusable: the component builds its form from it, and the
-tests build the same form in isolation without rendering a component.
+`pizzaToppingItemSchema` is a `schema()` object because `applyEach` runs it on every
+item. Isolated tests import `pizzaMakerSchema`.
 
 ```ts
-export const pizzaMakerSchema = schema<PizzaFormModel>((path) => {
+export function pizzaMakerSchema(path: SchemaPathTree<PizzaFormModel>): void {
   applyEach(path.toppings, (topping) => {
-    pizzaToppingItemSchema(topping);      // min + disabled-at-max + toppingMax
+    apply(topping, pizzaToppingItemSchema);
     hidden(topping.count, { when: /* pepperoni while tomato > 1 */ });
   });
-});
+}
 ```
 
 **3. Build the form** (`app.ts`)

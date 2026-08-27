@@ -1,4 +1,5 @@
 import {
+  apply,
   applyEach,
   disabled,
   hidden,
@@ -10,9 +11,7 @@ import {
 import { PIZZA_TOPPINGS_MAP } from './app.data';
 import { PizzaFormModel, PizzaFormModelItem } from './app.model';
 
-export function pizzaToppingItemSchema(
-  item: SchemaPathTree<PizzaFormModelItem>,
-) {
+export const pizzaToppingItemSchema = schema<PizzaFormModelItem>((item) => {
   min(item.count, 0, { message: 'No negative' });
 
   disabled(item.count, {
@@ -37,11 +36,11 @@ export function pizzaToppingItemSchema(
     }
     return null;
   });
-}
+});
 
-export const pizzaMakerSchema = schema<PizzaFormModel>((path) => {
+export function pizzaMakerSchema(path: SchemaPathTree<PizzaFormModel>): void {
   applyEach(path.toppings, (topping) => {
-    pizzaToppingItemSchema(topping);
+    apply(topping, pizzaToppingItemSchema);
 
     hidden(topping.count, {
       when: ({ valueOf }) => {
@@ -52,4 +51,4 @@ export const pizzaMakerSchema = schema<PizzaFormModel>((path) => {
       },
     });
   });
-});
+}

@@ -36,16 +36,15 @@ all projects share a single root `package.json`.
 
 ## Signal Forms API at a glance
 
-| API                         | What it does                                                       | Where in this recipe                          |
-| --------------------------- | ------------------------------------------------------------------ | --------------------------------------------- |
-| `debounce(path, ms)`        | Delays syncing **typed** input into the model until the user stops | `debounce(path.query, 400)` in `app.model.ts` |
-| `schema<T>()`               | Declares a reusable validation schema, separate from the form      | `searchSchema` in `app.model.ts`              |
-| `pattern(path, regexp)`     | Built-in regex validator                                           | `pattern(path.query, QUERY_PATTERN, …)`       |
-| `validate(path, fn)`        | Custom validator; here it flags a query that matches no fruit      | the `unknownFruit` rule                       |
-| `field().valid()`           | Whether a field currently passes every rule                        | gates the `rxResource` params                 |
-| `field().errors()`          | The errors on a leaf field (each has `kind` + `message`)           | `ValidationErrors` reads the `query` field    |
-| `FormField` / `[formField]` | Binds a native control to a field                                  | `[formField]="searchForm.query"`              |
-| `form(model, schema)`       | Builds a form from the model signal and the schema                 | `searchForm = form(model, searchSchema)`      |
+| API                         | What it does                                                       | Where in this recipe                           |
+| --------------------------- | ------------------------------------------------------------------ | ---------------------------------------------- |
+| `debounce(path, ms)`        | Delays syncing **typed** input into the model until the user stops | `debounce(path.query, 400)` in `app.schema.ts` |
+| `form(model, schemaFn)`     | Builds a form from the model signal and a schema function          | `searchForm = form(searchModel, searchSchema)` |
+| `pattern(path, regexp)`     | Built-in regex validator                                           | `pattern(path.query, QUERY_PATTERN, …)`        |
+| `validate(path, fn)`        | Custom validator; here it flags a query that matches no fruit      | the `unknownFruit` rule                        |
+| `field().valid()`           | Whether a field currently passes every rule                        | gates the `rxResource` params                  |
+| `field().errors()`          | The errors on a leaf field (each has `kind` + `message`)           | `ValidationErrors` reads the `query` field     |
+| `FormField` / `[formField]` | Binds a native control to a field                                  | `[formField]="searchForm.query"`               |
 
 ---
 
@@ -69,7 +68,7 @@ pauses, so the expensive work (validation and the search) runs once per pause, n
 per keystroke.
 
 ```ts
-export const searchSchema = schema<SearchFormModel>((path) => {
+export function searchSchema(path: SchemaPathTree<SearchFormModel>): void {
   pattern(path.query, QUERY_PATTERN, {
     message: 'No special characters allowed.',
   });
@@ -84,7 +83,7 @@ export const searchSchema = schema<SearchFormModel>((path) => {
   });
 
   debounce(path.query, 400); // <- the one concept
-});
+}
 ```
 
 | Piece                | Detail                                                                       |
@@ -148,7 +147,7 @@ Signal Forms exposes each field's status as a signal you read directly in the te
 | Layer     | Tool                                                                | Purpose                                                                                        |
 | --------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | Framework | **Angular 22** (standalone, signals, new control flow `@for`/`@if`) | Application shell and reactivity                                                               |
-| Forms     | **`@angular/forms/signals`**                                        | `form()`, `schema()`, `debounce()`, `pattern()`, `validate()`                                  |
+| Forms     | **`@angular/forms/signals`**                                        | `form()`, `debounce()`, `pattern()`, `validate()`                                              |
 | Async     | **`rxResource`** + a `@Service`                                     | Streams the fruit matches for the debounced query                                              |
 | UI kit    | **ng-brutalism** (`@ng-brutalism/ui`)                               | `nb-card`, `nbMediaFrame`, `nbInput`, `nbCallout`, `nbStatusDot`, `nbHalftone`, `nbSticker`, … |
 | Icons     | **`@ng-icons/tabler-icons`**                                        | Search, copyright, and lesson-navigation icons                                                 |
@@ -169,17 +168,17 @@ export type SearchFormModel = { query: string };
 export const INITIAL_SEARCH: SearchFormModel = { query: '' };
 ```
 
-**2. Declare the schema with the debounce** (`app.model.ts`)
+**2. Declare the schema with the debounce** (`app.schema.ts`)
 
-Extracting the schema keeps it reusable: the component builds its form from it, and the
-tests build the same form in isolation without rendering a component.
+A named schema function (not `schema()`) is enough when the rules are used on one form.
+Isolated tests import the same function.
 
 ```ts
-export const searchSchema = schema<SearchFormModel>((path) => {
+export function searchSchema(path: SchemaPathTree<SearchFormModel>): void {
   pattern(path.query, QUERY_PATTERN, { message: 'No special characters allowed.' });
   validate(path.query /* unknownFruit rule */);
   debounce(path.query, 400);
-});
+}
 ```
 
 **3. Build the form and wire the search** (`app.ts`)

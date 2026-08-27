@@ -1,5 +1,12 @@
 import { Component, computed, input, signal } from '@angular/core';
-import { FieldTree, FormField, form } from '@angular/forms/signals';
+import {
+  apply,
+  debounce,
+  FieldTree,
+  FormField,
+  form,
+  required,
+} from '@angular/forms/signals';
 import {
   NbButton,
   NbChip,
@@ -12,7 +19,7 @@ import {
 } from '@ng-brutalism/ui';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { tablerX } from '@ng-icons/tabler-icons';
-import { skillDraftSchema } from '../app.schema';
+import { skillItemSchema } from '../app.schema';
 import { ValidationErrors } from '../validation-errors';
 
 @Component({
@@ -46,7 +53,11 @@ export class SkillComposer {
 
   private readonly skillDraft = signal('');
 
-  protected readonly skillForm = form(this.skillDraft, skillDraftSchema);
+  protected readonly skillForm = form(this.skillDraft, (path) => {
+    required(path, { message: 'A skill is required.' });
+    apply(path, skillItemSchema);
+    debounce(path, 500);
+  });
 
   protected readonly draftSettled = computed(() => {
     const field = this.skillForm();

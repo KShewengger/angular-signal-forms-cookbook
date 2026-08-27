@@ -214,9 +214,14 @@ Recipes use Angular's **signal forms** API (`@angular/forms/signals`), not the l
 - Model the form's data as a **signal**, build the form with **`form()`**, and bind
   fields in the template with the **`FormField`** directive
   (`[formField]="userForm.name"`).
-- Validation lives in the schema passed to `form()` - built-in validators
-  (`required`, `email`, `min`, …), custom validators, cross-field rules, and
-  `validateTree` for subtrees. Async/debounced checks expose **pending** state.
+- Validation lives in the schema **function** passed to `form()` - built-in
+  validators (`required`, `email`, `min`, …), custom validators, cross-field
+  rules, and `validateTree` for subtrees. Async/debounced checks expose
+  **pending** state. Use `schema()` only when the same `Schema` object is applied
+  to more than one path or form (`apply`, `applyEach`, a second `form()`). A
+  single-use wrap is noise; a schema function is enough. Non-trivial SchemaFns live
+  in `app.schema.ts` so isolated tests can import them. A 1-5 line one is inlined
+  into `form(model, (path) => { ... })` in the component (01, 09, skill composer).
 - **Fields are functions:** call a field to get its state, then read its signals, e.g.
   `userForm().valid()`, `userForm.name().touched()`, `userForm().value()`. Drive the UI
   from those (`.value()`, `.errors()`, `.touched()`, `.dirty()`, `.valid()`,

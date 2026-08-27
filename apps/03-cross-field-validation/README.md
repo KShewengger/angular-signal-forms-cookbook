@@ -35,17 +35,17 @@ all projects share a single root `package.json`.
 
 ## Signal Forms API at a glance
 
-| API                         | What it does                                                           | Where in this recipe                           |
-| --------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------- |
-| `schema<T>()`               | Declares a reusable validation schema, separate from the form          | `emailSchema` / `userSchema` in `app.model.ts` |
-| `apply(path, schema)`       | Applies a schema to a field, so one rule set can be reused             | `apply(path.email, emailSchema)`               |
-| `validate(path, fn)`        | A custom validator; here it compares one field against another         | the cross-field rule on `confirmEmail`         |
-| `valueOf(path)`             | Reads a **sibling** field's value from inside a validator              | `valueOf(path.email)`                          |
-| `debounce(path, ms)`        | Delays UI-to-model synchronization (does not affect direct sets)       | `debounce(path, 250)`                          |
-| `form(model, schema)`       | Builds a form from the model signal and the schema                     | `userForm = form(userModel, userSchema)`       |
-| `FormField` / `[formField]` | Binds a native control to a field                                      | `[formField]="userForm.email"`                 |
-| `field().errors()`          | The active validation errors for a field (each has `kind` + `message`) | `ValidationErrors` component                   |
-| `userForm().reset(value)`   | Resets the form back to an initial value                               | `clear()`                                      |
+| API                         | What it does                                                           | Where in this recipe                     |
+| --------------------------- | ---------------------------------------------------------------------- | ---------------------------------------- |
+| `schema<T>()`               | Builds a reusable `Schema` object for rules shared across paths        | `emailSchema` in `app.schema.ts`         |
+| `apply(path, schema)`       | Applies a schema to a field, so one rule set can be reused             | `apply(path.email, emailSchema)`         |
+| `validate(path, fn)`        | A custom validator; here it compares one field against another         | the cross-field rule on `confirmEmail`   |
+| `valueOf(path)`             | Reads a **sibling** field's value from inside a validator              | `valueOf(path.email)`                    |
+| `debounce(path, ms)`        | Delays UI-to-model synchronization (does not affect direct sets)       | `debounce(path, 250)`                    |
+| `form(model, schema)`       | Builds a form from the model signal and the schema                     | `userForm = form(userModel, userSchema)` |
+| `FormField` / `[formField]` | Binds a native control to a field                                      | `[formField]="userForm.email"`           |
+| `field().errors()`          | The active validation errors for a field (each has `kind` + `message`) | `ValidationErrors` component             |
+| `userForm().reset(value)`   | Resets the form back to an initial value                               | `clear()`                                |
 
 ---
 
@@ -151,7 +151,7 @@ export type UserFormModel = {
 export const INITIAL_USER: UserFormModel = { email: '', confirmEmail: '' };
 ```
 
-**2. Declare one reusable email schema** (`app.model.ts`)
+**2. Declare one reusable email schema** (`app.schema.ts`)
 
 ```ts
 const emailSchema = schema<string>((path) => {
@@ -161,10 +161,10 @@ const emailSchema = schema<string>((path) => {
 });
 ```
 
-**3. Apply it to both fields, then add the cross-field rule** (`app.model.ts`)
+**3. Apply it to both fields, then add the cross-field rule** (`app.schema.ts`)
 
 ```ts
-export const userSchema = schema<UserFormModel>((path) => {
+export function userSchema(path: SchemaPathTree<UserFormModel>): void {
   apply(path.email, emailSchema);
   apply(path.confirmEmail, emailSchema);
 
@@ -173,7 +173,7 @@ export const userSchema = schema<UserFormModel>((path) => {
     if (!email || !value()) return null;
     return email.trim().toLowerCase() === value().trim().toLowerCase() ? null : { kind: 'emailMismatch', message: 'Email addresses do not match.' };
   });
-});
+}
 ```
 
 **4. Build the form** (`app.ts`)

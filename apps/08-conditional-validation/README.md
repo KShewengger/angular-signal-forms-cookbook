@@ -73,7 +73,7 @@ This is the recipe's core idea: a rule is not always present. The schema operato
 itself as the user fills it in.
 
 ```ts
-export const bookingSchema = schema<Booking>((path) => {
+export function bookingSchema(path: SchemaPathTree<Booking>): void {
   // applyEach: one rule set for every ticket in the array
   applyEach(path.tickets, (ticket) => required(ticket.seat));
 
@@ -110,7 +110,7 @@ export const bookingSchema = schema<Booking>((path) => {
     if (!code || code.toUpperCase() === PROMO_CODE) return null;
     return { kind: 'invalidCoupon', message: 'Invalid coupon.' };
   });
-});
+}
 ```
 
 | Operator            | Depends on      | Effect when the condition flips                                    |
@@ -210,10 +210,10 @@ export type Booking = {
 };
 ```
 
-**2. Declare the conditional schema** (`app.model.ts`)
+**2. Declare the conditional schema** (`app.schema.ts`)
 
-Extracting the schema keeps it reusable: the component builds its form from it, and the
-tests build the same form in isolation. Each operator gates a rule on another field (see
+A named schema function (not `schema()`) is enough when the rules are used on one form.
+Isolated tests import the same function. Each operator gates a rule on another field (see
 [Conditional validation](#conditional-validation)).
 
 **3. Build the form** (`app.ts`)

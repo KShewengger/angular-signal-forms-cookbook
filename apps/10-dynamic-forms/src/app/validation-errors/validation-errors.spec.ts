@@ -1,13 +1,19 @@
 import { Injector, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { form, type FieldTree } from '@angular/forms/signals';
+import {
+  apply,
+  debounce,
+  form,
+  required,
+  type FieldTree,
+} from '@angular/forms/signals';
 import {
   Application,
   ContractEngagement,
   DesignerApplication,
 } from '../app.model';
-import { applicationSchema, skillDraftSchema } from '../app.schema';
 import { INITIAL_APPLICATION } from '../app.data';
+import { applicationSchema, skillItemSchema } from '../app.schema';
 import { ValidationErrors } from './validation-errors';
 
 const EMPTY_DESIGNER: DesignerApplication = {
@@ -174,9 +180,17 @@ describe('ValidationErrors (10 · Dynamic Forms)', () => {
     });
 
     it("surfaces the skill draft 'required' message", async () => {
-      const skillField = form(signal(''), skillDraftSchema, {
-        injector: TestBed.inject(Injector),
-      });
+      const skillField = form(
+        signal(''),
+        (path) => {
+          required(path, { message: 'A skill is required.' });
+          apply(path, skillItemSchema);
+          debounce(path, 500);
+        },
+        {
+          injector: TestBed.inject(Injector),
+        },
+      );
       skillField().markAsTouched();
       await showErrorsFor(skillField);
 

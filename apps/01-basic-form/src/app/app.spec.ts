@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Injector, signal } from '@angular/core';
-import { form } from '@angular/forms/signals';
+import { form, required } from '@angular/forms/signals';
 import { App } from './app';
 import { INITIAL_REGISTRATION, RegistrationFormModel } from './app.model';
-import { registrationSchema } from './app.schema';
 
 describe('App (01 · Basic Form)', () => {
   describe('form schema (isolated)', () => {
@@ -16,9 +15,15 @@ describe('App (01 · Basic Form)', () => {
         ...INITIAL_REGISTRATION,
         ...initial,
       });
-      return form(model, registrationSchema, {
-        injector: TestBed.inject(Injector),
-      });
+      return form(
+        model,
+        (path) => {
+          required(path.name);
+        },
+        {
+          injector: TestBed.inject(Injector),
+        },
+      );
     };
 
     it('starts pristine, untouched, and empty', () => {

@@ -35,17 +35,16 @@ all projects share a single root `package.json`.
 
 ## Signal Forms API at a glance
 
-| API                                                | What it does                                                           | Where in this recipe                   |
-| -------------------------------------------------- | ---------------------------------------------------------------------- | -------------------------------------- |
-| `schema<T>()`                                      | Declares a reusable validation schema, separate from the form          | `registrationSchema` in `app.model.ts` |
-| `form(model, schema, options)`                     | Builds a form from the model signal and the schema                     | `userForm = form(userModel, …)`        |
-| `required` · `minLength` · `maxLength` · `pattern` | Built-in string validators, each with a custom `message`               | the `username` / `bio` rules           |
-| `email`                                            | Built-in email-format validator                                        | the `email` rule                       |
-| `min`                                              | Built-in numeric minimum validator                                     | the `age` rule                         |
-| `field().errors()`                                 | The active validation errors for a field (each has `kind` + `message`) | `ValidationErrors` component           |
-| `FormField` / `[formField]`                        | Binds a native control to a field                                      | `[formField]="userForm.username"`      |
-| `FormRoot` / `[formRoot]` + `submission.action`    | Wires `<form>` submit: marks all touched, validates, runs the action   | opens the summary dialog on submit     |
-| `userForm().reset(value)`                          | Resets the form back to an initial value                               | `Clear` and `All Set!`                 |
+| API                                                | What it does                                                           | Where in this recipe               |
+| -------------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------- |
+| `form(model, schemaFn, options)`                   | Builds a form from the model signal and a schema function              | `userForm = form(userModel, …)`    |
+| `required` · `minLength` · `maxLength` · `pattern` | Built-in string validators, each with a custom `message`               | the `username` / `bio` rules       |
+| `email`                                            | Built-in email-format validator                                        | the `email` rule                   |
+| `min`                                              | Built-in numeric minimum validator                                     | the `age` rule                     |
+| `field().errors()`                                 | The active validation errors for a field (each has `kind` + `message`) | `ValidationErrors` component       |
+| `FormField` / `[formField]`                        | Binds a native control to a field                                      | `[formField]="userForm.username"`  |
+| `FormRoot` / `[formRoot]` + `submission.action`    | Wires `<form>` submit: marks all touched, validates, runs the action   | opens the summary dialog on submit |
+| `userForm().reset(value)`                          | Resets the form back to an initial value                               | `Clear` and `All Set!`             |
 
 ---
 
@@ -111,17 +110,17 @@ outstanding errors appear at once.
 
 ## Tech & tools
 
-| Layer     | Tool                                                                | Purpose                                                 |
-| --------- | ------------------------------------------------------------------- | ------------------------------------------------------- |
-| Framework | **Angular 22** (standalone, signals, new control flow `@for`/`@if`) | Application shell and reactivity                        |
-| Forms     | **`@angular/forms/signals`**                                        | `form()`, `schema()`, built-in validators, `[formRoot]` |
-| UI kit    | **ng-brutalism** (`@ng-brutalism/ui`)                               | `nb-card`, `nbInput`, `nbSelect`, `nbDialog`, …         |
-| Icons     | **`@ng-icons/tabler-icons`**                                        | Success, copyright, and navigation icons                |
-| Styling   | **Tailwind CSS v4** (with the ng-brutalism theme)                   | Utility classes and neo-brutalist tokens                |
-| Images    | **`NgOptimizedImage`**                                              | Optimized hero cover (`public/hero-cover.png`)          |
-| i18n      | **`@angular/localize`**                                             | Translatable user-facing strings                        |
-| Tooling   | **Nx 23** + **esbuild**                                             | Build, serve, and dependency graph                      |
-| Tests     | **Vitest 4**                                                        | Isolated schema tests + component tests                 |
+| Layer     | Tool                                                                | Purpose                                         |
+| --------- | ------------------------------------------------------------------- | ----------------------------------------------- |
+| Framework | **Angular 22** (standalone, signals, new control flow `@for`/`@if`) | Application shell and reactivity                |
+| Forms     | **`@angular/forms/signals`**                                        | `form()`, built-in validators, `[formRoot]`     |
+| UI kit    | **ng-brutalism** (`@ng-brutalism/ui`)                               | `nb-card`, `nbInput`, `nbSelect`, `nbDialog`, … |
+| Icons     | **`@ng-icons/tabler-icons`**                                        | Success, copyright, and navigation icons        |
+| Styling   | **Tailwind CSS v4** (with the ng-brutalism theme)                   | Utility classes and neo-brutalist tokens        |
+| Images    | **`NgOptimizedImage`**                                              | Optimized hero cover (`public/hero-cover.png`)  |
+| i18n      | **`@angular/localize`**                                             | Translatable user-facing strings                |
+| Tooling   | **Nx 23** + **esbuild**                                             | Build, serve, and dependency graph              |
+| Tests     | **Vitest 4**                                                        | Isolated schema tests + component tests         |
 
 ---
 
@@ -149,13 +148,13 @@ export const INITIAL_REGISTRATION: RegistrationFormModel = {
 };
 ```
 
-**2. Declare the validation schema, separate from the form** (`app.model.ts`)
+**2. Declare the validation schema** (`app.schema.ts`)
 
-Extracting the schema keeps it reusable: the component builds its form from it, and the
-tests build the same form in isolation without rendering a component.
+A named schema function (not `schema()`) is enough when the rules are used on one form.
+Isolated tests import the same function.
 
 ```ts
-export const registrationSchema = schema<RegistrationFormModel>((path) => {
+export function registrationSchema(path: SchemaPathTree<RegistrationFormModel>): void {
   required(path.username, { message: 'Please enter a username.' });
   minLength(path.username, 5, { message: 'Username must be at least 5 characters long.' });
   maxLength(path.username, 20, { message: 'Username cannot exceed 20 characters.' });
@@ -171,7 +170,7 @@ export const registrationSchema = schema<RegistrationFormModel>((path) => {
 
   required(path.bio, { message: 'Please enter a short bio.' });
   minLength(path.bio, 5, { message: 'Bio must be at least 5 characters long.' });
-});
+}
 ```
 
 **3. Build the form and wire submission** (`app.ts`)

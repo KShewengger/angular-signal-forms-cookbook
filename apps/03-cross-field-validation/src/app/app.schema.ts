@@ -4,6 +4,7 @@ import {
   email,
   required,
   schema,
+  SchemaPathTree,
   validate,
 } from '@angular/forms/signals';
 import { UserFormModel } from './app.model';
@@ -14,7 +15,7 @@ const emailSchema = schema<string>((path) => {
   debounce(path, 250);
 });
 
-export const userSchema = schema<UserFormModel>((path) => {
+export function userSchema(path: SchemaPathTree<UserFormModel>): void {
   apply(path.email, emailSchema);
   apply(path.confirmEmail, emailSchema);
   validate(path.confirmEmail, ({ value, valueOf }) => {
@@ -31,4 +32,4 @@ export const userSchema = schema<UserFormModel>((path) => {
 
     return null;
   });
-});
+}
