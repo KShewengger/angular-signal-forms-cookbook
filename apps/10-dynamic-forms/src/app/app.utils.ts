@@ -19,26 +19,24 @@ export function createEngagement(kind: EngagementKind): Engagement {
   }
 }
 
-export function switchApplicationRole(
-  from: Application,
-  role: RoleId,
-  skills: readonly string[],
-): Application {
-  if (from.role === role) return from;
-
-  const { name, years, engagement } = from;
-
+export function createApplication(role: RoleId): Application {
   switch (role) {
     case 'designer':
       return {
         role,
-        name,
-        years,
-        engagement,
-        skills: [...skills],
+        name: '',
+        years: null,
+        engagement: createEngagement('fulltime'),
+        skills: skillsForRole(role),
         portfolio: '',
       };
     case 'frontend':
-      return { role, name, years, engagement, skills: [...skills] };
+      return {
+        role,
+        name: '',
+        years: null,
+        engagement: createEngagement('fulltime'),
+        skills: skillsForRole(role),
+      };
   }
 }

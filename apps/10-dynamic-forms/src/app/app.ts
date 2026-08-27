@@ -3,7 +3,7 @@ import { form } from '@angular/forms/signals';
 import { INITIAL_APPLICATION, LESSON_TOPICS, ROLES } from './app.data';
 import { Application, RoleId } from './app.model';
 import { applicationSchema } from './app.schema';
-import { skillsForRole, switchApplicationRole } from './app.utils';
+import { createApplication } from './app.utils';
 import {
   NbButton,
   NbButtonTrailingIcon,
@@ -95,9 +95,8 @@ export class App {
   protected selectRole(role: RoleId): void {
     if (this.submitting() || this.applicationModel().role === role) return;
 
-    this.applicationModel.update((from) =>
-      switchApplicationRole(from, role, skillsForRole(role)),
-    );
+    this.submitted.set(false);
+    this.applicationForm().reset(createApplication(role));
   }
 
   private sendApplication(): Promise<boolean> {
