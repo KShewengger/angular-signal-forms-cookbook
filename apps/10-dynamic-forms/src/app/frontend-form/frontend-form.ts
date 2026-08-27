@@ -84,6 +84,25 @@ export class FrontendForm {
     return skill.length > 0 && SKILL_PATTERN.test(skill);
   });
 
+  protected readonly canSubmit = computed(
+    () => !this.submitting() && this.form()().valid(),
+  );
+
+  protected readonly nameInvalid = computed(() => {
+    const field = this.form().name();
+    return field.touched() && field.invalid();
+  });
+
+  protected readonly yearsInvalid = computed(() => {
+    const field = this.form().years();
+    return field.touched() && field.invalid();
+  });
+
+  protected readonly dayRateInvalid = computed(() => {
+    const field = this.dayRateField();
+    return field.touched() && field.invalid();
+  });
+
   protected readonly selectedEngagement = computed(
     () => this.form().engagement().value().kind,
   );
@@ -109,6 +128,10 @@ export class FrontendForm {
     this.form().engagement().value.set(createEngagement(kind));
   }
 
+  protected setSkill(event: Event): void {
+    this.skill.set((event.target as HTMLInputElement).value);
+  }
+
   protected addSkill(): void {
     if (!this.canAddSkill()) return;
 
@@ -123,6 +146,11 @@ export class FrontendForm {
       );
 
     this.skill.set('');
+  }
+
+  protected addSkillFromEnter(event: Event): void {
+    event.preventDefault();
+    this.addSkill();
   }
 
   protected removeSkill(skill: string): void {

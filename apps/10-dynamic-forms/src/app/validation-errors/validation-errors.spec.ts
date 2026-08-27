@@ -182,7 +182,7 @@ describe('ValidationErrors (10 · Dynamic Forms)', () => {
       await showErrorsFor(skillField);
 
       expect(host.textContent).toContain(
-        'Letters only — no numbers or special characters.',
+        'Letters only. No numbers or special characters.',
       );
     });
 

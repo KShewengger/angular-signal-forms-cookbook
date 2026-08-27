@@ -85,12 +85,10 @@
               type="text"
               autocomplete="name"
               placeholder="Enter your full name"
-              i18n-placeholder="@@fullNamePlaceholder"
               aria-describedby="frontend-name-errors"
+              i18n-placeholder="@@fullNamePlaceholder"
               [formField]="form().name"
-              [attr.aria-invalid]="
-                form().name().touched() && form().name().invalid()
-              "
+              [attr.aria-invalid]="nameInvalid()"
             />
 
             <app-validation-errors
@@ -113,12 +111,10 @@
                 inputmode="numeric"
                 step="1"
                 placeholder="Enter your years of experience"
-                i18n-placeholder="@@yearsPlaceholder"
                 aria-describedby="frontend-years-errors"
+                i18n-placeholder="@@yearsPlaceholder"
                 [formField]="form().years"
-                [attr.aria-invalid]="
-                  form().years().touched() && form().years().invalid()
-                "
+                [attr.aria-invalid]="yearsInvalid()"
               />
               <span
                 nbInputSuffix
@@ -175,7 +171,7 @@
             </div>
           </div>
 
-          <!-- DAY RATE (contract only) -->
+          <!-- DAY RATE -->
           @if (isContract()) {
             <div nbStack gap="sm" align="stretch">
               <label nbLabel for="frontend-day-rate" i18n="@@dayRateLabel">
@@ -197,12 +193,10 @@
                   inputmode="numeric"
                   step="1"
                   placeholder="Enter your daily rate"
-                  i18n-placeholder="@@dayRatePlaceholder"
                   aria-describedby="frontend-day-rate-errors"
+                  i18n-placeholder="@@dayRatePlaceholder"
                   [formField]="dayRateField"
-                  [attr.aria-invalid]="
-                    dayRateField().touched() && dayRateField().invalid()
-                  "
+                  [attr.aria-invalid]="dayRateInvalid()"
                 />
               </nb-input-group>
 
@@ -262,7 +256,8 @@
                   class="h-11!"
                   [placeholder]="skillPlaceholder"
                   [value]="skill()"
-                  (input)="skill.set($event.target.value)"
+                  (input)="setSkill($event)"
+                  (keydown.enter)="addSkillFromEnter($event)"
                 />
 
                 <button
@@ -271,9 +266,9 @@
                   size="md"
                   tone="yellow"
                   class="h-11!"
+                  i18n="@@addSkillLabel"
                   [disabled]="!canAddSkill()"
                   (click)="addSkill()"
-                  i18n="@@addSkillLabel"
                 >
                   Add
                 </button>
@@ -289,8 +284,8 @@
             size="lg"
             tone="yellow"
             class="mt-1"
-            [disabled]="submitting() || form()().invalid()"
             i18n="@@submitApplication"
+            [disabled]="!canSubmit()"
           >
             {submitting(), select,
               true {Submitting…}

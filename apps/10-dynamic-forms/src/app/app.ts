@@ -1,20 +1,9 @@
 import { Component, computed, signal } from '@angular/core';
-import { FieldTree, form } from '@angular/forms/signals';
-import { ENGAGEMENTS, INITIAL_APPLICATION, ROLES } from './app.data';
-import {
-  Application,
-  ContractEngagement,
-  DesignerApplication,
-  Engagement,
-  EngagementKind,
-  RoleId,
-} from './app.model';
+import { form } from '@angular/forms/signals';
+import { INITIAL_APPLICATION, ROLES } from './app.data';
+import { Application, RoleId } from './app.model';
 import { applicationSchema } from './app.schema';
-import {
-  createEngagement,
-  skillsForRole,
-  switchApplicationRole,
-} from './app.utils';
+import { skillsForRole, switchApplicationRole } from './app.utils';
 import {
   NbButton,
   NbButtonTrailingIcon,
@@ -32,8 +21,8 @@ import {
   tablerCircleArrowLeftFill,
   tablerCircleArrowRightFill,
 } from '@ng-icons/tabler-icons/fill';
-import { FrontendForm } from './frontend-form';
-import { DesignerForm } from './designer-form';
+import { FrontendForm } from './frontend-form/frontend-form';
+import { DesignerForm } from './designer-form/designer-form';
 
 @Component({
   selector: 'app-root',
@@ -64,7 +53,6 @@ import { DesignerForm } from './designer-form';
 })
 export class App {
   protected readonly roles = ROLES;
-  protected readonly engagements = ENGAGEMENTS;
 
   protected readonly applicationModel = signal<Application>({
     ...INITIAL_APPLICATION,
@@ -75,7 +63,9 @@ export class App {
     applicationSchema,
     {
       submission: {
-        action: async () => console.log('submitted'),
+        action: async () => {
+          await Promise.resolve();
+        },
         onInvalid: (field) =>
           field().errorSummary()[0]?.fieldTree().focusBoundControl(),
         ignoreValidators: 'none',
@@ -91,16 +81,6 @@ export class App {
     this.applicationForm.role().value(),
   );
 
-  protected readonly selectedEngagement = computed(
-    () => this.applicationForm.engagement().value().kind,
-  );
-
-  protected readonly currentRole = computed(
-    () =>
-      this.roles.find((role) => role.id === this.selectedRole()) ??
-      this.roles[0],
-  );
-
   protected readonly roleTabs = computed(() => {
     const selected = this.selectedRole();
 
@@ -112,45 +92,11 @@ export class App {
     });
   });
 
-  protected readonly isDesigner = computed(
-    () => this.selectedRole() === 'designer',
-  );
-
-  protected readonly isContract = computed(
-    () => this.selectedEngagement() === 'contract',
-  );
-
   protected selectRole(role: RoleId): void {
     if (this.applicationModel().role === role) return;
 
     this.applicationModel.update((from) =>
       switchApplicationRole(from, role, skillsForRole(role)),
     );
-  }
-
-  protected selectEngagement(kind: EngagementKind): void {
-    if (this.applicationModel().engagement.kind === kind) return;
-
-    this.applicationForm.engagement().value.set(createEngagement(kind));
-  }
-
-  protected reset(): void {
-    this.applicationForm().reset({ ...INITIAL_APPLICATION });
-  }
-
-  private applicationAs<V extends Application>(): FieldTree<V> {
-    return this.applicationForm as unknown as FieldTree<V>;
-  }
-
-  private engagementAs<V extends Engagement>(): FieldTree<V> {
-    return this.applicationForm.engagement as unknown as FieldTree<V>;
-  }
-
-  protected get portfolioField(): FieldTree<string> {
-    return this.applicationAs<DesignerApplication>().portfolio;
-  }
-
-  protected get dayRateField(): FieldTree<number | null> {
-    return this.engagementAs<ContractEngagement>().dayRate;
   }
 }
