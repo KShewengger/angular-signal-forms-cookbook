@@ -8,13 +8,12 @@ import {
   schema,
   validate,
 } from '@angular/forms/signals';
+import { SKILL_PATTERN } from './app.data';
 import {
   Application,
   ContractEngagement,
   DesignerApplication,
 } from './app.model';
-
-export const SKILL_PATTERN = /^[A-Za-z]+$/;
 
 export const applicationSchema = schema<Application>((path) => {
   required(path.name, { message: 'Name is required.' });

@@ -24,14 +24,13 @@ import {
 } from '@ng-brutalism/ui';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { tablerX } from '@ng-icons/tabler-icons';
-import { ENGAGEMENTS, ROLES_BY_ID } from '../app.data';
+import { ENGAGEMENTS, ROLES_BY_ID, SKILL_PATTERN } from '../app.data';
 import {
   Application,
   ContractEngagement,
   Engagement,
   EngagementKind,
 } from '../app.model';
-import { SKILL_PATTERN } from '../app.schema';
 import { createEngagement } from '../app.utils';
 import { ValidationErrors } from '../validation-errors';
 
@@ -84,10 +83,6 @@ export class FrontendForm {
     return skill.length > 0 && SKILL_PATTERN.test(skill);
   });
 
-  protected readonly canSubmit = computed(
-    () => !this.submitting() && this.form()().valid(),
-  );
-
   protected readonly nameInvalid = computed(() => {
     const field = this.form().name();
     return (field.dirty() || field.touched()) && field.invalid();
@@ -98,11 +93,6 @@ export class FrontendForm {
     return (field.dirty() || field.touched()) && field.invalid();
   });
 
-  protected readonly dayRateInvalid = computed(() => {
-    const field = this.dayRateField();
-    return (field.dirty() || field.touched()) && field.invalid();
-  });
-
   protected readonly selectedEngagement = computed(
     () => this.form().engagement().value().kind,
   );
@@ -110,6 +100,13 @@ export class FrontendForm {
   protected readonly isContract = computed(
     () => this.selectedEngagement() === 'contract',
   );
+
+  protected readonly dayRateInvalid = computed(() => {
+    if (!this.isContract()) return false;
+
+    const field = this.dayRateField();
+    return (field.dirty() || field.touched()) && field.invalid();
+  });
 
   protected readonly engagementTabs = computed(() => {
     const selected = this.selectedEngagement();

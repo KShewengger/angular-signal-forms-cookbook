@@ -23,6 +23,8 @@ const DESIGNER_ROLE: RoleOption = {
   selectedTone: 'pink',
 };
 
+export const SKILL_PATTERN = /^[A-Za-z]+$/;
+
 export const ROLES: RoleOption[] = [FRONTEND_ROLE, DESIGNER_ROLE];
 
 export const ROLES_BY_ID: Record<RoleId, RoleOption> = {
