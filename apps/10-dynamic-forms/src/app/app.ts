@@ -77,9 +77,13 @@ export class App {
     },
   );
 
-  protected readonly submitting = this.applicationForm().submitting;
+  protected readonly submitting = computed(() =>
+    this.applicationForm().submitting(),
+  );
 
-  protected readonly selectedRole = this.applicationForm.role().value;
+  protected readonly selectedRole = computed(() =>
+    this.applicationForm.role().value(),
+  );
 
   protected readonly roleTabs = computed(() => {
     const selected = this.selectedRole();
@@ -93,7 +97,7 @@ export class App {
   });
 
   protected selectRole(role: RoleId): void {
-    if (this.submitting() || this.applicationModel().role === role) return;
+    if (this.submitting() || this.selectedRole() === role) return;
 
     this.submitted.set(false);
     this.applicationForm().reset(createApplication(role));
