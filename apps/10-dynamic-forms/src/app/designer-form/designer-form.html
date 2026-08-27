@@ -65,7 +65,260 @@
       ></div>
     </nb-card-header>
 
-    <!-- CONTENT (fields later) -->
-    <nb-card-content class="min-h-48 p-4.5"></nb-card-content>
+    <!-- CONTENT -->
+    <nb-card-content class="p-4.5">
+      <form nbStack gap="none" novalidate [formRoot]="form()">
+        <fieldset nbStack gap="xl">
+          <legend class="sr-only" i18n="@@designerApplicationFieldsLabel">
+            Designer application fields
+          </legend>
+
+          <!-- NAME -->
+          <div nbStack gap="sm" align="stretch">
+            <label nbLabel for="designer-name" i18n="@@fullNameLabel">
+              Full name <span aria-hidden="true">*</span>
+            </label>
+
+            <input
+              nbInput
+              id="designer-name"
+              type="text"
+              autocomplete="name"
+              placeholder="Enter your full name"
+              aria-describedby="designer-name-errors"
+              i18n-placeholder="@@fullNamePlaceholder"
+              [formField]="form().name"
+              [attr.aria-invalid]="nameInvalid()"
+            />
+
+            <app-validation-errors
+              id="designer-name-errors"
+              [field]="form().name"
+            />
+          </div>
+
+          <!-- YEARS -->
+          <div nbStack gap="sm" align="stretch">
+            <label nbLabel for="designer-years" i18n="@@yearsLabel">
+              Years of experience <span aria-hidden="true">*</span>
+            </label>
+
+            <nb-input-group>
+              <input
+                nbInput
+                id="designer-years"
+                type="number"
+                inputmode="numeric"
+                step="1"
+                placeholder="Enter your years of experience"
+                aria-describedby="designer-years-errors"
+                i18n-placeholder="@@yearsPlaceholder"
+                [formField]="form().years"
+                [attr.aria-invalid]="yearsInvalid()"
+              />
+              <span
+                nbInputSuffix
+                class="min-w-11 px-3 font-mono text-xs font-extrabold uppercase tracking-wide"
+                aria-hidden="true"
+              >
+                yrs
+              </span>
+            </nb-input-group>
+
+            <app-validation-errors
+              id="designer-years-errors"
+              [field]="form().years"
+            />
+          </div>
+
+          <!-- PORTFOLIO -->
+          <div nbStack gap="sm" align="stretch">
+            <label nbLabel for="designer-portfolio" i18n="@@portfolioUrlLabel">
+              Portfolio URL <span aria-hidden="true">*</span>
+            </label>
+
+            <input
+              nbInput
+              id="designer-portfolio"
+              type="url"
+              inputmode="url"
+              autocomplete="url"
+              placeholder="https://your.site"
+              aria-describedby="designer-portfolio-errors"
+              i18n-placeholder="@@portfolioUrlPlaceholder"
+              [formField]="portfolioField"
+              [attr.aria-invalid]="portfolioInvalid()"
+            />
+
+            <app-validation-errors
+              id="designer-portfolio-errors"
+              [field]="portfolioField"
+            />
+          </div>
+
+          <!-- ENGAGEMENT -->
+          <div nbStack gap="sm" align="stretch">
+            <p
+              nbLabel
+              id="designer-engagement-label"
+              class="m-0"
+              i18n="@@engagementLabel"
+            >
+              Engagement
+            </p>
+
+            <div
+              role="group"
+              class="grid grid-cols-2 gap-2"
+              aria-labelledby="designer-engagement-label"
+            >
+              @for (engagement of engagementTabs(); track engagement.kind) {
+                <button
+                  nbButton
+                  fullWidth
+                  type="button"
+                  size="sm"
+                  [tone]="engagement.tone"
+                  [attr.aria-pressed]="engagement.selected"
+                  (click)="selectEngagement(engagement.kind)"
+                >
+                  <span
+                    nbText
+                    size="xs"
+                    weight="black"
+                    transform="uppercase"
+                    tracking="wide"
+                  >
+                    {{ engagement.label }}
+                  </span>
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- DAY RATE -->
+          @if (isContract()) {
+            <div nbStack gap="sm" align="stretch">
+              <label nbLabel for="designer-day-rate" i18n="@@dayRateLabel">
+                Day rate (USD)
+              </label>
+
+              <nb-input-group>
+                <span
+                  nbInputPrefix
+                  class="min-w-11 px-3 font-mono text-xs font-extrabold"
+                  aria-hidden="true"
+                >
+                  $
+                </span>
+                <input
+                  nbInput
+                  id="designer-day-rate"
+                  type="number"
+                  inputmode="numeric"
+                  step="1"
+                  placeholder="Enter your daily rate"
+                  aria-describedby="designer-day-rate-errors"
+                  i18n-placeholder="@@dayRatePlaceholder"
+                  [formField]="dayRateField"
+                  [attr.aria-invalid]="dayRateInvalid()"
+                />
+              </nb-input-group>
+
+              <app-validation-errors
+                id="designer-day-rate-errors"
+                [field]="dayRateField"
+              />
+            </div>
+          }
+
+          <!-- SKILLS -->
+          <div nbStack gap="sm" align="stretch" class="mt-1">
+            <label nbLabel for="designer-skill" i18n="@@skillsLabel">
+              Core skills
+            </label>
+
+            <div
+              nbSurface
+              nbStack
+              gap="md"
+              tone="pink"
+              radius="lg"
+              border="thick"
+              shadow="sm"
+              padding="sm"
+              class="focus-within:outline-3 focus-within:outline-offset-3 focus-within:outline-black"
+            >
+              <div
+                nbChipGroup
+                nbCluster
+                gap="sm"
+                class="flex flex-wrap"
+                aria-label="Selected skills"
+                i18n-aria-label="@@selectedSkillsLabel"
+              >
+                @for (skill of form().skills().value(); track skill) {
+                  <span nbChip tone="background" class="gap-1.5! pr-1!">
+                    {{ skill }}
+                    <button
+                      type="button"
+                      class="grid size-5 place-items-center rounded-full border-2 border-black bg-nb-pink text-black"
+                      [attr.aria-label]="'Remove ' + skill"
+                      (click)="removeSkill(skill)"
+                    >
+                      <ng-icon aria-hidden="true" size="12" name="tablerX" />
+                    </button>
+                  </span>
+                }
+              </div>
+
+              <div class="grid grid-cols-[1fr_auto] items-center gap-2">
+                <input
+                  nbInput
+                  id="designer-skill"
+                  type="text"
+                  autocomplete="off"
+                  class="h-11!"
+                  [placeholder]="skillPlaceholder"
+                  [value]="skill()"
+                  (input)="setSkill($event)"
+                  (keydown.enter)="addSkillFromEnter($event)"
+                />
+
+                <button
+                  nbButton
+                  type="button"
+                  size="md"
+                  tone="yellow"
+                  class="h-11!"
+                  i18n="@@addSkillLabel"
+                  [disabled]="!canAddSkill()"
+                  (click)="addSkill()"
+                >
+                  Add
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUBMIT -->
+          <button
+            nbButton
+            fullWidth
+            type="submit"
+            size="lg"
+            tone="yellow"
+            class="mt-1"
+            i18n="@@submitApplication"
+            [disabled]="!canSubmit()"
+          >
+            {submitting(), select,
+              true {Submitting…}
+              false {Submit application}
+            }
+          </button>
+        </fieldset>
+      </form>
+    </nb-card-content>
   </nb-card>
 </div>

@@ -61,7 +61,7 @@
     <app-frontend-form [form]="applicationForm" [submitting]="submitting()" />
   }
   @case ('designer') {
-    <app-designer-form />
+    <app-designer-form [form]="applicationForm" [submitting]="submitting()" />
   }
 }
 

@@ -73,7 +73,7 @@
       "continuous": true,
       "executor": "@nx/web:file-server",
       "options": {
-        "buildTarget": "dynamic-forms:build",
+        "buildTarget": "10-dynamic-forms:build",
         "staticFilePath": "dist/apps/10-dynamic-forms/browser",
         "spa": true
       }

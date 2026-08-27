@@ -1,0 +1,1158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>Role Builder</title>
+    <style>
+      :root {
+        --ground: #fffbeb;
+        --card: #fffaf0;
+        --input: #fff;
+        --ink: #000;
+        --muted: #6b6355;
+        --yellow: #ffd24a;
+        --pink: #ff7eb6;
+        --mint: #9bf2cf;
+        --lavender: #b8a4ff;
+        --blue: #8ae9ff;
+        --error: #ff4f8a;
+        --accent: var(--lavender);
+        --accent-soft: #f3edff;
+        --radius: 14px;
+        --radius-sm: 10px;
+        --border: 2.5px solid var(--ink);
+        --shadow: 6px 6px 0 0 var(--ink);
+        --shadow-sm: 3px 3px 0 0 var(--ink);
+        --mono: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+        --sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
+        color-scheme: light;
+      }
+
+      [data-role='frontend'] {
+        --accent: var(--lavender);
+        --accent-soft: #f1ebff;
+      }
+
+      [data-role='designer'] {
+        --accent: var(--pink);
+        --accent-soft: #ffeaf4;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background-color: var(--ground);
+        color: var(--ink);
+      }
+
+      body {
+        font-family: var(--sans);
+        background-image:
+          linear-gradient(rgba(0, 0, 0, 0.08) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 0, 0, 0.08) 1px, transparent 1px);
+        background-size: 24px 24px;
+        display: flex;
+        justify-content: center;
+        padding: 48px 36px 56px;
+      }
+
+      button,
+      input {
+        font: inherit;
+        color: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      h1,
+      h2 {
+        font-family: var(--sans);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        margin: 0;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      :focus-visible {
+        outline: 3px solid var(--ink);
+        outline-offset: 3px;
+      }
+
+      .app {
+        width: min(100%, 28.5rem);
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .header {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .callout {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        width: fit-content;
+        padding: 7px 12px 7px 10px;
+        background: var(--lavender);
+        border: var(--border);
+        border-radius: 999px;
+        box-shadow: var(--shadow-sm);
+        font-family: var(--mono);
+        font-size: 0.8125rem;
+        font-weight: 700;
+      }
+
+      .callout hr {
+        width: 2px;
+        height: 16px;
+        margin: 0;
+        border: 0;
+        background: var(--ink);
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 10px;
+        border: 2px solid var(--ink);
+        border-radius: 999px;
+        box-shadow: var(--shadow-sm);
+        font-family: var(--mono);
+        font-size: 0.6875rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        background: var(--input);
+      }
+
+      .chip--pink {
+        background: var(--pink);
+      }
+
+      .chip--yellow {
+        background: var(--yellow);
+      }
+
+      .chip--ink {
+        background: var(--ink);
+        color: #fff;
+      }
+
+      .roles {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .role {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        min-height: 4.75rem;
+        padding: 10px 6px;
+        background: var(--input);
+        border: var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
+        transition:
+          transform 0.12s ease,
+          box-shadow 0.12s ease,
+          background-color 0.16s ease;
+      }
+
+      .role[aria-pressed='true'] {
+        background: var(--accent);
+        box-shadow: var(--shadow);
+      }
+
+      .role:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 5px 5px 0 0 var(--ink);
+      }
+
+      .role:active {
+        transform: translate(2px, 2px);
+        box-shadow: 0 0 0 0 var(--ink);
+      }
+
+      .role__emoji {
+        font-size: 1.35rem;
+        line-height: 1;
+      }
+
+      .role__label {
+        font-family: var(--mono);
+        font-size: 0.6875rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .card-wrap {
+        position: relative;
+      }
+
+      .sticker {
+        position: absolute;
+        top: -2.1rem;
+        right: -2.35rem;
+        z-index: 20;
+        pointer-events: none;
+        transform: scale(0.62);
+        transform-origin: top right;
+      }
+
+      .sticker__root {
+        position: relative;
+        isolation: isolate;
+        display: inline-grid;
+        place-items: center;
+        min-block-size: 8.75rem;
+        transform: rotate(5deg);
+      }
+
+      .sticker__svg {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+
+      .sticker__shadow {
+        fill: var(--ink);
+      }
+
+      .sticker__shape {
+        fill: var(--yellow);
+        stroke: var(--ink);
+        stroke-width: 5px;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .sticker__copy {
+        display: block;
+        padding: 3rem 4rem;
+        font-family: var(--sans);
+        font-size: 1.5rem;
+        font-weight: 900;
+        line-height: 0.9;
+        text-align: center;
+        text-transform: uppercase;
+        user-select: none;
+      }
+
+      .card {
+        background: var(--accent-soft);
+        border: 3px solid var(--ink);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        transition: background-color 0.2s ease;
+      }
+
+      .card.is-shaking {
+        animation: shake 0.38s ease;
+      }
+
+      .card-head {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px 18px 14px;
+        background: var(--accent);
+        border-bottom: 3px solid var(--ink);
+        overflow: hidden;
+        transition: background-color 0.2s ease;
+      }
+
+      .card-head::after {
+        content: '';
+        position: absolute;
+        right: -8px;
+        bottom: -10px;
+        width: 120px;
+        height: 56px;
+        background-image: radial-gradient(var(--ink) 1.15px, transparent 1.2px);
+        background-size: 8px 8px;
+        opacity: 0.18;
+        pointer-events: none;
+      }
+
+      .card-head__mark {
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        flex-shrink: 0;
+        background: var(--input);
+        border: 2.5px solid var(--ink);
+        border-radius: 12px;
+        box-shadow: var(--shadow-sm);
+        font-size: 1.25rem;
+      }
+
+      .card-head__copy {
+        min-width: 0;
+        flex: 1;
+      }
+
+      .card-head h1 {
+        font-size: 1.2rem;
+        line-height: 1.05;
+        text-transform: uppercase;
+      }
+
+      .card-head p {
+        margin: 4px 0 0;
+        font-family: var(--mono);
+        font-size: 0.6875rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .hiring {
+        position: relative;
+        z-index: 1;
+        padding: 4px 8px;
+        background: var(--yellow);
+        border: 2px solid var(--ink);
+        border-radius: 999px;
+        box-shadow: var(--shadow-sm);
+        font-family: var(--mono);
+        font-size: 0.625rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        padding: 18px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        align-items: stretch;
+      }
+
+      .field.is-hidden {
+        display: none;
+      }
+
+      label,
+      .legend {
+        margin: 0;
+        font-family: var(--mono);
+        font-size: 0.6875rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .req {
+        color: var(--error);
+      }
+
+      .control,
+      .input-wrap {
+        background: var(--input);
+        border: var(--border);
+        border-radius: var(--radius-sm);
+        box-shadow: var(--shadow-sm);
+        transition:
+          border-color 0.12s ease,
+          box-shadow 0.12s ease,
+          background-color 0.12s ease;
+      }
+
+      input.control {
+        width: 100%;
+        height: 44px;
+        padding: 0 12px;
+        font-size: 0.9375rem;
+        font-weight: 600;
+      }
+
+      input.control::placeholder {
+        color: var(--muted);
+        font-weight: 500;
+      }
+
+      .input-wrap {
+        display: flex;
+        align-items: stretch;
+        overflow: hidden;
+      }
+
+      .affix {
+        display: grid;
+        place-items: center;
+        min-width: 42px;
+        padding: 0 10px;
+        background: color-mix(in srgb, var(--accent) 55%, #fff);
+        border-right: var(--border);
+        font-family: var(--mono);
+        font-size: 0.8125rem;
+        font-weight: 800;
+      }
+
+      .affix--end {
+        border-right: 0;
+        border-left: var(--border);
+      }
+
+      .input-wrap input {
+        width: 100%;
+        height: 44px;
+        padding: 0 12px;
+        border: 0;
+        background: transparent;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        box-shadow: none;
+        border-radius: 0;
+      }
+
+      .input-wrap input:focus {
+        outline: none;
+      }
+
+      .input-wrap:focus-within,
+      input.control:focus-visible {
+        outline: 3px solid var(--ink);
+        outline-offset: 3px;
+      }
+
+      .field.is-invalid .control,
+      .field.is-invalid .input-wrap,
+      .field.is-invalid .segment {
+        border-color: var(--error);
+        background: #fff0f5;
+        box-shadow: 3px 3px 0 0 var(--error);
+      }
+
+      .hint {
+        display: none;
+        margin: 0;
+        font-family: var(--mono);
+        font-size: 0.6875rem;
+        font-weight: 700;
+        color: var(--error);
+      }
+
+      .hint:not(:empty) {
+        display: block;
+      }
+
+      .segment {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        overflow: hidden;
+        background: var(--input);
+        border: var(--border);
+        border-radius: var(--radius-sm);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .segment button {
+        height: 44px;
+        border: 0;
+        background: transparent;
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        transition: background-color 0.12s ease;
+      }
+
+      .segment button + button {
+        border-left: var(--border);
+      }
+
+      .segment button[aria-pressed='true'] {
+        background: var(--accent);
+      }
+
+      .segment button:hover:not([aria-pressed='true']) {
+        background: color-mix(in srgb, var(--accent) 22%, #fff);
+      }
+
+      .skill-box {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 12px;
+        background: color-mix(in srgb, var(--accent) 28%, #fff);
+        border: var(--border);
+        border-radius: 12px;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .skill-box:focus-within {
+        outline: 3px solid var(--ink);
+        outline-offset: 3px;
+      }
+
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 6px 5px 10px;
+        background: var(--input);
+        border: 2px solid var(--ink);
+        border-radius: 999px;
+        box-shadow: var(--shadow-sm);
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        font-weight: 800;
+      }
+
+      .tag button {
+        display: grid;
+        place-items: center;
+        width: 20px;
+        height: 20px;
+        padding: 0;
+        color: #fff;
+        background: var(--accent);
+        border: 2px solid var(--ink);
+        border-radius: 999px;
+        font-size: 0.8rem;
+        line-height: 1;
+        transition:
+          transform 0.1s ease,
+          box-shadow 0.1s ease;
+      }
+
+      .tag button:hover {
+        transform: translate(-1px, -1px);
+        box-shadow: 2px 2px 0 0 var(--ink);
+      }
+
+      .tag button:active {
+        transform: translate(1px, 1px);
+        box-shadow: none;
+      }
+
+      .skill-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+      }
+
+      .skill-row .control {
+        box-shadow: none;
+      }
+
+      .add {
+        height: 44px;
+        padding: 0 16px;
+        background: var(--accent);
+        border: var(--border);
+        border-radius: var(--radius-sm);
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        transition:
+          transform 0.12s ease,
+          box-shadow 0.12s ease;
+      }
+
+      .add:hover,
+      .submit:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 8px 8px 0 0 var(--ink);
+      }
+
+      .add:active,
+      .submit:active {
+        transform: translate(3px, 3px);
+        box-shadow: 0 0 0 0 var(--ink);
+      }
+
+      .submit {
+        width: 100%;
+        height: 52px;
+        margin-top: 10px;
+        background: var(--yellow);
+        border: 3px solid var(--ink);
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        font-family: var(--sans);
+        font-size: 1rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        transition:
+          transform 0.12s ease,
+          box-shadow 0.12s ease;
+      }
+
+      .banner {
+        display: none;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 12px;
+        border: var(--border);
+        border-radius: 12px;
+        box-shadow: var(--shadow-sm);
+        font-size: 0.875rem;
+        font-weight: 650;
+      }
+
+      .banner.is-on {
+        display: flex;
+      }
+
+      .banner--error {
+        background: #ffe3ee;
+        border-color: var(--error);
+        color: #8a1040;
+      }
+
+      .banner--ok {
+        background: var(--mint);
+      }
+
+      .badge {
+        flex-shrink: 0;
+        padding: 4px 8px;
+        background: var(--input);
+        border: 2px solid var(--ink);
+        border-radius: 999px;
+        box-shadow: 2px 2px 0 0 var(--ink);
+        font-family: var(--mono);
+        font-size: 0.625rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .banner p {
+        margin: 2px 0 0;
+        line-height: 1.35;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        75% {
+          transform: translateX(5px);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+
+        .role:hover,
+        .add:hover,
+        .submit:hover,
+        .tag button:hover {
+          transform: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app" data-role="frontend">
+      <header class="header">
+        <div class="callout" aria-label="Lesson 10: Dynamic Forms">
+          <span aria-hidden="true">10</span>
+          <hr aria-hidden="true" />
+          <span>Dynamic Forms</span>
+        </div>
+        <div class="chips" aria-label="Lesson topics">
+          <span class="chip chip--pink">Angular 22</span>
+          <span class="chip chip--yellow">Signal Forms</span>
+          <span class="chip chip--ink">Ng-Brutalism</span>
+        </div>
+      </header>
+
+      <div class="roles" role="group" aria-label="Choose a role">
+        <button
+          class="role"
+          type="button"
+          data-role="frontend"
+          aria-pressed="true"
+        >
+          <span class="role__emoji" aria-hidden="true">💻</span>
+          <span class="role__label">Frontend</span>
+        </button>
+        <button
+          class="role"
+          type="button"
+          data-role="designer"
+          aria-pressed="false"
+        >
+          <span class="role__emoji" aria-hidden="true">🎨</span>
+          <span class="role__label">Designer</span>
+        </button>
+      </div>
+
+      <div class="card-wrap">
+        <div class="sticker" aria-hidden="true">
+          <span class="sticker__root">
+            <svg class="sticker__svg" viewBox="0 0 220 160" focusable="false">
+              <path
+                class="sticker__shadow"
+                transform="translate(8 8)"
+                d="M108 10 L126 38 L164 20 L162 50 L211 58 L179 78 L211 101 L169 105 L172 143 L135 126 L112 153 L92 126 L53 145 L57 108 L12 103 L43 81 L12 59 L57 50 L53 21 L91 39 Z"
+              />
+              <path
+                class="sticker__shape"
+                d="M108 10 L126 38 L164 20 L162 50 L211 58 L179 78 L211 101 L169 105 L172 143 L135 126 L112 153 L92 126 L53 145 L57 108 L12 103 L43 81 L12 59 L57 50 L53 21 L91 39 Z"
+              />
+            </svg>
+            <span class="sticker__copy">TEST<br />IT!</span>
+          </span>
+        </div>
+
+        <article class="card" id="form-card">
+          <header class="card-head">
+            <div class="card-head__mark" id="role-emoji" aria-hidden="true">
+              💻
+            </div>
+            <div class="card-head__copy">
+              <h1>Role Builder</h1>
+              <p id="role-kicker">Frontend application</p>
+            </div>
+            <span class="hiring">Hiring</span>
+          </header>
+
+          <form id="apply-form" novalidate>
+            <div class="field" data-field="name">
+              <label for="full-name"
+                >Full name <span class="req" aria-hidden="true">*</span></label
+              >
+              <input
+                class="control"
+                id="full-name"
+                name="name"
+                type="text"
+                autocomplete="name"
+                placeholder="Ada Lovelace"
+                aria-required="true"
+                aria-describedby="name-error"
+              />
+              <p class="hint" id="name-error"></p>
+            </div>
+
+            <div class="field" data-field="years">
+              <label for="years"
+                >Years of experience
+                <span class="req" aria-hidden="true">*</span></label
+              >
+              <div class="input-wrap">
+                <input
+                  id="years"
+                  name="years"
+                  type="number"
+                  inputmode="numeric"
+                  min="0"
+                  max="40"
+                  step="1"
+                  placeholder="4"
+                  aria-required="true"
+                  aria-describedby="years-error"
+                />
+                <span class="affix affix--end" aria-hidden="true">yrs</span>
+              </div>
+              <p class="hint" id="years-error"></p>
+            </div>
+
+            <div
+              class="field is-hidden"
+              data-field="portfolio"
+              id="portfolio-field"
+            >
+              <label for="portfolio"
+                >Portfolio URL
+                <span class="req" aria-hidden="true">*</span></label
+              >
+              <input
+                class="control"
+                id="portfolio"
+                name="portfolio"
+                type="url"
+                inputmode="url"
+                autocomplete="url"
+                placeholder="https://your.site"
+                aria-describedby="portfolio-error"
+              />
+              <p class="hint" id="portfolio-error"></p>
+            </div>
+
+            <div class="field" data-field="engagement">
+              <p class="legend" id="engagement-label">Engagement</p>
+              <div
+                class="segment"
+                role="group"
+                aria-labelledby="engagement-label"
+              >
+                <button
+                  type="button"
+                  data-engagement="fulltime"
+                  aria-pressed="true"
+                >
+                  Full-time
+                </button>
+                <button
+                  type="button"
+                  data-engagement="contract"
+                  aria-pressed="false"
+                >
+                  Contract
+                </button>
+              </div>
+            </div>
+
+            <div class="field is-hidden" data-field="rate" id="rate-field">
+              <label for="rate">Day rate (USD)</label>
+              <div class="input-wrap">
+                <span class="affix" aria-hidden="true">$</span>
+                <input
+                  id="rate"
+                  name="rate"
+                  type="number"
+                  inputmode="numeric"
+                  min="1"
+                  max="4000"
+                  step="1"
+                  placeholder="650"
+                  aria-describedby="rate-error"
+                />
+              </div>
+              <p class="hint" id="rate-error"></p>
+            </div>
+
+            <div class="field" data-field="skills">
+              <label for="skill-input">Core skills / tools</label>
+              <div class="skill-box">
+                <div class="tags" id="skill-tags"></div>
+                <div class="skill-row">
+                  <input
+                    class="control"
+                    id="skill-input"
+                    type="text"
+                    placeholder="e.g. Signals"
+                    autocomplete="off"
+                  />
+                  <button class="add" type="button" id="add-skill">Add</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="banner banner--error" id="error-banner" role="alert">
+              <span class="badge">Fix it</span>
+              <p>Fill in the required fields.</p>
+            </div>
+
+            <div class="banner banner--ok" id="ok-banner" role="status">
+              <span class="badge">You're in</span>
+              <p>Application sent. We'll be in touch.</p>
+            </div>
+
+            <button class="submit" type="submit">Submit application</button>
+          </form>
+        </article>
+      </div>
+    </div>
+
+    <script>
+      const ROLES = {
+        frontend: {
+          label: 'Frontend',
+          emoji: '💻',
+          skills: ['Angular', 'TypeScript', 'RxJS'],
+        },
+        designer: {
+          label: 'Designer',
+          emoji: '🎨',
+          skills: ['Angular', 'Figma', 'Sass'],
+        },
+      };
+
+      const app = document.querySelector('.app');
+      const card = document.getElementById('form-card');
+      const form = document.getElementById('apply-form');
+      const nameInput = document.getElementById('full-name');
+      const yearsInput = document.getElementById('years');
+      const portfolioInput = document.getElementById('portfolio');
+      const rateInput = document.getElementById('rate');
+      const skillInput = document.getElementById('skill-input');
+      const skillTags = document.getElementById('skill-tags');
+      const portfolioField = document.getElementById('portfolio-field');
+      const rateField = document.getElementById('rate-field');
+      const errorBanner = document.getElementById('error-banner');
+      const okBanner = document.getElementById('ok-banner');
+
+      const state = {
+        role: 'frontend',
+        engagement: 'fulltime',
+        skills: [...ROLES.frontend.skills],
+      };
+
+      function setFieldError(name, message) {
+        const field = document.querySelector('[data-field="' + name + '"]');
+        const hint = field.querySelector('.hint');
+        const control = field.querySelector('input');
+        field.classList.toggle('is-invalid', Boolean(message));
+        if (hint) hint.textContent = message || '';
+        if (control) {
+          control.setAttribute('aria-invalid', message ? 'true' : 'false');
+        }
+      }
+
+      function clearErrors() {
+        ['name', 'years', 'portfolio', 'rate'].forEach(function (name) {
+          setFieldError(name, '');
+        });
+        errorBanner.classList.remove('is-on');
+        card.classList.remove('is-shaking');
+      }
+
+      function hideSuccess() {
+        okBanner.classList.remove('is-on');
+      }
+
+      function renderSkills() {
+        skillTags.replaceChildren();
+        state.skills.forEach(function (skill) {
+          const tag = document.createElement('span');
+          tag.className = 'tag';
+          tag.append(document.createTextNode(skill));
+          const remove = document.createElement('button');
+          remove.type = 'button';
+          remove.setAttribute('aria-label', 'Remove ' + skill);
+          remove.textContent = '×';
+          remove.addEventListener('click', function () {
+            state.skills = state.skills.filter(function (item) {
+              return item !== skill;
+            });
+            hideSuccess();
+            renderSkills();
+          });
+          tag.append(remove);
+          skillTags.append(tag);
+        });
+      }
+
+      function addSkill() {
+        const value = skillInput.value.trim();
+        if (!value) return;
+        const exists = state.skills.some(function (skill) {
+          return skill.toLowerCase() === value.toLowerCase();
+        });
+        if (!exists) {
+          state.skills.push(value);
+          renderSkills();
+        }
+        skillInput.value = '';
+        hideSuccess();
+        skillInput.focus();
+      }
+
+      function setRole(role) {
+        state.role = role;
+        state.skills = ROLES[role].skills.slice();
+        skillInput.value = '';
+        skillInput.placeholder =
+          role === 'designer' ? 'e.g. CDK' : 'e.g. Signals';
+        portfolioInput.value = '';
+        app.dataset.role = role;
+        document.getElementById('role-emoji').textContent = ROLES[role].emoji;
+        document.getElementById('role-kicker').textContent =
+          ROLES[role].label + ' application';
+        document.querySelectorAll('.role').forEach(function (button) {
+          button.setAttribute(
+            'aria-pressed',
+            button.dataset.role === role ? 'true' : 'false',
+          );
+        });
+        const isDesigner = role === 'designer';
+        portfolioField.classList.toggle('is-hidden', !isDesigner);
+        portfolioInput.required = isDesigner;
+        portfolioInput.setAttribute(
+          'aria-required',
+          isDesigner ? 'true' : 'false',
+        );
+        clearErrors();
+        hideSuccess();
+        renderSkills();
+      }
+
+      function setEngagement(value) {
+        state.engagement = value;
+        document
+          .querySelectorAll('[data-engagement]')
+          .forEach(function (button) {
+            button.setAttribute(
+              'aria-pressed',
+              button.dataset.engagement === value ? 'true' : 'false',
+            );
+          });
+        const isContract = value === 'contract';
+        rateField.classList.toggle('is-hidden', !isContract);
+        if (!isContract) {
+          setFieldError('rate', '');
+        }
+        hideSuccess();
+      }
+
+      function validate() {
+        const errors = {};
+        const name = nameInput.value.trim();
+        const years = yearsInput.value.trim();
+        const yearsNum = Number(years);
+
+        if (!name) errors.name = 'Name is required.';
+        if (years === '') {
+          errors.years = 'Years of experience is required.';
+        } else if (
+          !Number.isFinite(yearsNum) ||
+          yearsNum < 0 ||
+          yearsNum > 40
+        ) {
+          errors.years = 'Keep years between 0 and 40.';
+        }
+
+        if (state.role === 'designer' && !portfolioInput.value.trim()) {
+          errors.portfolio = 'Portfolio URL is required.';
+        }
+
+        if (state.engagement === 'contract' && !rateInput.value.trim()) {
+          errors.rate = 'Enter a day rate.';
+        }
+
+        return errors;
+      }
+
+      document.querySelectorAll('.role').forEach(function (button) {
+        button.addEventListener('click', function () {
+          setRole(button.dataset.role);
+        });
+      });
+
+      document.querySelectorAll('[data-engagement]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          setEngagement(button.dataset.engagement);
+        });
+      });
+
+      document.getElementById('add-skill').addEventListener('click', addSkill);
+
+      skillInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          addSkill();
+        }
+      });
+
+      [nameInput, yearsInput, portfolioInput, rateInput].forEach(
+        function (input) {
+          input.addEventListener('input', function () {
+            hideSuccess();
+            const field = input.closest('.field').dataset.field;
+            if (
+              document
+                .querySelector('[data-field="' + field + '"]')
+                .classList.contains('is-invalid')
+            ) {
+              const errors = validate();
+              setFieldError(field, errors[field] || '');
+              if (!Object.keys(validate()).length) {
+                errorBanner.classList.remove('is-on');
+              }
+            }
+          });
+        },
+      );
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        hideSuccess();
+        const errors = validate();
+        ['name', 'years', 'portfolio', 'rate'].forEach(function (name) {
+          setFieldError(name, errors[name] || '');
+        });
+
+        if (Object.keys(errors).length) {
+          errorBanner.classList.add('is-on');
+          card.classList.remove('is-shaking');
+          void card.offsetWidth;
+          card.classList.add('is-shaking');
+          const first = form.querySelector('.field.is-invalid input');
+          if (first) first.focus();
+          return;
+        }
+
+        errorBanner.classList.remove('is-on');
+        okBanner.classList.add('is-on');
+      });
+
+      renderSkills();
+    </script>
+  </body>
+</html>
