@@ -2,7 +2,7 @@ import { Injector, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { form, type FieldTree } from '@angular/forms/signals';
 import { App } from './app';
-import { INITIAL_APPLICATION, SKILL_DRAFT_DEBOUNCE_MS } from './app.data';
+import { INITIAL_APPLICATION } from './app.data';
 import {
   Application,
   ContractEngagement,
@@ -160,16 +160,25 @@ describe('App (10 · Dynamic Forms)', () => {
         );
       });
 
-      it('rejects an invalid URL with invalidUrl', () => {
+      it('rejects an invalid URL', () => {
         const applicationForm = buildApplicationForm({
           ...VALID_DESIGNER,
           portfolio: 'not-a-url',
         });
         expect(portfolioOf(applicationForm)().valid()).toBe(false);
-        expect(kindsOf(portfolioOf(applicationForm))).toContain('invalidUrl');
+        expect(kindsOf(portfolioOf(applicationForm))).toContain('pattern');
         expect(messagesOf(portfolioOf(applicationForm))).toContain(
           'Enter a valid URL.',
         );
+      });
+
+      it('rejects a URL whose host has no dot', () => {
+        const applicationForm = buildApplicationForm({
+          ...VALID_DESIGNER,
+          portfolio: 'http://test---',
+        });
+        expect(portfolioOf(applicationForm)().valid()).toBe(false);
+        expect(kindsOf(portfolioOf(applicationForm))).toContain('pattern');
       });
 
       it('accepts designer once the portfolio is a URL', () => {
@@ -384,7 +393,7 @@ describe('App (10 · Dynamic Forms)', () => {
 
       expect(host.textContent).not.toContain('A skill is required.');
 
-      await vi.advanceTimersByTimeAsync(SKILL_DRAFT_DEBOUNCE_MS);
+      await vi.advanceTimersByTimeAsync(500);
       await fixture.whenStable();
 
       expect(host.textContent).not.toContain('A skill is required.');

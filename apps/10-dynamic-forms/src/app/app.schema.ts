@@ -8,9 +8,7 @@ import {
   pattern,
   required,
   schema,
-  validate,
 } from '@angular/forms/signals';
-import { SKILL_DRAFT_DEBOUNCE_MS, SKILL_PATTERN } from './app.data';
 import {
   Application,
   ContractEngagement,
@@ -18,7 +16,7 @@ import {
 } from './app.model';
 
 export const skillItemSchema = schema<string>((path) => {
-  pattern(path, SKILL_PATTERN, {
+  pattern(path, /^[A-Za-z]+$/, {
     message: 'Letters only. No numbers or special characters.',
   });
 });
@@ -26,7 +24,7 @@ export const skillItemSchema = schema<string>((path) => {
 export const skillDraftSchema = schema<string>((path) => {
   required(path, { message: 'A skill is required.' });
   apply(path, skillItemSchema);
-  debounce(path, SKILL_DRAFT_DEBOUNCE_MS);
+  debounce(path, 500);
 });
 
 export const applicationSchema = schema<Application>((path) => {
@@ -58,17 +56,8 @@ export const applicationSchema = schema<Application>((path) => {
       required(designer.portfolio, {
         message: 'Portfolio URL is required.',
       });
-      validate(designer.portfolio, ({ value }) => {
-        const url = value().trim();
-
-        if (!url) return null;
-
-        try {
-          new URL(url);
-          return null;
-        } catch {
-          return { kind: 'invalidUrl', message: 'Enter a valid URL.' };
-        }
+      pattern(designer.portfolio, /^https?:\/\/.+\..+/i, {
+        message: 'Enter a valid URL.',
       });
     },
   );

@@ -41,7 +41,6 @@ all projects share a single root `package.json`.
 | `applyWhenValue(path, guard, fn)`     | Applies rules to a **discriminated-union** variant, with narrowing                 | designer `portfolio`, contract `dayRate`           |
 | `applyEach(path, itemSchema)`         | Applies rules to **every element** of an array field                               | `skillItemSchema` on each chip                     |
 | `debounce(path, ms)`                  | Delays UI-to-model sync until the user pauses typing                               | skill composer draft                               |
-| `validate(path, fn)`                  | Custom validator returning a `{ kind, message }` error                             | portfolio `invalidUrl`                             |
 | `form(model, schema, { submission })` | Configures the submission `action`, `onInvalid`, and `ignoreValidators`            | `applicationForm`                                  |
 | `[formRoot]`                          | Wires a native `<form>` to submit (sets `novalidate`, prevents default)            | child `<form [formRoot]="form()">`                 |
 | `field().submitting()`                | `true` while the async action runs; drives the spinner and the double-submit guard | the Submit button                                  |
@@ -66,7 +65,7 @@ while their discriminant is active.
 | `engagement.dayRate` | `nbInput` number (contract) | `number \| null`           | `required` + `min(1)` while contract |
 | `skills[]`           | chips + composer input      | `string[]`                 | `applyEach` + `skillItemSchema`      |
 | composer `skill`     | add input (sibling form)    | `string`                   | `required` + `pattern` + `debounce`  |
-| `portfolio`          | `nbInput` url (designer)    | `string`                   | `required` + custom URL `validate`   |
+| `portfolio`          | `nbInput` url (designer)    | `string`                   | `required` + http(s) URL `pattern`   |
 
 ```ts
 export type Application = FrontendApplication | DesignerApplication;
@@ -107,15 +106,8 @@ export const applicationSchema = schema<Application>((path) => {
     (application): application is DesignerApplication => application.role === 'designer',
     (designer) => {
       required(designer.portfolio, { message: 'Portfolio URL is required.' });
-      validate(designer.portfolio, ({ value }) => {
-        const url = value().trim();
-        if (!url) return null;
-        try {
-          new URL(url);
-          return null;
-        } catch {
-          return { kind: 'invalidUrl', message: 'Enter a valid URL.' };
-        }
+      pattern(designer.portfolio, /^https?:\/\/.+\..+/i, {
+        message: 'Enter a valid URL.',
       });
     },
   );
@@ -187,16 +179,16 @@ Shared **`ValidationErrors`** reads `errorSummary()` and gates on
 `(dirty() || touched()) && invalid()`. The alert list carries `messageId` so
 `aria-describedby` on the input points at the list itself, not the component host.
 
-| Message                                           | Level                       | Shows when                          |
-| ------------------------------------------------- | --------------------------- | ----------------------------------- |
-| "Name is required."                               | field (`required`)          | name empty, touched or dirty        |
-| "Years of experience is required."                | field (`required`)          | years empty                         |
-| "Keep years between 0 and 10."                    | field (`min`/`max`)         | years out of range                  |
-| "Enter a day rate."                               | field (`required`/`min`)    | contract, day rate empty or below 1 |
-| "Portfolio URL is required."                      | field (`required`)          | designer, portfolio empty           |
-| "Enter a valid URL."                              | field (`invalidUrl`)        | designer, portfolio not a URL       |
-| "A skill is required."                            | composer (`required`)       | add input empty, touched or dirty   |
-| "Letters only. No numbers or special characters." | composer + chip (`pattern`) | draft or chip fails `SKILL_PATTERN` |
+| Message                                           | Level                       | Shows when                              |
+| ------------------------------------------------- | --------------------------- | --------------------------------------- |
+| "Name is required."                               | field (`required`)          | name empty, touched or dirty            |
+| "Years of experience is required."                | field (`required`)          | years empty                             |
+| "Keep years between 0 and 10."                    | field (`min`/`max`)         | years out of range                      |
+| "Enter a day rate."                               | field (`required`/`min`)    | contract, day rate empty or below 1     |
+| "Portfolio URL is required."                      | field (`required`)          | designer, portfolio empty               |
+| "Enter a valid URL."                              | field (`pattern`)           | designer, portfolio fails the URL regex |
+| "A skill is required."                            | composer (`required`)       | add input empty, touched or dirty       |
+| "Letters only. No numbers or special characters." | composer + chip (`pattern`) | a skill fails letters-only              |
 
 | When visible  | `(dirty \|\| touched) && invalid`                          |
 | ------------- | ---------------------------------------------------------- |
@@ -285,7 +277,7 @@ tests are split by concern:
 - **Isolated schema tests** build the form directly from `applicationSchema`
   (`form(model, applicationSchema, { injector })`) - no component, no DOM - and assert
   every rule: name/years required and range, contract `dayRate`, designer portfolio
-  required + `invalidUrl`, `applyEach` letters-only skills, and the skill-draft composer
+  required + URL `pattern`, `applyEach` letters-only skills, and the skill-draft composer
   (`required` + `pattern`).
 - **Component tests** cover only what the rendered template shows: the frontend card
   renders by default, the designer tab reveals portfolio and resets to pristine, contract
