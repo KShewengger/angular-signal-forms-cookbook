@@ -5,8 +5,8 @@
     aria-hidden="true"
   >
     <nb-sticker
-      shape="burst-wide"
       tone="yellow"
+      shape="burst-wide"
       i18n="@@testItLabel"
       [rotate]="5"
     >
@@ -31,10 +31,10 @@
         <nb-card-title>
           <h2
             nbText
+            class="m-0 leading-tight"
             size="lg"
             weight="black"
             transform="uppercase"
-            class="m-0 leading-tight"
             i18n="@@roleBuilderTitle"
           >
             Role Builder
@@ -43,11 +43,11 @@
         <nb-card-description>
           <p
             nbText
+            class="m-0"
             size="xs"
             weight="bold"
             transform="uppercase"
             tracking="wide"
-            class="m-0"
             i18n="@@frontendApplicationLabel"
           >
             Frontend application
@@ -57,8 +57,8 @@
 
       <div
         nbHalftone
-        shape="rectangle"
         class="absolute -right-1 -bottom-2 opacity-40"
+        shape="rectangle"
         aria-hidden="true"
         [rows]="3"
         [columns]="7"
@@ -67,7 +67,7 @@
 
     <!-- CONTENT -->
     <nb-card-content class="p-4.5">
-      <form nbStack gap="none" [formRoot]="form()">
+      <form nbStack novalidate gap="none" [formRoot]="form()">
         <fieldset nbStack gap="xl">
           <legend class="sr-only" i18n="@@frontendApplicationFieldsLabel">
             Frontend application fields
@@ -135,16 +135,16 @@
           <div nbStack gap="sm" align="stretch">
             <p
               nbLabel
-              id="frontend-engagement-label"
               class="m-0"
+              id="frontend-engagement-label"
               i18n="@@engagementLabel"
             >
               Engagement
             </p>
 
             <div
-              role="group"
               class="grid grid-cols-2 gap-2"
+              role="group"
               aria-labelledby="frontend-engagement-label"
             >
               @for (engagement of engagementTabs(); track engagement.kind) {
@@ -208,7 +208,7 @@
           }
 
           <!-- SKILLS -->
-          <div nbStack gap="sm" align="stretch" class="mt-1">
+          <div nbStack class="mt-1" gap="sm" align="stretch">
             <label nbLabel for="frontend-skill" i18n="@@skillsLabel">
               Core skills
             </label>
@@ -216,44 +216,44 @@
             <div
               nbSurface
               nbStack
+              class="focus-within:outline-3 focus-within:outline-offset-3 focus-within:outline-black"
               gap="md"
               tone="success"
               radius="lg"
               border="thick"
               shadow="sm"
               padding="sm"
-              class="focus-within:outline-3 focus-within:outline-offset-3 focus-within:outline-black"
             >
               <div
                 nbChipGroup
                 nbCluster
-                gap="sm"
                 class="flex flex-wrap"
+                gap="sm"
                 aria-label="Selected skills"
                 i18n-aria-label="@@selectedSkillsLabel"
               >
-                @for (skill of form().skills().value(); track skill) {
-                  <span nbChip tone="background" class="gap-1.5! pr-1!">
-                    {{ skill }}
+                @for (chip of skillChips(); track chip.name) {
+                  <span nbChip class="gap-1.5! pr-1!" tone="background">
+                    {{ chip.name }}
                     <button
                       type="button"
                       class="grid size-5 place-items-center rounded-full border-2 border-black bg-nb-success text-black"
-                      [attr.aria-label]="'Remove ' + skill"
-                      (click)="removeSkill(skill)"
+                      [attr.aria-label]="chip.removeLabel"
+                      (click)="removeSkill(chip.name)"
                     >
-                      <ng-icon aria-hidden="true" size="12" name="tablerX" />
+                      <ng-icon size="12" name="tablerX" aria-hidden="true" />
                     </button>
                   </span>
                 }
               </div>
 
-              <div class="grid grid-cols-[1fr_auto] items-center gap-2">
+              <div class="flex items-center gap-2">
                 <input
                   nbInput
+                  class="h-11! min-w-0 flex-1"
                   id="frontend-skill"
                   type="text"
                   autocomplete="off"
-                  class="h-11!"
                   [placeholder]="skillPlaceholder"
                   [value]="skill()"
                   (input)="setSkill($event)"
@@ -262,10 +262,10 @@
 
                 <button
                   nbButton
+                  class="h-11!"
                   type="button"
                   size="md"
                   tone="yellow"
-                  class="h-11!"
                   i18n="@@addSkillLabel"
                   [disabled]="!canAddSkill()"
                   (click)="addSkill()"
@@ -280,10 +280,10 @@
           <button
             nbButton
             fullWidth
+            class="mt-1"
             type="submit"
             size="lg"
             tone="yellow"
-            class="mt-1"
             i18n="@@submitApplication"
             [disabled]="!canSubmit()"
           >

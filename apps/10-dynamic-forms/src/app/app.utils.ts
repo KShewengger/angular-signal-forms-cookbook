@@ -1,4 +1,4 @@
-import { ROLES } from './app.data';
+import { ROLES_BY_ID } from './app.data';
 import type {
   Application,
   Engagement,
@@ -7,7 +7,7 @@ import type {
 } from './app.model';
 
 export function skillsForRole(role: RoleId): string[] {
-  return [...(ROLES.find((option) => option.id === role)?.skills ?? [])];
+  return [...ROLES_BY_ID[role].skills];
 }
 
 export function createEngagement(kind: EngagementKind): Engagement {
@@ -16,24 +16,6 @@ export function createEngagement(kind: EngagementKind): Engagement {
       return { kind, dayRate: null };
     case 'fulltime':
       return { kind };
-  }
-}
-
-export function createApplication(role: RoleId): Application {
-  const engagement = createEngagement('fulltime');
-
-  switch (role) {
-    case 'designer':
-      return {
-        role,
-        name: '',
-        years: null,
-        engagement,
-        skills: [],
-        portfolio: '',
-      };
-    case 'frontend':
-      return { role, name: '', years: null, engagement, skills: [] };
   }
 }
 

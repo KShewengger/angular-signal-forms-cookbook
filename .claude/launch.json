@@ -78,6 +78,12 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["nx", "serve", "09-form-submission", "--port", "4309"],
       "port": 4309
+    },
+    {
+      "name": "10-dynamic-forms",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["nx", "serve", "10-dynamic-forms", "--port", "4310"],
+      "port": 4310
     }
   ]
 }

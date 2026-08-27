@@ -24,7 +24,7 @@ import {
 } from '@ng-brutalism/ui';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { tablerX } from '@ng-icons/tabler-icons';
-import { ENGAGEMENTS, ROLES } from '../app.data';
+import { ENGAGEMENTS, ROLES_BY_ID } from '../app.data';
 import {
   Application,
   ContractEngagement,
@@ -74,8 +74,7 @@ export class FrontendForm {
 
   protected readonly engagements = ENGAGEMENTS;
 
-  protected readonly skillPlaceholder =
-    ROLES.find((role) => role.id === 'frontend')?.placeholder ?? '';
+  protected readonly skillPlaceholder = ROLES_BY_ID.frontend.placeholder;
 
   protected readonly skill = signal('');
 
@@ -90,17 +89,17 @@ export class FrontendForm {
 
   protected readonly nameInvalid = computed(() => {
     const field = this.form().name();
-    return field.touched() && field.invalid();
+    return (field.dirty() || field.touched()) && field.invalid();
   });
 
   protected readonly yearsInvalid = computed(() => {
     const field = this.form().years();
-    return field.touched() && field.invalid();
+    return (field.dirty() || field.touched()) && field.invalid();
   });
 
   protected readonly dayRateInvalid = computed(() => {
     const field = this.dayRateField();
-    return field.touched() && field.invalid();
+    return (field.dirty() || field.touched()) && field.invalid();
   });
 
   protected readonly selectedEngagement = computed(
@@ -116,11 +115,23 @@ export class FrontendForm {
 
     return this.engagements.map((engagement) => {
       const selectedTab = engagement.kind === selected;
-      const tone: NbToneToken = selectedTab ? 'success' : 'background';
+      const tone: NbToneToken = selectedTab
+        ? ROLES_BY_ID.frontend.selectedTone
+        : 'background';
 
       return { ...engagement, selected: selectedTab, tone };
     });
   });
+
+  protected readonly skillChips = computed(() =>
+    this.form()
+      .skills()
+      .value()
+      .map((name) => ({
+        name,
+        removeLabel: $localize`:@@removeSkillLabel:Remove ${name}:skill:`,
+      })),
+  );
 
   protected selectEngagement(kind: EngagementKind): void {
     if (this.form().engagement().value().kind === kind) return;
@@ -140,7 +151,9 @@ export class FrontendForm {
     this.form()
       .skills()
       .value.update((skills) =>
-        skills.some((item) => item.toLowerCase() === skill.toLowerCase())
+        skills.some(
+          (existing) => existing.toLowerCase() === skill.toLowerCase(),
+        )
           ? skills
           : [...skills, skill],
       );
@@ -156,7 +169,9 @@ export class FrontendForm {
   protected removeSkill(skill: string): void {
     this.form()
       .skills()
-      .value.update((skills) => skills.filter((item) => item !== skill));
+      .value.update((skills) =>
+        skills.filter((existing) => existing !== skill),
+      );
   }
 
   private engagementAs<V extends Engagement>(): FieldTree<V> {

@@ -1,6 +1,6 @@
 import { Component, computed, signal } from '@angular/core';
 import { form } from '@angular/forms/signals';
-import { INITIAL_APPLICATION, ROLES } from './app.data';
+import { INITIAL_APPLICATION, LESSON_TOPICS, ROLES } from './app.data';
 import { Application, RoleId } from './app.model';
 import { applicationSchema } from './app.schema';
 import { skillsForRole, switchApplicationRole } from './app.utils';
@@ -53,6 +53,7 @@ import { DesignerForm } from './designer-form/designer-form';
 })
 export class App {
   protected readonly roles = ROLES;
+  protected readonly lessonTopics = LESSON_TOPICS;
 
   protected readonly applicationModel = signal<Application>({
     ...INITIAL_APPLICATION,
@@ -73,13 +74,9 @@ export class App {
     },
   );
 
-  protected readonly submitting = computed(() =>
-    this.applicationForm().submitting(),
-  );
+  protected readonly submitting = this.applicationForm().submitting;
 
-  protected readonly selectedRole = computed(() =>
-    this.applicationForm.role().value(),
-  );
+  protected readonly selectedRole = this.applicationForm.role().value;
 
   protected readonly roleTabs = computed(() => {
     const selected = this.selectedRole();

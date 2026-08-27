@@ -1,11 +1,16 @@
 <!-- HERO -->
-<header class="flex flex-col gap-3" aria-label="Lesson header">
+<header
+  class="flex flex-col gap-3"
+  aria-label="Lesson header"
+  i18n-aria-label="@@lessonHeaderAriaLabel"
+>
   <div
     nbCallout
-    tone="lavender"
-    size="md"
     class="w-fit"
+    size="md"
+    tone="lavender"
     aria-label="Lesson 10: Dynamic Forms"
+    i18n-aria-label="@@lesson10AriaLabel"
   >
     <span aria-hidden="true">10</span>
     <hr nbSeparator orientation="vertical" aria-hidden="true" />
@@ -14,17 +19,23 @@
     </span>
   </div>
 
-  <div nbChipGroup nbCluster gap="md" aria-label="Lesson topics">
-    <span nbChip tone="danger" i18n="@@angular22Label"> Angular 22 </span>
-    <span nbChip tone="accent" i18n="@@signalFormsLabel"> Signal Forms </span>
-    <span nbChip tone="black" i18n="@@basicLabel"> Ng-Brutalism </span>
+  <div
+    nbChipGroup
+    nbCluster
+    gap="md"
+    aria-label="Lesson topics"
+    i18n-aria-label="@@lessonTopicsAriaLabel"
+  >
+    @for (topic of lessonTopics; track topic.id) {
+      <span nbChip [tone]="topic.tone">{{ topic.label }}</span>
+    }
   </div>
 </header>
 
 <!-- ROLE TABS -->
 <div
-  role="group"
   class="grid grid-cols-2 gap-2.5"
+  role="group"
   aria-label="Choose a role"
   i18n-aria-label="@@chooseRoleLabel"
 >
@@ -32,9 +43,9 @@
     <button
       nbButton
       fullWidth
+      class="h-auto! min-h-19 flex-col! gap-1!"
       type="button"
       size="md"
-      class="h-auto! min-h-19 flex-col! gap-1!"
       [tone]="role.tone"
       [attr.aria-pressed]="role.selected"
       (click)="selectRole(role.id)"
@@ -68,24 +79,26 @@
 <!-- LESSON NAVIGATION -->
 <nav
   nbCluster
+  class="mt-6 mb-4"
   gap="md"
   align="center"
   justify="between"
-  class="mt-6 mb-4"
   aria-label="Lesson navigation"
+  i18n-aria-label="@@lessonNavigationAriaLabel"
 >
   <a
     nbButton
-    tone="warning"
     size="md"
+    tone="warning"
     radius="md"
+    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/09-form-submission"
     target="_blank"
     rel="noopener noreferrer"
-    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/09-form-submission"
     aria-label="Go to the previous lesson"
+    i18n-aria-label="@@prevLessonAriaLabel"
   >
-    <span nbButtonTrailingIcon shape="circle" class="grid place-items-center">
-      <ng-icon aria-hidden="true" size="20" name="tablerCircleArrowLeftFill" />
+    <span nbButtonTrailingIcon class="grid place-items-center" shape="circle">
+      <ng-icon size="20" name="tablerCircleArrowLeftFill" aria-hidden="true" />
     </span>
 
     <span
@@ -102,13 +115,14 @@
 
   <a
     nbButton
-    tone="success"
     size="md"
+    tone="success"
     radius="md"
+    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps"
     target="_blank"
     rel="noopener noreferrer"
-    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps"
     aria-label="Go to the next lesson"
+    i18n-aria-label="@@nextLessonAriaLabel"
   >
     <span
       nbText
@@ -121,22 +135,22 @@
       Next: Zod Schema Validation
     </span>
 
-    <span nbButtonTrailingIcon shape="circle" class="grid place-items-center">
-      <ng-icon aria-hidden="true" size="20" name="tablerCircleArrowRightFill" />
+    <span nbButtonTrailingIcon class="grid place-items-center" shape="circle">
+      <ng-icon size="20" name="tablerCircleArrowRightFill" aria-hidden="true" />
     </span>
   </a>
 </nav>
 
 <!-- FOOTER -->
-<footer nbCluster gap="sm" align="center" justify="center" class="w-full pt-4">
+<footer nbCluster class="w-full pt-4" gap="sm" align="center" justify="center">
   <ng-icon
-    aria-hidden="true"
     class="text-gray-300"
     size="16"
     name="tablerCopyright"
+    aria-hidden="true"
   />
 
-  <small nbText tone="muted" size="xs" i18n="@@authorLabel">
+  <small nbText size="xs" tone="muted" i18n="@@authorLabel">
     Kristy Mae Almuete
   </small>
 
@@ -144,8 +158,8 @@
 
   <a
     nbText
-    tone="danger"
     size="xs"
+    tone="danger"
     href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/10-dynamic-forms"
     target="_blank"
     rel="noopener noreferrer"
