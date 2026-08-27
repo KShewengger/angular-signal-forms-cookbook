@@ -6,7 +6,7 @@ import {
   ContractEngagement,
   DesignerApplication,
 } from '../app.model';
-import { applicationSchema } from '../app.schema';
+import { applicationSchema, skillDraftSchema } from '../app.schema';
 import { INITIAL_APPLICATION } from '../app.data';
 import { ValidationErrors } from './validation-errors';
 
@@ -171,6 +171,16 @@ describe('ValidationErrors (10 · Dynamic Forms)', () => {
       await fixture.whenStable();
 
       expect(host.textContent).toContain('Enter a valid URL.');
+    });
+
+    it("surfaces the skill draft 'required' message", async () => {
+      const skillField = form(signal(''), skillDraftSchema, {
+        injector: TestBed.inject(Injector),
+      });
+      skillField().markAsTouched();
+      await showErrorsFor(skillField);
+
+      expect(host.textContent).toContain('A skill is required.');
     });
 
     it('surfaces the skill letters-only message', async () => {

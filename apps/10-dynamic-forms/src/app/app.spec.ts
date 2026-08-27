@@ -2,13 +2,13 @@ import { Injector, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { form, type FieldTree } from '@angular/forms/signals';
 import { App } from './app';
-import { INITIAL_APPLICATION } from './app.data';
+import { INITIAL_APPLICATION, SKILL_DRAFT_DEBOUNCE_MS } from './app.data';
 import {
   Application,
   ContractEngagement,
   DesignerApplication,
 } from './app.model';
-import { applicationSchema } from './app.schema';
+import { applicationSchema, skillDraftSchema } from './app.schema';
 import { createApplication } from './app.utils';
 
 const SUBMIT_DELAY_MS = 500;
@@ -200,6 +200,36 @@ describe('App (10 · Dynamic Forms)', () => {
       });
     });
 
+    describe('skill draft (composer form)', () => {
+      const buildSkillDraftForm = (initial = ''): FieldTree<string> => {
+        const model = signal(initial);
+        return form(model, skillDraftSchema, {
+          injector: TestBed.inject(Injector),
+        });
+      };
+
+      it('is required', () => {
+        const skillDraftForm = buildSkillDraftForm();
+        expect(skillDraftForm().valid()).toBe(false);
+        expect(kindsOf(skillDraftForm)).toContain('required');
+        expect(messagesOf(skillDraftForm)).toContain('A skill is required.');
+      });
+
+      it('rejects a skill that is not letters-only', () => {
+        const skillDraftForm = buildSkillDraftForm('C++');
+        expect(skillDraftForm().valid()).toBe(false);
+        expect(kindsOf(skillDraftForm)).toContain('pattern');
+        expect(messagesOf(skillDraftForm)).toContain(
+          'Letters only. No numbers or special characters.',
+        );
+      });
+
+      it('accepts a letters-only skill', () => {
+        const skillDraftForm = buildSkillDraftForm('Signals');
+        expect(skillDraftForm().valid()).toBe(true);
+      });
+    });
+
     describe('form as a whole', () => {
       it('is invalid while empty', () => {
         const applicationForm = buildApplicationForm();
@@ -329,6 +359,7 @@ describe('App (10 · Dynamic Forms)', () => {
       await fixture.whenStable();
 
       expect(host.textContent).toContain('Name is required.');
+      expect(host.textContent).not.toContain('A skill is required.');
       expect(host.textContent).not.toContain("You're in");
     });
 
@@ -344,6 +375,20 @@ describe('App (10 · Dynamic Forms)', () => {
       expect(host.textContent).toContain(
         "Application sent. We'll be in touch.",
       );
+    });
+
+    it('does not flash the skill required error while debounce is in flight', async () => {
+      const input = host.querySelector('#frontend-skill') as HTMLInputElement;
+      input.value = 'Signals';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      await fixture.whenStable();
+
+      expect(host.textContent).not.toContain('A skill is required.');
+
+      await vi.advanceTimersByTimeAsync(SKILL_DRAFT_DEBOUNCE_MS);
+      await fixture.whenStable();
+
+      expect(host.textContent).not.toContain('A skill is required.');
     });
 
     it('clears the success banner when the role tab switches', async () => {

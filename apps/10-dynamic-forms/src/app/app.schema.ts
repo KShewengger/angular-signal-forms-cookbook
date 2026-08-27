@@ -1,6 +1,8 @@
 import {
+  apply,
   applyEach,
   applyWhenValue,
+  debounce,
   max,
   min,
   pattern,
@@ -8,12 +10,24 @@ import {
   schema,
   validate,
 } from '@angular/forms/signals';
-import { SKILL_PATTERN } from './app.data';
+import { SKILL_DRAFT_DEBOUNCE_MS, SKILL_PATTERN } from './app.data';
 import {
   Application,
   ContractEngagement,
   DesignerApplication,
 } from './app.model';
+
+export const skillItemSchema = schema<string>((path) => {
+  pattern(path, SKILL_PATTERN, {
+    message: 'Letters only. No numbers or special characters.',
+  });
+});
+
+export const skillDraftSchema = schema<string>((path) => {
+  required(path, { message: 'A skill is required.' });
+  apply(path, skillItemSchema);
+  debounce(path, SKILL_DRAFT_DEBOUNCE_MS);
+});
 
 export const applicationSchema = schema<Application>((path) => {
   required(path.name, { message: 'Name is required.' });
@@ -24,11 +38,7 @@ export const applicationSchema = schema<Application>((path) => {
   min(path.years, 0, { message: 'Keep years between 0 and 10.' });
   max(path.years, 10, { message: 'Keep years between 0 and 10.' });
 
-  applyEach(path.skills, (skill) => {
-    pattern(skill, SKILL_PATTERN, {
-      message: 'Letters only. No numbers or special characters.',
-    });
-  });
+  applyEach(path.skills, skillItemSchema);
 
   applyWhenValue(
     path.engagement,

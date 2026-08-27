@@ -39,14 +39,15 @@ all projects share a single root `package.json`.
 | API                                   | What it does                                                                       | Where in this recipe                               |
 | ------------------------------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------- |
 | `applyWhenValue(path, guard, fn)`     | Applies rules to a **discriminated-union** variant, with narrowing                 | designer `portfolio`, contract `dayRate`           |
-| `applyEach(path, itemSchema)`         | Applies rules to **every element** of an array field                               | `pattern` on each skill                            |
+| `applyEach(path, itemSchema)`         | Applies rules to **every element** of an array field                               | `skillItemSchema` on each chip                     |
+| `debounce(path, ms)`                  | Delays UI-to-model sync until the user pauses typing                               | skill composer draft                               |
 | `validate(path, fn)`                  | Custom validator returning a `{ kind, message }` error                             | portfolio `invalidUrl`                             |
 | `form(model, schema, { submission })` | Configures the submission `action`, `onInvalid`, and `ignoreValidators`            | `applicationForm`                                  |
 | `[formRoot]`                          | Wires a native `<form>` to submit (sets `novalidate`, prevents default)            | child `<form [formRoot]="form()">`                 |
 | `field().submitting()`                | `true` while the async action runs; drives the spinner and the double-submit guard | the Submit button                                  |
 | `onInvalid` + `focusBoundControl()`   | Runs when client validation blocks the submit; focuses the first invalid field     | submit an empty application                        |
 | `form().reset(value)`                 | Restores the model and interaction state to a pristine snapshot                    | role tab switch                                    |
-| `FormField` / `[formField]`           | Binds a native control to a field                                                  | name, years, portfolio, day rate                   |
+| `FormField` / `[formField]`           | Binds a native control to a field                                                  | name, years, portfolio, day rate, skill draft      |
 | `form(model, schema)`                 | Builds a form from the model signal and the schema                                 | `applicationForm = form(model, applicationSchema)` |
 
 ---
@@ -63,7 +64,8 @@ while their discriminant is active.
 | `years`              | `nbInput` number            | `number \| null`           | `required`, `min(0)`, `max(10)`      |
 | `engagement.kind`    | toggle buttons              | `'fulltime' \| 'contract'` | swapped via `createEngagement`       |
 | `engagement.dayRate` | `nbInput` number (contract) | `number \| null`           | `required` + `min(1)` while contract |
-| `skills[]`           | chips + add input           | `string[]`                 | `applyEach` + letters-only `pattern` |
+| `skills[]`           | chips + composer input      | `string[]`                 | `applyEach` + `skillItemSchema`      |
+| composer `skill`     | add input (sibling form)    | `string`                   | `required` + `pattern` + `debounce`  |
 | `portfolio`          | `nbInput` url (designer)    | `string`                   | `required` + custom URL `validate`   |
 
 ```ts
@@ -89,11 +91,7 @@ export const applicationSchema = schema<Application>((path) => {
   min(path.years, 0, { message: 'Keep years between 0 and 10.' });
   max(path.years, 10, { message: 'Keep years between 0 and 10.' });
 
-  applyEach(path.skills, (skill) => {
-    pattern(skill, SKILL_PATTERN, {
-      message: 'Letters only. No numbers or special characters.',
-    });
-  });
+  applyEach(path.skills, skillItemSchema);
 
   applyWhenValue(
     path.engagement,
@@ -129,6 +127,14 @@ export const applicationSchema = schema<Application>((path) => {
 | `applyWhenValue` | `engagement.kind` | contract adds `dayRate` rules; fulltime drops them                  |
 | `applyWhenValue` | `role`            | designer adds `portfolio` required + URL; frontend has no portfolio |
 | `applyEach`      | `skills` length   | every chip, including ones added later, must be letters-only        |
+
+The add box is **not** on `Application`. `SkillComposer` owns a sibling
+`form(skillDraft, skillDraftSchema)` with `required`, the same `skillItemSchema`, and
+`debounce(300)`. Add is enabled when that draft is `valid()` **and**
+`controlValue() === value()` (debounce has flushed). Errors stay hidden while those two
+differ, otherwise `required` flashes on the still-empty model for 300ms.
+`markAsTouched()` on Add calls `flushSync()` so Enter/click commits the typed value.
+`applyEach` on `skills[]` stays the model invariant.
 
 Switching roles does not patch the model in place. It **resets** to a fresh variant:
 
@@ -180,15 +186,16 @@ Shared **`ValidationErrors`** reads `errorSummary()` and gates on
 `(dirty() || touched()) && invalid()`. The alert list carries `messageId` so
 `aria-describedby` on the input points at the list itself, not the component host.
 
-| Message                                           | Level                    | Shows when                          |
-| ------------------------------------------------- | ------------------------ | ----------------------------------- |
-| "Name is required."                               | field (`required`)       | name empty, touched or dirty        |
-| "Years of experience is required."                | field (`required`)       | years empty                         |
-| "Keep years between 0 and 10."                    | field (`min`/`max`)      | years out of range                  |
-| "Enter a day rate."                               | field (`required`/`min`) | contract, day rate empty or below 1 |
-| "Portfolio URL is required."                      | field (`required`)       | designer, portfolio empty           |
-| "Enter a valid URL."                              | field (`invalidUrl`)     | designer, portfolio not a URL       |
-| "Letters only. No numbers or special characters." | item (`pattern`)         | a skill chip fails `SKILL_PATTERN`  |
+| Message                                           | Level                       | Shows when                          |
+| ------------------------------------------------- | --------------------------- | ----------------------------------- |
+| "Name is required."                               | field (`required`)          | name empty, touched or dirty        |
+| "Years of experience is required."                | field (`required`)          | years empty                         |
+| "Keep years between 0 and 10."                    | field (`min`/`max`)         | years out of range                  |
+| "Enter a day rate."                               | field (`required`/`min`)    | contract, day rate empty or below 1 |
+| "Portfolio URL is required."                      | field (`required`)          | designer, portfolio empty           |
+| "Enter a valid URL."                              | field (`invalidUrl`)        | designer, portfolio not a URL       |
+| "A skill is required."                            | composer (`required`)       | add input empty, touched or dirty   |
+| "Letters only. No numbers or special characters." | composer + chip (`pattern`) | draft or chip fails `SKILL_PATTERN` |
 
 | When visible  | `(dirty \|\| touched) && invalid`                          |
 | ------------- | ---------------------------------------------------------- |
@@ -277,7 +284,8 @@ tests are split by concern:
 - **Isolated schema tests** build the form directly from `applicationSchema`
   (`form(model, applicationSchema, { injector })`) - no component, no DOM - and assert
   every rule: name/years required and range, contract `dayRate`, designer portfolio
-  required + `invalidUrl`, and `applyEach` letters-only skills.
+  required + `invalidUrl`, `applyEach` letters-only skills, and the skill-draft composer
+  (`required` + `pattern`).
 - **Component tests** cover only what the rendered template shows: the frontend card
   renders by default, the designer tab reveals portfolio and resets to pristine, contract
   reveals day rate, an empty submit reports the required error (`onInvalid`), a valid
