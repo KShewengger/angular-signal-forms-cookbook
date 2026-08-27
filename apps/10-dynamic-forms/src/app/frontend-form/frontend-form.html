@@ -95,10 +95,11 @@
               i18n-placeholder="@@fullNamePlaceholder"
               [formField]="form().name"
               [attr.aria-invalid]="nameInvalid()"
+              [style.--nb-border]="nameInvalid() ? 'var(--nb-danger)' : null"
             />
 
             <app-validation-errors
-              id="frontend-name-errors"
+              messageId="frontend-name-errors"
               [field]="form().name"
             />
           </div>
@@ -109,7 +110,9 @@
               Years of experience <span aria-hidden="true">*</span>
             </label>
 
-            <nb-input-group>
+            <nb-input-group
+              [style.--nb-border]="yearsInvalid() ? 'var(--nb-danger)' : null"
+            >
               <input
                 nbInput
                 id="frontend-years"
@@ -132,7 +135,7 @@
             </nb-input-group>
 
             <app-validation-errors
-              id="frontend-years-errors"
+              messageId="frontend-years-errors"
               [field]="form().years"
             />
           </div>
@@ -184,7 +187,11 @@
                 Day rate (USD)
               </label>
 
-              <nb-input-group>
+              <nb-input-group
+                [style.--nb-border]="
+                  dayRateInvalid() ? 'var(--nb-danger)' : null
+                "
+              >
                 <span
                   nbInputPrefix
                   class="min-w-11 px-3 font-mono text-xs font-extrabold"
@@ -207,14 +214,14 @@
               </nb-input-group>
 
               <app-validation-errors
-                id="frontend-day-rate-errors"
+                messageId="frontend-day-rate-errors"
                 [field]="dayRateField"
               />
             </div>
           }
 
           <!-- SKILLS -->
-          <div nbStack class="mt-1" gap="sm" align="stretch">
+          <div nbStack gap="sm" align="stretch">
             <label nbLabel for="frontend-skill" i18n="@@skillsLabel">
               Core skills
             </label>
@@ -284,7 +291,7 @@
         </fieldset>
 
         <!-- SUBMIT -->
-        <div nbStack class="mt-1" gap="md" align="stretch">
+        <div nbStack gap="md" align="stretch">
           <button
             nbButton
             fullWidth

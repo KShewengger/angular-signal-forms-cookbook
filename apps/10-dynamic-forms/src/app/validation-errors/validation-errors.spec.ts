@@ -207,5 +207,14 @@ describe('ValidationErrors (10 · Dynamic Forms)', () => {
       expect(list?.getAttribute('role')).toBe('alert');
       expect(list?.getAttribute('aria-live')).toBe('polite');
     });
+
+    it('puts messageId on the alert list for aria-describedby', async () => {
+      const nameField = buildApplicationForm().name;
+      nameField().markAsTouched();
+      fixture.componentRef.setInput('messageId', 'frontend-name-errors');
+      await showErrorsFor(nameField);
+
+      expect(errorList()?.getAttribute('id')).toBe('frontend-name-errors');
+    });
   });
 });

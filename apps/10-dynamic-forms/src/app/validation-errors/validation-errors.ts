@@ -13,6 +13,8 @@ import { NbText } from '@ng-brutalism/ui';
 export class ValidationErrors {
   readonly field = input.required<Field<unknown>>();
 
+  readonly messageId = input<string>();
+
   protected readonly errors = computed(() => this.field()().errorSummary());
 
   protected readonly hasMultipleErrors = computed(

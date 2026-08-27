@@ -3,12 +3,13 @@
     class="space-y-1 text-sm"
     role="alert"
     aria-live="polite"
+    [id]="messageId()"
     [class.list-disc]="hasMultipleErrors()"
     [class.pl-5]="hasMultipleErrors()"
   >
     @for (error of errors(); track error.kind) {
       <li>
-        <span nbText class="text-red-600!" size="xs">{{ error.message }}</span>
+        <span nbText size="xs" tone="danger">{{ error.message }}</span>
       </li>
     }
   </ul>

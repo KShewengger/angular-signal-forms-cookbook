@@ -95,10 +95,11 @@
               i18n-placeholder="@@fullNamePlaceholder"
               [formField]="form().name"
               [attr.aria-invalid]="nameInvalid()"
+              [style.--nb-border]="nameInvalid() ? 'var(--nb-danger)' : null"
             />
 
             <app-validation-errors
-              id="designer-name-errors"
+              messageId="designer-name-errors"
               [field]="form().name"
             />
           </div>
@@ -109,7 +110,9 @@
               Years of experience <span aria-hidden="true">*</span>
             </label>
 
-            <nb-input-group>
+            <nb-input-group
+              [style.--nb-border]="yearsInvalid() ? 'var(--nb-danger)' : null"
+            >
               <input
                 nbInput
                 id="designer-years"
@@ -132,7 +135,7 @@
             </nb-input-group>
 
             <app-validation-errors
-              id="designer-years-errors"
+              messageId="designer-years-errors"
               [field]="form().years"
             />
           </div>
@@ -154,10 +157,13 @@
               i18n-placeholder="@@portfolioUrlPlaceholder"
               [formField]="portfolioField"
               [attr.aria-invalid]="portfolioInvalid()"
+              [style.--nb-border]="
+                portfolioInvalid() ? 'var(--nb-danger)' : null
+              "
             />
 
             <app-validation-errors
-              id="designer-portfolio-errors"
+              messageId="designer-portfolio-errors"
               [field]="portfolioField"
             />
           </div>
@@ -209,7 +215,11 @@
                 Day rate (USD)
               </label>
 
-              <nb-input-group>
+              <nb-input-group
+                [style.--nb-border]="
+                  dayRateInvalid() ? 'var(--nb-danger)' : null
+                "
+              >
                 <span
                   nbInputPrefix
                   class="min-w-11 px-3 font-mono text-xs font-extrabold"
@@ -232,14 +242,14 @@
               </nb-input-group>
 
               <app-validation-errors
-                id="designer-day-rate-errors"
+                messageId="designer-day-rate-errors"
                 [field]="dayRateField"
               />
             </div>
           }
 
           <!-- SKILLS -->
-          <div nbStack class="mt-1" gap="sm" align="stretch">
+          <div nbStack gap="sm" align="stretch">
             <label nbLabel for="designer-skill" i18n="@@skillsLabel">
               Core skills
             </label>
@@ -309,7 +319,7 @@
         </fieldset>
 
         <!-- SUBMIT -->
-        <div nbStack class="mt-1" gap="md" align="stretch">
+        <div nbStack gap="md" align="stretch">
           <button
             nbButton
             fullWidth

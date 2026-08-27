@@ -43,8 +43,8 @@ Each recipe is a small, runnable example that solves one problem, with a folder-
 | 07  | [Debounced Input](./apps/07-debounce-input)                | Delay model updates until the user pauses typing with `debounce()`, then run a live `rxResource` search               |
 | 08  | [Conditional Validation](./apps/08-conditional-validation) | Rules that switch on based on other field values                                                                      |
 | 09  | [Form Submission](./apps/09-form-submission)               | Submit to a server with `[formRoot]` and a submission `action`, then route the server's errors back onto the fields   |
-| 10  | [Zod schema Validation](./apps/10-zod)                     | Drive validation straight from a Zod schema                                                                           |
-| 11  | [Dynamic Forms](./apps/11-dynamic-forms)                   | Build the model, schema, and fields at runtime from a JSON config                                                     |
+| 10  | [Dynamic Forms](./apps/10-dynamic-forms)                   | Swap the form shape with the role using `applyWhenValue`, then submit with `[formRoot]`                               |
+| 11  | [Zod schema Validation](./apps/11-zod)                     | Drive validation straight from a Zod schema                                                                           |
 
 ---
 
