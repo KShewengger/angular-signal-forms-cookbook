@@ -360,7 +360,7 @@ describe('App (10 · Dynamic Forms)', () => {
 
       expect(host.textContent).toContain('Name is required.');
       expect(host.textContent).not.toContain('A skill is required.');
-      expect(host.textContent).not.toContain("You're in");
+      expect(host.textContent).not.toContain('Application sent');
     });
 
     it('shows the success banner after a valid submit settles', async () => {
@@ -371,7 +371,6 @@ describe('App (10 · Dynamic Forms)', () => {
       submitForm();
       await settleSubmit();
 
-      expect(host.textContent).toContain("You're in");
       expect(host.textContent).toContain(
         "Application sent. We'll be in touch.",
       );
@@ -398,12 +397,34 @@ describe('App (10 · Dynamic Forms)', () => {
 
       submitForm();
       await settleSubmit();
-      expect(host.textContent).toContain("You're in");
+      expect(host.textContent).toContain('Application sent');
 
       roleButton('Designer').click();
       await fixture.whenStable();
 
-      expect(host.textContent).not.toContain("You're in");
+      expect(host.textContent).not.toContain('Application sent');
+    });
+
+    it('resets to a pristine application when Retry is clicked', async () => {
+      appForm().name().value.set(VALID_FRONTEND.name);
+      appForm().years().value.set(VALID_FRONTEND.years);
+      await fixture.whenStable();
+
+      submitForm();
+      await settleSubmit();
+      expect(host.textContent).toContain('Application sent');
+
+      const retryButton = Array.from(host.querySelectorAll('button')).find(
+        (button) => button.textContent?.includes('Retry'),
+      ) as HTMLButtonElement;
+      retryButton.click();
+      await fixture.whenStable();
+
+      expect(host.textContent).not.toContain('Application sent');
+      expect(appForm().name().value()).toBe('');
+      expect(appForm().name().dirty()).toBe(false);
+      expect(appForm().name().touched()).toBe(false);
+      expect(appForm()().value()).toEqual(createApplication('frontend'));
     });
   });
 });

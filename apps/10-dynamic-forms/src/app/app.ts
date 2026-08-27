@@ -99,6 +99,16 @@ export class App {
   protected selectRole(role: RoleId): void {
     if (this.submitting() || this.selectedRole() === role) return;
 
+    this.resetApplication(role);
+  }
+
+  protected retry(): void {
+    if (this.submitting()) return;
+
+    this.resetApplication(this.selectedRole());
+  }
+
+  private resetApplication(role: RoleId): void {
     this.submitted.set(false);
     this.applicationForm().reset(createApplication(role));
   }

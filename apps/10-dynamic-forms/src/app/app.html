@@ -74,6 +74,7 @@
       [form]="applicationForm"
       [submitting]="submitting()"
       [submitted]="submitted()"
+      (retry)="retry()"
     />
   }
   @case ('designer') {
@@ -81,6 +82,7 @@
       [form]="applicationForm"
       [submitting]="submitting()"
       [submitted]="submitted()"
+      (retry)="retry()"
     />
   }
 }

@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { FieldTree, FormField, FormRoot } from '@angular/forms/signals';
 import {
   NbButton,
@@ -7,8 +7,6 @@ import {
   NbCardDescription,
   NbCardHeader,
   NbCardTitle,
-  NbChip,
-  NbCluster,
   NbHalftone,
   NbInput,
   NbInputGroup,
@@ -17,7 +15,6 @@ import {
   NbLabel,
   NbStack,
   NbSticker,
-  NbSurface,
   NbText,
   type NbToneToken,
 } from '@ng-brutalism/ui';
@@ -30,6 +27,7 @@ import {
 } from '../app.model';
 import { createEngagement } from '../app.utils';
 import { SkillComposer } from '../skill-composer/skill-composer';
+import { SubmittedBanner } from '../submitted-banner/submitted-banner';
 import { ValidationErrors } from '../validation-errors';
 
 @Component({
@@ -44,8 +42,6 @@ import { ValidationErrors } from '../validation-errors';
     NbCardTitle,
     NbCardDescription,
     NbCardContent,
-    NbChip,
-    NbCluster,
     NbHalftone,
     NbInput,
     NbInputGroup,
@@ -54,9 +50,9 @@ import { ValidationErrors } from '../validation-errors';
     NbLabel,
     NbStack,
     NbSticker,
-    NbSurface,
     NbText,
     SkillComposer,
+    SubmittedBanner,
     ValidationErrors,
   ],
   host: {
@@ -67,6 +63,7 @@ export class FrontendForm {
   readonly form = input.required<FieldTree<Application>>();
   readonly submitting = input(false);
   readonly submitted = input(false);
+  readonly retry = output();
 
   protected readonly engagements = ENGAGEMENTS;
 

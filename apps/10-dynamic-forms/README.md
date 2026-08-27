@@ -174,7 +174,8 @@ protected readonly applicationForm = form(
 
 | Return / state       | Effect                                                   |
 | -------------------- | -------------------------------------------------------- |
-| action resolves true | `submitted` flips; "You're in" banner                    |
+| action resolves true | `submitted` flips; success banner with Retry             |
+| Retry                | `submitted` clears; `reset(createApplication(role))`     |
 | `submitting()` true  | spinner, fieldset disabled, role tabs disabled           |
 | client invalid       | `onInvalid` focuses the first error; action does not run |
 
@@ -207,29 +208,29 @@ Shared **`ValidationErrors`** reads `errorSummary()` and gates on
 
 ## Form state
 
-| State      | Signal                           | True when                                        |
-| ---------- | -------------------------------- | ------------------------------------------------ |
-| Submitting | `applicationForm().submitting()` | the mock send is in flight                       |
-| Submitted  | `submitted()`                    | the action resolved true; cleared on role switch |
-| Invalid    | `field().invalid()`              | a currently-active rule fails                    |
-| Touched    | `field().touched()`              | focused and left, or submit ran                  |
-| Dirty      | `field().dirty()`                | value differs from the last reset snapshot       |
-| Valid      | `applicationForm().valid()`      | every active rule passes                         |
+| State      | Signal                           | True when                                                 |
+| ---------- | -------------------------------- | --------------------------------------------------------- |
+| Submitting | `applicationForm().submitting()` | the mock send is in flight                                |
+| Submitted  | `submitted()`                    | the action resolved true; cleared on role switch or Retry |
+| Invalid    | `field().invalid()`              | a currently-active rule fails                             |
+| Touched    | `field().touched()`              | focused and left, or submit ran                           |
+| Dirty      | `field().dirty()`                | value differs from the last reset snapshot                |
+| Valid      | `applicationForm().valid()`      | every active rule passes                                  |
 
 ---
 
 ## Tech & tools
 
-| Layer     | Tool                                                                          | Purpose                                                     |
-| --------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| Framework | **Angular 22** (standalone, signals, new control flow `@if`/`@for`/`@switch`) | Application shell, child form components, reactivity        |
-| Forms     | **`@angular/forms/signals`**                                                  | `applyWhenValue`, `applyEach`, `[formRoot]`, `submitting()` |
-| UI kit    | **ng-brutalism** (`@ng-brutalism/ui`)                                         | `nb-card`, `nbButton`, `nbInput`, `nbChip`, …               |
-| Icons     | **`@ng-icons/tabler-icons`**                                                  | Skill remove, lesson-nav arrows, footer copyright           |
-| Styling   | **Tailwind CSS v4** (with the ng-brutalism theme)                             | Utility classes plus invalid `--nb-border` tokens           |
-| i18n      | **`@angular/localize`**                                                       | Translatable user-facing strings                            |
-| Tooling   | **Nx 23** + **esbuild**                                                       | Build, serve, and dependency graph                          |
-| Tests     | **Vitest 4**                                                                  | Isolated schema + component + `ValidationErrors` tests      |
+| Layer     | Tool                                                                          | Purpose                                                          |
+| --------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Framework | **Angular 22** (standalone, signals, new control flow `@if`/`@for`/`@switch`) | Application shell, child form components, reactivity             |
+| Forms     | **`@angular/forms/signals`**                                                  | `applyWhenValue`, `applyEach`, `[formRoot]`, `submitting()`      |
+| UI kit    | **ng-brutalism** (`@ng-brutalism/ui`)                                         | `nb-card`, `nbButton`, `nbInput`, `nbChip`, …                    |
+| Icons     | **`@ng-icons/tabler-icons`**                                                  | Skill remove, Retry refresh, lesson-nav arrows, footer copyright |
+| Styling   | **Tailwind CSS v4** (with the ng-brutalism theme)                             | Utility classes plus invalid `--nb-border` tokens                |
+| i18n      | **`@angular/localize`**                                                       | Translatable user-facing strings                                 |
+| Tooling   | **Nx 23** + **esbuild**                                                       | Build, serve, and dependency graph                               |
+| Tests     | **Vitest 4**                                                                  | Isolated schema + component + `ValidationErrors` tests           |
 
 ---
 

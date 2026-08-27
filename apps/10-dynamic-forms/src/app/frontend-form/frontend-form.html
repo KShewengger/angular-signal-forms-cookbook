@@ -253,40 +253,7 @@
           </button>
 
           @if (submitted()) {
-            <div
-              nbSurface
-              nbCluster
-              class="w-full"
-              tone="accent"
-              radius="full"
-              border="thick"
-              shadow="sm"
-              padding="sm"
-              gap="md"
-              align="center"
-              wrap="nowrap"
-              role="status"
-              aria-live="polite"
-            >
-              <span
-                nbChip
-                class="uppercase tracking-wide"
-                tone="white"
-                radius="full"
-                i18n="@@youreInBadge"
-              >
-                You're in
-              </span>
-
-              <span
-                nbText
-                size="sm"
-                weight="bold"
-                i18n="@@applicationSentMessage"
-              >
-                Application sent. We'll be in touch.
-              </span>
-            </div>
+            <app-submitted-banner (retry)="retry.emit()" />
           }
         </div>
       </form>
