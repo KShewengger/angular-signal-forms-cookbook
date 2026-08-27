@@ -59,13 +59,16 @@ export class App {
     ...INITIAL_APPLICATION,
   });
 
+  protected readonly submitted = signal(false);
+
   protected readonly applicationForm = form(
     this.applicationModel,
     applicationSchema,
     {
       submission: {
         action: async () => {
-          await Promise.resolve();
+          const sent = await this.sendApplication();
+          this.submitted.set(sent);
         },
         onInvalid: (field) =>
           field().errorSummary()[0]?.fieldTree().focusBoundControl(),
@@ -90,10 +93,14 @@ export class App {
   });
 
   protected selectRole(role: RoleId): void {
-    if (this.applicationModel().role === role) return;
+    if (this.submitting() || this.applicationModel().role === role) return;
 
     this.applicationModel.update((from) =>
       switchApplicationRole(from, role, skillsForRole(role)),
     );
+  }
+
+  private sendApplication(): Promise<boolean> {
+    return new Promise((resolve) => setTimeout(() => resolve(true), 500));
   }
 }

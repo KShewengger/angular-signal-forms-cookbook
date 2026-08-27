@@ -67,8 +67,14 @@
 
     <!-- CONTENT -->
     <nb-card-content class="p-4.5">
-      <form nbStack novalidate gap="none" [formRoot]="form()">
-        <fieldset nbStack gap="xl">
+      <form
+        nbStack
+        novalidate
+        gap="xl"
+        [formRoot]="form()"
+        [attr.aria-busy]="submitting()"
+      >
+        <fieldset nbStack gap="xl" [disabled]="submitting()">
           <legend class="sr-only" i18n="@@frontendApplicationFieldsLabel">
             Frontend application fields
           </legend>
@@ -275,24 +281,66 @@
               </div>
             </div>
           </div>
+        </fieldset>
 
-          <!-- SUBMIT -->
+        <!-- SUBMIT -->
+        <div nbStack class="mt-1" gap="md" align="stretch">
           <button
             nbButton
             fullWidth
-            class="mt-1"
             type="submit"
             size="lg"
             tone="yellow"
-            i18n="@@submitApplication"
             [disabled]="!canSubmit()"
           >
-            {submitting(), select,
-              true {Submitting…}
-              false {Submit application}
+            @if (submitting()) {
+              <span
+                class="size-4 shrink-0 rounded-full border-3 border-black/25 border-t-black motion-safe:animate-spin"
+                aria-hidden="true"
+              ></span>
+              <span i18n="@@submittingApplication">Submitting…</span>
+            } @else {
+              <span i18n="@@submitApplication">Submit application</span>
             }
           </button>
-        </fieldset>
+
+          @if (submitted()) {
+            <div
+              nbSurface
+              nbCluster
+              class="w-full"
+              tone="accent"
+              radius="full"
+              border="thick"
+              shadow="sm"
+              padding="sm"
+              gap="md"
+              align="center"
+              wrap="nowrap"
+              role="status"
+              aria-live="polite"
+            >
+              <span
+                nbChip
+                class="uppercase tracking-wide"
+                tone="white"
+                radius="full"
+                i18n="@@youreInBadge"
+              >
+                You're in
+              </span>
+
+              <span
+                nbText
+                size="sm"
+                weight="bold"
+                i18n="@@applicationSentMessage"
+              >
+                Application sent. We'll be in touch.
+              </span>
+            </div>
+          }
+        </div>
       </form>
     </nb-card-content>
   </nb-card>

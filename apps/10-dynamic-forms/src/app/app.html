@@ -47,6 +47,7 @@
       type="button"
       size="md"
       [tone]="role.tone"
+      [disabled]="submitting()"
       [attr.aria-pressed]="role.selected"
       (click)="selectRole(role.id)"
     >
@@ -69,10 +70,18 @@
 <!-- FORM -->
 @switch (selectedRole()) {
   @case ('frontend') {
-    <app-frontend-form [form]="applicationForm" [submitting]="submitting()" />
+    <app-frontend-form
+      [form]="applicationForm"
+      [submitting]="submitting()"
+      [submitted]="submitted()"
+    />
   }
   @case ('designer') {
-    <app-designer-form [form]="applicationForm" [submitting]="submitting()" />
+    <app-designer-form
+      [form]="applicationForm"
+      [submitting]="submitting()"
+      [submitted]="submitted()"
+    />
   }
 }
 

@@ -71,6 +71,7 @@ import { ValidationErrors } from '../validation-errors';
 export class FrontendForm {
   readonly form = input.required<FieldTree<Application>>();
   readonly submitting = input(false);
+  readonly submitted = input(false);
 
   protected readonly engagements = ENGAGEMENTS;
 
