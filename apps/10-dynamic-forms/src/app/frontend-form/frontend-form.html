@@ -81,6 +81,8 @@
 
           <!-- NAME -->
           <div nbStack gap="sm" align="stretch">
+            @let nameInvalid = form().name | isFieldInvalid;
+
             <label nbLabel for="frontend-name" i18n="@@fullNameLabel">
               Full name <span aria-hidden="true">*</span>
             </label>
@@ -94,8 +96,8 @@
               aria-describedby="frontend-name-errors"
               i18n-placeholder="@@fullNamePlaceholder"
               [formField]="form().name"
-              [attr.aria-invalid]="nameInvalid()"
-              [style.--nb-border]="nameInvalid() ? 'var(--nb-danger)' : null"
+              [attr.aria-invalid]="nameInvalid"
+              [style.--nb-border]="nameInvalid ? 'var(--nb-danger)' : null"
             />
 
             <app-validation-errors
@@ -106,12 +108,14 @@
 
           <!-- YEARS -->
           <div nbStack gap="sm" align="stretch">
+            @let yearsInvalid = form().years | isFieldInvalid;
+
             <label nbLabel for="frontend-years" i18n="@@yearsLabel">
               Years of experience <span aria-hidden="true">*</span>
             </label>
 
             <nb-input-group
-              [style.--nb-border]="yearsInvalid() ? 'var(--nb-danger)' : null"
+              [style.--nb-border]="yearsInvalid ? 'var(--nb-danger)' : null"
             >
               <input
                 nbInput
@@ -123,7 +127,7 @@
                 aria-describedby="frontend-years-errors"
                 i18n-placeholder="@@yearsPlaceholder"
                 [formField]="form().years"
-                [attr.aria-invalid]="yearsInvalid()"
+                [attr.aria-invalid]="yearsInvalid"
               />
               <span
                 nbInputSuffix
@@ -183,14 +187,14 @@
           <!-- DAY RATE -->
           @if (isContract()) {
             <div nbStack gap="sm" align="stretch">
+              @let dayRateInvalid = dayRateField | isFieldInvalid;
+
               <label nbLabel for="frontend-day-rate" i18n="@@dayRateLabel">
                 Day rate (USD)
               </label>
 
               <nb-input-group
-                [style.--nb-border]="
-                  dayRateInvalid() ? 'var(--nb-danger)' : null
-                "
+                [style.--nb-border]="dayRateInvalid ? 'var(--nb-danger)' : null"
               >
                 <span
                   nbInputPrefix
@@ -209,7 +213,7 @@
                   aria-describedby="frontend-day-rate-errors"
                   i18n-placeholder="@@dayRatePlaceholder"
                   [formField]="dayRateField"
-                  [attr.aria-invalid]="dayRateInvalid()"
+                  [attr.aria-invalid]="dayRateInvalid"
                 />
               </nb-input-group>
 

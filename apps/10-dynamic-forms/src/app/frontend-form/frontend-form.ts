@@ -26,6 +26,7 @@ import {
   EngagementKind,
 } from '../app.model';
 import { createEngagement } from '../app.utils';
+import { IsFieldInvalidPipe } from '../is-field-invalid';
 import { SkillComposer } from '../skill-composer/skill-composer';
 import { SubmittedBanner } from '../submitted-banner/submitted-banner';
 import { ValidationErrors } from '../validation-errors';
@@ -51,6 +52,7 @@ import { ValidationErrors } from '../validation-errors';
     NbStack,
     NbSticker,
     NbText,
+    IsFieldInvalidPipe,
     SkillComposer,
     SubmittedBanner,
     ValidationErrors,
@@ -69,16 +71,6 @@ export class FrontendForm {
 
   protected readonly skillPlaceholder = ROLES_BY_ID.frontend.placeholder;
 
-  protected readonly nameInvalid = computed(() => {
-    const field = this.form().name();
-    return (field.dirty() || field.touched()) && field.invalid();
-  });
-
-  protected readonly yearsInvalid = computed(() => {
-    const field = this.form().years();
-    return (field.dirty() || field.touched()) && field.invalid();
-  });
-
   protected readonly selectedEngagement = computed(
     () => this.form().engagement().value().kind,
   );
@@ -86,13 +78,6 @@ export class FrontendForm {
   protected readonly isContract = computed(
     () => this.selectedEngagement() === 'contract',
   );
-
-  protected readonly dayRateInvalid = computed(() => {
-    if (!this.isContract()) return false;
-
-    const field = this.dayRateField();
-    return (field.dirty() || field.touched()) && field.invalid();
-  });
 
   protected readonly engagementTabs = computed(() => {
     const selected = this.selectedEngagement();

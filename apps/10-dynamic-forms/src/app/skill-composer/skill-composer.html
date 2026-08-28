@@ -38,6 +38,8 @@
     </div>
 
     <div class="flex items-center gap-2">
+      @let skillInvalid = draftSettled() && (skillForm | isFieldInvalid);
+
       <input
         nbInput
         class="h-11! min-w-0 flex-1"
@@ -47,8 +49,8 @@
         [placeholder]="placeholder()"
         [formField]="skillForm"
         [attr.aria-describedby]="draftErrorsId()"
-        [attr.aria-invalid]="skillInvalid()"
-        [style.--nb-border]="skillInvalid() ? 'var(--nb-danger)' : null"
+        [attr.aria-invalid]="skillInvalid"
+        [style.--nb-border]="skillInvalid ? 'var(--nb-danger)' : null"
         (keydown.enter)="addSkillFromEnter($event)"
       />
 

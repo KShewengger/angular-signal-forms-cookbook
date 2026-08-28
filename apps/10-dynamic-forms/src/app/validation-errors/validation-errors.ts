@@ -1,11 +1,12 @@
 import { Component, computed, input } from '@angular/core';
 import { type Field } from '@angular/forms/signals';
 import { NbText } from '@ng-brutalism/ui';
+import { IsFieldInvalidPipe } from '../is-field-invalid';
 
 @Component({
   selector: 'app-validation-errors',
   templateUrl: 'validation-errors.html',
-  imports: [NbText],
+  imports: [NbText, IsFieldInvalidPipe],
   host: {
     class: 'contents',
   },
@@ -20,9 +21,4 @@ export class ValidationErrors {
   protected readonly hasMultipleErrors = computed(
     () => this.errors().length > 1,
   );
-
-  protected readonly visible = computed(() => {
-    const fieldRef = this.field();
-    return (fieldRef().dirty() || fieldRef().touched()) && fieldRef().invalid();
-  });
 }

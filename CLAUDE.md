@@ -219,9 +219,13 @@ Recipes use Angular's **signal forms** API (`@angular/forms/signals`), not the l
   rules, and `validateTree` for subtrees. Async/debounced checks expose
   **pending** state. Use `schema()` only when the same `Schema` object is applied
   to more than one path or form (`apply`, `applyEach`, a second `form()`). A
-  single-use wrap is noise; a schema function is enough. Non-trivial SchemaFns live
-  in `app.schema.ts` so isolated tests can import them. A 1-5 line one is inlined
-  into `form(model, (path) => { ... })` in the component (01, 09, skill composer).
+  single-use wrap on the _outer_ `form()` is noise; a schema function is enough.
+  `applyEach` of a **named** item helper counts as reuse (05/06
+  `pizzaToppingItemSchema`, 10 `skillItemSchema`) even if there is only one
+  `applyEach` call. A one-line `applyEach` callback stays inline (08 tickets).
+  Non-trivial SchemaFns live in `app.schema.ts` so isolated tests can import them.
+  A 1-5 line one is inlined into `form(model, (path) => { ... })` in the
+  component (01, 09, skill composer); isolated tests repeat that callback.
 - **Fields are functions:** call a field to get its state, then read its signals, e.g.
   `userForm().valid()`, `userForm.name().touched()`, `userForm().value()`. Drive the UI
   from those (`.value()`, `.errors()`, `.touched()`, `.dirty()`, `.valid()`,
