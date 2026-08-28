@@ -359,7 +359,7 @@ describe('App (10 · Dynamic Forms)', () => {
       await fixture.whenStable();
 
       expect(host.textContent).toContain('Name is required.');
-      expect(host.textContent).not.toContain('A skill is required.');
+      expect(host.textContent).not.toContain('Skill already exists');
       expect(host.textContent).not.toContain('Application sent');
     });
 
@@ -376,19 +376,22 @@ describe('App (10 · Dynamic Forms)', () => {
       );
     });
 
-    it('does not flash the skill required error while debounce is in flight', async () => {
+    it('does not flash skill draft errors while debounce is in flight', async () => {
       const input = host.querySelector('#frontend-skill') as HTMLInputElement;
 
       input.value = 'Signals';
       input.dispatchEvent(new Event('input', { bubbles: true }));
       await fixture.whenStable();
 
-      expect(host.textContent).not.toContain('A skill is required.');
+      expect(host.textContent).not.toContain('Skill already exists');
+      expect(host.textContent).not.toContain(
+        'Letters only. No numbers or special characters.',
+      );
 
       await vi.advanceTimersByTimeAsync(500);
       await fixture.whenStable();
 
-      expect(host.textContent).not.toContain('A skill is required.');
+      expect(host.textContent).not.toContain('Skill already exists');
     });
 
     it('clears the success banner when the role tab switches', async () => {

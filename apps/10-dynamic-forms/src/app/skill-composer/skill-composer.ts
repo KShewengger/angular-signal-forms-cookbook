@@ -5,7 +5,7 @@ import {
   FieldTree,
   FormField,
   form,
-  required,
+  validate,
 } from '@angular/forms/signals';
 import {
   NbButton,
@@ -54,9 +54,20 @@ export class SkillComposer {
   private readonly skillDraft = signal('');
 
   protected readonly skillForm = form(this.skillDraft, (path) => {
-    required(path, { message: 'A skill is required.' });
     apply(path, skillItemSchema);
-    debounce(path, 500);
+    validate(path, ({ value }) => {
+      const skill = value().trim();
+      if (!skill) return null;
+
+      const exists = this.skills()()
+        .value()
+        .some((existing) => existing.toLowerCase() === skill.toLowerCase());
+
+      return exists
+        ? { kind: 'duplicateSkill', message: 'Skill already exists' }
+        : null;
+    });
+    debounce(path, 300);
   });
 
   protected readonly draftSettled = computed(() => {
@@ -75,8 +86,9 @@ export class SkillComposer {
 
   protected readonly canAddSkill = computed(() => {
     const field = this.skillForm();
+    const trimmed = field.value().trim();
 
-    return this.draftSettled() && field.valid();
+    return this.draftSettled() && field.valid() && trimmed.length > 0;
   });
 
   protected readonly skillChips = computed(() => {
@@ -96,14 +108,6 @@ export class SkillComposer {
 
     const skill = this.skillForm().value().trim();
     const skillsField = this.skills();
-    const skills = skillsField().value();
-
-    if (
-      skills.some((existing) => existing.toLowerCase() === skill.toLowerCase())
-    ) {
-      this.skillForm().reset('');
-      return;
-    }
 
     skillsField().value.update((current) => [...current, skill]);
     this.skillForm().reset('');

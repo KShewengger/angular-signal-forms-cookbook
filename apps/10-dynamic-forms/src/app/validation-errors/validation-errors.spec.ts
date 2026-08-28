@@ -5,6 +5,7 @@ import {
   debounce,
   form,
   required,
+  validate,
   type FieldTree,
 } from '@angular/forms/signals';
 import {
@@ -191,12 +192,21 @@ describe('ValidationErrors (10 · Dynamic Forms)', () => {
       expect(host.textContent).toContain('Enter a valid URL.');
     });
 
-    it("surfaces the skill draft 'required' message", async () => {
+    it("surfaces the skill draft 'duplicateSkill' message", async () => {
       const skillField = form(
-        signal(''),
+        signal('Angular'),
         (path) => {
-          required(path, { message: 'A skill is required.' });
           apply(path, skillItemSchema);
+          validate(path, ({ value }) => {
+            const skill = value().trim();
+            if (!skill) return null;
+
+            return ['Angular', 'TypeScript'].some(
+              (existing) => existing.toLowerCase() === skill.toLowerCase(),
+            )
+              ? { kind: 'duplicateSkill', message: 'Skill already exists' }
+              : null;
+          });
           debounce(path, 500);
         },
         {
@@ -207,7 +217,7 @@ describe('ValidationErrors (10 · Dynamic Forms)', () => {
       skillField().markAsTouched();
       await showErrorsFor(skillField);
 
-      expect(host.textContent).toContain('A skill is required.');
+      expect(host.textContent).toContain('Skill already exists');
     });
 
     it('surfaces the skill letters-only message', async () => {

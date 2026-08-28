@@ -57,16 +57,16 @@ all projects share a single root `package.json`.
 One `Application` union, two UIs. Shared fields always validate; variant fields only exist
 while their discriminant is active.
 
-| Field                | Control                     | Type                       | Validation                           |
-| -------------------- | --------------------------- | -------------------------- | ------------------------------------ |
-| `role`               | role tab buttons            | `'frontend' \| 'designer'` | discriminant; not a typed input      |
-| `name`               | `nbInput`                   | `string`                   | `required`                           |
-| `years`              | `nbInput` number            | `number \| null`           | `required`, `min(0)`, `max(10)`      |
-| `engagement.kind`    | toggle buttons              | `'fulltime' \| 'contract'` | swapped via `createEngagement`       |
-| `engagement.dayRate` | `nbInput` number (contract) | `number \| null`           | `required` + `min(1)` while contract |
-| `skills[]`           | chips + composer input      | `string[]`                 | `applyEach` + `skillItemSchema`      |
-| composer `skill`     | add input (sibling form)    | `string`                   | `required` + `pattern` + `debounce`  |
-| `portfolio`          | `nbInput` url (designer)    | `string`                   | `required` + http(s) URL `pattern`   |
+| Field                | Control                     | Type                       | Validation                                    |
+| -------------------- | --------------------------- | -------------------------- | --------------------------------------------- |
+| `role`               | role tab buttons            | `'frontend' \| 'designer'` | discriminant; not a typed input               |
+| `name`               | `nbInput`                   | `string`                   | `required`                                    |
+| `years`              | `nbInput` number            | `number \| null`           | `required`, `min(0)`, `max(10)`               |
+| `engagement.kind`    | toggle buttons              | `'fulltime' \| 'contract'` | swapped via `createEngagement`                |
+| `engagement.dayRate` | `nbInput` number (contract) | `number \| null`           | `required` + `min(1)` while contract          |
+| `skills[]`           | chips + composer input      | `string[]`                 | `applyEach` + `skillItemSchema`               |
+| composer `skill`     | add input (sibling form)    | `string`                   | `pattern` + duplicate `validate` + `debounce` |
+| `portfolio`          | `nbInput` url (designer)    | `string`                   | `required` + http(s) URL `pattern`            |
 
 ```ts
 export type Application = FrontendApplication | DesignerApplication;
@@ -128,12 +128,12 @@ export function applicationSchema(path: SchemaPathTree<Application>): void {
 | `applyEach`      | `skills` length   | every chip, including ones added later, must be letters-only        |
 
 The add box is **not** on `Application`. `SkillComposer` owns a sibling
-`form(skillDraft, (path) => { ... })` with `required`, `apply(path, skillItemSchema)`,
-and `debounce(500)`. `skillItemSchema` is the one `schema()` in this recipe, reused on
-the chips via `applyEach` and on the draft via `apply`. Add is enabled when that draft is
-`valid()` **and** `controlValue() === value()` (debounce has flushed). Errors stay hidden
-while those two differ, otherwise `required` flashes on the still-empty model for 500ms.
-`markAsTouched()` on Add calls `flushSync()` so Enter/click commits the typed value.
+`form(skillDraft, (path) => { ... })` with `apply(path, skillItemSchema)`, a
+`validate` that rejects chips already on the list (`Skill already exists`), and
+`debounce(500)`. Empty drafts are valid; Add stays disabled until
+`value().trim()` is non-empty, the field is `valid()`, and
+`controlValue() === value()` (debounce flushed). Errors stay hidden while those
+two differ so mid-flight typing does not flash pattern/duplicate messages.
 `applyEach` on `skills[]` stays the model invariant.
 
 Switching roles does not patch the model in place. It **resets** to a fresh variant:
@@ -187,16 +187,16 @@ Shared **`ValidationErrors`** reads `errorSummary()` and gates on
 `(dirty() || touched()) && invalid()`. The alert list carries `messageId` so
 `aria-describedby` on the input points at the list itself, not the component host.
 
-| Message                                           | Level                       | Shows when                              |
-| ------------------------------------------------- | --------------------------- | --------------------------------------- |
-| "Name is required."                               | field (`required`)          | name empty, touched or dirty            |
-| "Years of experience is required."                | field (`required`)          | years empty                             |
-| "Keep years between 0 and 10."                    | field (`min`/`max`)         | years out of range                      |
-| "Enter a day rate."                               | field (`required`/`min`)    | contract, day rate empty or below 1     |
-| "Portfolio URL is required."                      | field (`required`)          | designer, portfolio empty               |
-| "Enter a valid URL."                              | field (`pattern`)           | designer, portfolio fails the URL regex |
-| "A skill is required."                            | composer (`required`)       | add input empty, touched or dirty       |
-| "Letters only. No numbers or special characters." | composer + chip (`pattern`) | a skill fails letters-only              |
+| Message                                           | Level                       | Shows when                                        |
+| ------------------------------------------------- | --------------------------- | ------------------------------------------------- |
+| "Name is required."                               | field (`required`)          | name empty, touched or dirty                      |
+| "Years of experience is required."                | field (`required`)          | years empty                                       |
+| "Keep years between 0 and 10."                    | field (`min`/`max`)         | years out of range                                |
+| "Enter a day rate."                               | field (`required`/`min`)    | contract, day rate empty or below 1               |
+| "Portfolio URL is required."                      | field (`required`)          | designer, portfolio empty                         |
+| "Enter a valid URL."                              | field (`pattern`)           | designer, portfolio fails the URL regex           |
+| "Skill already exists"                            | composer (`validate`)       | draft matches an existing chip (case-insensitive) |
+| "Letters only. No numbers or special characters." | composer + chip (`pattern`) | a skill fails letters-only                        |
 
 | When visible  | `(dirty \|\| touched) && invalid`                          |
 | ------------- | ---------------------------------------------------------- |
@@ -286,7 +286,7 @@ tests are split by concern:
   (`form(model, applicationSchema, { injector })`) - no component, no DOM - and assert
   every rule: name/years required and range, contract `dayRate`, designer portfolio
   required + URL `pattern`, `applyEach` letters-only skills, and the skill-draft composer
-  (`required` + `pattern`).
+  (`pattern` + duplicate `validate`, empty allowed).
 - **Component tests** cover only what the rendered template shows: the frontend card
   renders by default, the designer tab reveals portfolio and resets to pristine, contract
   reveals day rate, an empty submit reports the required error (`onInvalid`), a valid

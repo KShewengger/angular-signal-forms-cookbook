@@ -1,12 +1,6 @@
 import { Injector, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  apply,
-  debounce,
-  form,
-  required,
-  type FieldTree,
-} from '@angular/forms/signals';
+import { apply, debounce, form, type FieldTree } from '@angular/forms/signals';
 import { INITIAL_APPLICATION } from '../app.data';
 import { Application } from '../app.model';
 import { applicationSchema, skillItemSchema } from '../app.schema';
@@ -32,9 +26,8 @@ const buildSkillDraftForm = (initial = ''): FieldTree<string> => {
   return form(
     model,
     (path) => {
-      required(path, { message: 'A skill is required.' });
       apply(path, skillItemSchema);
-      debounce(path, 500);
+      debounce(path, 300);
     },
     {
       injector: TestBed.inject(Injector),
@@ -56,12 +49,10 @@ describe('SkillComposer (10 · Dynamic Forms)', () => {
   describe('draft form (isolated)', () => {
     beforeEach(() => TestBed.configureTestingModule({}));
 
-    it('is required', () => {
+    it('accepts an empty draft (not required)', () => {
       const skillDraftForm = buildSkillDraftForm();
 
-      expect(skillDraftForm().valid()).toBe(false);
-      expect(kindsOf(skillDraftForm)).toContain('required');
-      expect(messagesOf(skillDraftForm)).toContain('A skill is required.');
+      expect(skillDraftForm().valid()).toBe(true);
     });
 
     it('rejects a skill that is not letters-only', () => {
@@ -102,7 +93,7 @@ describe('SkillComposer (10 · Dynamic Forms)', () => {
     };
 
     const settleDebounce = async (): Promise<void> => {
-      await vi.advanceTimersByTimeAsync(500);
+      await vi.advanceTimersByTimeAsync(300);
       await fixture.whenStable();
     };
 
@@ -133,6 +124,17 @@ describe('SkillComposer (10 · Dynamic Forms)', () => {
       expect(host.textContent).toContain('TypeScript');
     });
 
+    it('keeps Add disabled while the draft is empty', () => {
+      expect(addButton().disabled).toBe(true);
+    });
+
+    it('keeps Add disabled for whitespace-only draft after debounce settles', async () => {
+      await typeSkill('   ');
+      await settleDebounce();
+
+      expect(addButton().disabled).toBe(true);
+    });
+
     it('keeps Add disabled for an invalid draft after debounce settles', async () => {
       await typeSkill('C++');
       await settleDebounce();
@@ -143,6 +145,8 @@ describe('SkillComposer (10 · Dynamic Forms)', () => {
     it('adds a valid skill to the model and clears the draft', async () => {
       await typeSkill('Signals');
       await settleDebounce();
+
+      expect(addButton().disabled).toBe(false);
 
       addButton().click();
       await fixture.whenStable();
@@ -156,15 +160,13 @@ describe('SkillComposer (10 · Dynamic Forms)', () => {
       expect(host.textContent).toContain('Signals');
     });
 
-    it('ignores a duplicate skill (case-insensitive) and clears the draft', async () => {
+    it('flags a duplicate skill and keeps Add disabled', async () => {
       await typeSkill('angular');
       await settleDebounce();
 
-      addButton().click();
-      await fixture.whenStable();
-
+      expect(addButton().disabled).toBe(true);
+      expect(host.textContent).toContain('Skill already exists');
       expect(skillsField().value()).toEqual(['Angular', 'TypeScript']);
-      expect(skillInput().value).toBe('');
     });
 
     it('removes a skill when its chip remove control is clicked', async () => {
@@ -191,14 +193,17 @@ describe('SkillComposer (10 · Dynamic Forms)', () => {
       expect(skillsField().value()).toEqual(['Angular', 'TypeScript', 'RxJS']);
     });
 
-    it('does not flash the skill required error while debounce is in flight', async () => {
+    it('does not flash skill errors while debounce is in flight', async () => {
       await typeSkill('Signals');
 
-      expect(host.textContent).not.toContain('A skill is required.');
+      expect(host.textContent).not.toContain('Skill already exists');
+      expect(host.textContent).not.toContain(
+        'Letters only. No numbers or special characters.',
+      );
 
       await settleDebounce();
 
-      expect(host.textContent).not.toContain('A skill is required.');
+      expect(host.textContent).not.toContain('Skill already exists');
     });
   });
 });
