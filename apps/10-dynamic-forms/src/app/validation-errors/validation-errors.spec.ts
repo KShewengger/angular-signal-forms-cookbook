@@ -4,7 +4,6 @@ import {
   apply,
   debounce,
   form,
-  required,
   validate,
   type FieldTree,
 } from '@angular/forms/signals';
@@ -207,7 +206,7 @@ describe('ValidationErrors (10 · Dynamic Forms)', () => {
               ? { kind: 'duplicateSkill', message: 'Skill already exists' }
               : null;
           });
-          debounce(path, 500);
+          debounce(path, 300);
         },
         {
           injector: TestBed.inject(Injector),

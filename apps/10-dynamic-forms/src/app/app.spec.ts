@@ -388,7 +388,7 @@ describe('App (10 · Dynamic Forms)', () => {
         'Letters only. No numbers or special characters.',
       );
 
-      await vi.advanceTimersByTimeAsync(500);
+      await vi.advanceTimersByTimeAsync(300);
       await fixture.whenStable();
 
       expect(host.textContent).not.toContain('Skill already exists');

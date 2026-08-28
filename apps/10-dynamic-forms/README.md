@@ -130,7 +130,7 @@ export function applicationSchema(path: SchemaPathTree<Application>): void {
 The add box is **not** on `Application`. `SkillComposer` owns a sibling
 `form(skillDraft, (path) => { ... })` with `apply(path, skillItemSchema)`, a
 `validate` that rejects chips already on the list (`Skill already exists`), and
-`debounce(500)`. Empty drafts are valid; Add stays disabled until
+`debounce(300)`. Empty drafts are valid; Add stays disabled until
 `value().trim()` is non-empty, the field is `valid()`, and
 `controlValue() === value()` (debounce flushed). Errors stay hidden while those
 two differ so mid-flight typing does not flash pattern/duplicate messages.
@@ -284,9 +284,10 @@ tests are split by concern:
 
 - **Isolated schema tests** build the form directly from `applicationSchema`
   (`form(model, applicationSchema, { injector })`) - no component, no DOM - and assert
-  every rule: name/years required and range, contract `dayRate`, designer portfolio
-  required + URL `pattern`, `applyEach` letters-only skills, and the skill-draft composer
-  (`pattern` + duplicate `validate`, empty allowed).
+  application rules: name/years required and range, contract `dayRate`, designer portfolio
+  required + URL `pattern`, and `applyEach` letters-only skills. Skill-draft rules
+  (`pattern`, `duplicateSkill`, empty allowed) live in `skill-composer.spec.ts` because
+  the composer owns a sibling `form()`.
 - **Component tests** cover only what the rendered template shows: the frontend card
   renders by default, the designer tab reveals portfolio and resets to pristine, contract
   reveals day rate, an empty submit reports the required error (`onInvalid`), a valid
@@ -294,6 +295,8 @@ tests are split by concern:
 - **`ValidationErrors`** is tested against the real fields, so its visibility gating, each
   recipe message, the single-error list, `role="alert"`, and `messageId` on the alert list
   are verified against the actual recipe.
+- **`SkillComposer`** covers Add disable rules, duplicate chips, Enter-to-add, and debounce
+  error gating in its own DOM suite.
 
 ---
 

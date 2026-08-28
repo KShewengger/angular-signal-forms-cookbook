@@ -1,8 +1,8 @@
 # 01 · Basic Form
 
 > The foundational **Angular Signal Forms** recipe: a neo-brutalist **Registration
-> form** that models its data as a `signal`, declares its one rule as a named schema
-> function next to `form()`, binds native inputs through
+> form** that models its data as a `signal`, declares its one rule as an inline schema
+> callback on `form()`, binds native inputs through
 > `[formField]`, reflects live **form state** (touched, dirty, valid, invalid) straight
 > from the form's signals, and submits through the Signal Forms **submission API**
 > (`[formRoot]` + `submit()`). No `ReactiveFormsModule`, no `FormBuilder`.
@@ -75,9 +75,10 @@ template. This recipe surfaces them as the live status dots above the form actio
 | Valid   | `userForm().valid()`   | every validator passes                 |
 | Invalid | `userForm().invalid()` | at least one validator fails           |
 
-`Save` stays disabled until the form is `dirty`, which prevents submitting an untouched
-form. And because submission goes through `submit()`, an invalid submit is blocked -
-the dialog only opens once the form is valid.
+`Save` stays disabled until the form is dirty and valid (`canSave()`), which prevents
+submitting an untouched or still-invalid registration. And because submission goes
+through `submit()`, an invalid submit is blocked - the dialog only opens once the
+form is valid.
 
 ---
 
@@ -159,8 +160,8 @@ you - which validates first and only runs the action when the form is valid.
 <!-- live status dot -->
 <span nbStatusDot [state]="userForm().valid() ? 'online' : 'offline'"></span>
 
-<!-- Save is disabled until the user edits the form -->
-<button nbButton type="submit" [disabled]="!userForm().dirty()">Save</button>
+<!-- Save is disabled until the form is dirty and valid -->
+<button nbButton type="submit" [disabled]="!canSave()">Save</button>
 ```
 
 **5. Reset** (`app.ts`)

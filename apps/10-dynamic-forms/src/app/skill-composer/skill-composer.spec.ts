@@ -80,6 +80,13 @@ describe('SkillComposer (10 · Dynamic Forms)', () => {
     const skillInput = (): HTMLInputElement =>
       host.querySelector('#frontend-skill') as HTMLInputElement;
 
+    const skillForm = (): FieldTree<string> =>
+      (
+        fixture.componentInstance as unknown as {
+          skillForm: FieldTree<string>;
+        }
+      ).skillForm;
+
     const addButton = (): HTMLButtonElement =>
       Array.from(host.querySelectorAll('button')).find((button) =>
         button.textContent?.includes('Add'),
@@ -165,6 +172,8 @@ describe('SkillComposer (10 · Dynamic Forms)', () => {
       await settleDebounce();
 
       expect(addButton().disabled).toBe(true);
+      expect(kindsOf(skillForm())).toContain('duplicateSkill');
+      expect(messagesOf(skillForm())).toContain('Skill already exists');
       expect(host.textContent).toContain('Skill already exists');
       expect(skillsField().value()).toEqual(['Angular', 'TypeScript']);
     });
