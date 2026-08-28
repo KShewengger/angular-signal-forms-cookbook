@@ -10,6 +10,7 @@ export function generateMockBookingResponse(
   departure.setHours(7, 30, 0, 0);
 
   const arrival = new Date(departure);
+
   arrival.setMinutes(arrival.getMinutes() + 100);
 
   return {

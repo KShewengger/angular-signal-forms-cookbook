@@ -1,4 +1,4 @@
-import { Component, input, model, output } from '@angular/core';
+import { Component, computed, input, model, output } from '@angular/core';
 import {
   FormValueControl,
   ValidationError,
@@ -59,6 +59,14 @@ export class Topping implements FormValueControl<number | undefined> {
   readonly disabled = input(false);
   readonly readonly = input(false);
   readonly hidden = input<boolean>(false);
+
+  protected readonly errorBorder = computed(
+    () => this.dirty() && this.invalid(),
+  );
+
+  protected readonly showErrors = computed(
+    () => this.invalid() && (this.dirty() || this.touched()),
+  );
 
   protected update(input: HTMLInputElement) {
     this.value.set(input.value === '' ? 0 : input.valueAsNumber);

@@ -40,7 +40,7 @@ all projects share a single root `package.json`.
 | API                           | What it does                                                                 | Where in this recipe                                  |
 | ----------------------------- | ---------------------------------------------------------------------------- | ----------------------------------------------------- |
 | `applyEach(path, itemSchema)` | Applies a schema to **every element** of an array field                      | `applyEach(path.toppings, pizzaToppingItemSchema)`    |
-| `schema<T>()`                 | Declares a reusable validation schema, separate from the form                | `pizzaMakerSchema` in `app.model.ts`                  |
+| `schema<T>()`                 | Builds a reusable `Schema` object for rules shared across paths              | `pizzaToppingItemSchema` on every topping             |
 | `min(path, n)`                | Built-in numeric minimum validator                                           | `min(item.count, 0)`                                  |
 | `validate(path, fn)`          | Custom validator; here it computes a per-item maximum                        | the `toppingMax` rule                                 |
 | `valueOf(path)`               | Reads a **sibling** field's value inside a validator                         | `valueOf(item.id)` to look up the topping             |
@@ -73,8 +73,7 @@ This is the recipe's core idea: validate **each element** of an array with one s
 schema instead of hand-writing a rule per index.
 
 ```ts
-// The per-item schema, applied to every topping.
-export function pizzaToppingItemSchema(item: SchemaPathTree<PizzaFormModelItem>) {
+export const pizzaToppingItemSchema = schema<PizzaFormModelItem>((item) => {
   min(item.count, 0, { message: 'Count cannot be negative' });
 
   validate(item.count, ({ value, valueOf }) => {
@@ -83,12 +82,12 @@ export function pizzaToppingItemSchema(item: SchemaPathTree<PizzaFormModelItem>)
 
     return value() > maxCount ? { kind: 'toppingMax', message: `Max ${maxCount}` } : null;
   });
-}
+});
 
 // Applied to the whole array with a single call.
-export const pizzaMakerSchema = schema<PizzaFormModel>((path) => {
+export function pizzaMakerSchema(path: SchemaPathTree<PizzaFormModel>): void {
   applyEach(path.toppings, pizzaToppingItemSchema);
-});
+}
 ```
 
 | Piece               | Detail                                                                    |
@@ -172,15 +171,15 @@ export type PizzaFormModelItem = { id: PizzaToppingId; count: number };
 export type PizzaFormModel = { toppings: PizzaFormModelItem[] };
 ```
 
-**2. Declare the per-item schema and apply it to the array** (`app.model.ts`)
+**2. Declare the per-item schema and apply it to the array** (`app.schema.ts`)
 
-Extracting the schema keeps it reusable: the component builds its form from it, and the
-tests build the same form in isolation without rendering a component.
+`pizzaToppingItemSchema` is a `schema()` object because `applyEach` runs it on every
+item. Isolated tests import `pizzaMakerSchema`.
 
 ```ts
-export const pizzaMakerSchema = schema<PizzaFormModel>((path) => {
+export function pizzaMakerSchema(path: SchemaPathTree<PizzaFormModel>): void {
   applyEach(path.toppings, pizzaToppingItemSchema);
-});
+}
 ```
 
 **3. Build the form** (`app.ts`)

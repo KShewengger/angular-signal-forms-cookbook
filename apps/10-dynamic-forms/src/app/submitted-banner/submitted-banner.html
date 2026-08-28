@@ -1,0 +1,34 @@
+<div
+  nbSurface
+  nbCluster
+  class="w-full"
+  tone="accent"
+  radius="full"
+  border="thick"
+  shadow="sm"
+  padding="sm"
+  gap="md"
+  align="center"
+  wrap="nowrap"
+  role="status"
+  aria-live="polite"
+>
+  <span class="text-lg leading-none" aria-hidden="true">🎉</span>
+
+  <span nbText size="sm" weight="bold" i18n="@@applicationSentMessage">
+    Application sent. We'll be in touch.
+  </span>
+
+  <button
+    nbButton
+    class="ml-auto h-8! min-h-8! shrink-0 gap-1.5!"
+    type="button"
+    size="sm"
+    tone="white"
+    radius="full"
+    (click)="retry.emit()"
+  >
+    <ng-icon size="16" name="tablerRefresh" aria-hidden="true" />
+    <span i18n="@@retryApplication">Retry</span>
+  </button>
+</div>

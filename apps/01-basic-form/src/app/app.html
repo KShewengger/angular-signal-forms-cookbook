@@ -158,29 +158,35 @@
 
         <!-- ACTIONS -->
         <div nbCluster gap="md" justify="end" class="mt-6">
-          @let touched = userForm().touched(); @let dirty = userForm().dirty();
-          @let valid = userForm().valid(); @let invalid = userForm().invalid();
-
           <div nbCluster gap="md" class="pl-6">
             <div nbCluster gap="xs">
-              <span nbStatusDot [state]="touched ? 'online' : 'offline'"></span>
+              <span
+                nbStatusDot
+                [state]="formTouched() ? 'online' : 'offline'"
+              ></span>
               <span i18n="@@stateTouchedLabel">Touched</span>
             </div>
 
             <div nbCluster gap="xs">
-              <span nbStatusDot [state]="dirty ? 'online' : 'offline'"></span>
+              <span
+                nbStatusDot
+                [state]="formDirty() ? 'online' : 'offline'"
+              ></span>
               <span i18n="@@stateDirtyLabel">Dirty</span>
             </div>
 
             <div nbCluster gap="xs">
-              <span nbStatusDot [state]="valid ? 'online' : 'offline'"></span>
+              <span
+                nbStatusDot
+                [state]="formValid() ? 'online' : 'offline'"
+              ></span>
               <span i18n="@@stateValidLabel">Valid</span>
             </div>
 
             <div nbCluster gap="xs">
               <span
                 nbStatusDot
-                [state]="dirty && invalid ? 'live' : 'offline'"
+                [state]="invalidDotLive() ? 'live' : 'offline'"
               ></span>
               <span i18n="@@stateInvalidLabel">Invalid</span>
             </div>
@@ -193,7 +199,7 @@
               size="sm"
               tone="background"
               i18n="@@clearLabel"
-              [disabled]="!dirty"
+              [disabled]="!formDirty()"
               (click)="clear()"
             >
               Clear
@@ -204,7 +210,7 @@
               type="submit"
               size="sm"
               i18n="@@saveLabel"
-              [disabled]="!dirty || invalid"
+              [disabled]="!canSave()"
             >
               Save
             </button>

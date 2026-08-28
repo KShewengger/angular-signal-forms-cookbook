@@ -1,0 +1,180 @@
+<!-- HERO -->
+<header
+  class="flex flex-col gap-3"
+  aria-label="Lesson header"
+  i18n-aria-label="@@lessonHeaderAriaLabel"
+>
+  <div
+    nbCallout
+    class="w-fit"
+    size="md"
+    tone="lavender"
+    aria-label="Lesson 10: Dynamic Forms"
+    i18n-aria-label="@@lesson10AriaLabel"
+  >
+    <span aria-hidden="true">10</span>
+    <hr nbSeparator orientation="vertical" aria-hidden="true" />
+    <span class="text-sm" i18n="@@lessonDynamicFormsLabel">
+      Dynamic Forms
+    </span>
+  </div>
+
+  <div
+    nbChipGroup
+    nbCluster
+    gap="md"
+    aria-label="Lesson topics"
+    i18n-aria-label="@@lessonTopicsAriaLabel"
+  >
+    @for (topic of lessonTopics; track topic.id) {
+      <span nbChip [tone]="topic.tone">{{ topic.label }}</span>
+    }
+  </div>
+</header>
+
+<!-- ROLE TABS -->
+<div
+  class="grid grid-cols-2 gap-2.5"
+  role="group"
+  aria-label="Choose a role"
+  i18n-aria-label="@@chooseRoleLabel"
+>
+  @for (role of roleTabs(); track role.id) {
+    <button
+      nbButton
+      fullWidth
+      class="h-auto! min-h-19 flex-col! gap-1!"
+      type="button"
+      size="md"
+      [tone]="role.tone"
+      [disabled]="submitting()"
+      [attr.aria-pressed]="role.selected"
+      (click)="selectRole(role.id)"
+    >
+      <span class="text-xl leading-none" aria-hidden="true">{{
+        role.emoji
+      }}</span>
+      <span
+        nbText
+        size="xs"
+        weight="black"
+        transform="uppercase"
+        tracking="wide"
+      >
+        {{ role.label }}
+      </span>
+    </button>
+  }
+</div>
+
+<!-- FORM -->
+@switch (selectedRole()) {
+  @case ('frontend') {
+    <app-frontend-form
+      [form]="applicationForm"
+      [submitting]="submitting()"
+      [submitted]="submitted()"
+      (retry)="retry()"
+    />
+  }
+  @case ('designer') {
+    <app-designer-form
+      [form]="applicationForm"
+      [submitting]="submitting()"
+      [submitted]="submitted()"
+      (retry)="retry()"
+    />
+  }
+}
+
+<!-- LESSON NAVIGATION -->
+<nav
+  nbCluster
+  class="mt-6 mb-4"
+  gap="md"
+  align="center"
+  justify="between"
+  aria-label="Lesson navigation"
+  i18n-aria-label="@@lessonNavigationAriaLabel"
+>
+  <a
+    nbButton
+    size="md"
+    tone="warning"
+    radius="md"
+    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/09-form-submission"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Go to the previous lesson"
+    i18n-aria-label="@@prevLessonAriaLabel"
+  >
+    <span nbButtonTrailingIcon class="grid place-items-center" shape="circle">
+      <ng-icon size="20" name="tablerCircleArrowLeftFill" aria-hidden="true" />
+    </span>
+
+    <span
+      nbText
+      size="md"
+      weight="black"
+      transform="uppercase"
+      tracking="wide"
+      i18n="@@prevFormSubmission"
+    >
+      Prev: Form Submission
+    </span>
+  </a>
+
+  <a
+    nbButton
+    size="md"
+    tone="success"
+    radius="md"
+    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Go to the next lesson"
+    i18n-aria-label="@@nextLessonAriaLabel"
+  >
+    <span
+      nbText
+      size="md"
+      weight="black"
+      transform="uppercase"
+      tracking="wide"
+      i18n="@@nextZodSchema"
+    >
+      Next: Zod Schema Validation
+    </span>
+
+    <span nbButtonTrailingIcon class="grid place-items-center" shape="circle">
+      <ng-icon size="20" name="tablerCircleArrowRightFill" aria-hidden="true" />
+    </span>
+  </a>
+</nav>
+
+<!-- FOOTER -->
+<footer nbCluster class="w-full pt-4" gap="sm" align="center" justify="center">
+  <ng-icon
+    class="text-gray-300"
+    size="16"
+    name="tablerCopyright"
+    aria-hidden="true"
+  />
+
+  <small nbText size="xs" tone="muted" i18n="@@authorLabel">
+    Kristy Mae Almuete
+  </small>
+
+  <hr nbSeparator orientation="vertical" aria-hidden="true" />
+
+  <a
+    nbText
+    size="xs"
+    tone="danger"
+    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/10-dynamic-forms"
+    target="_blank"
+    rel="noopener noreferrer"
+    i18n="@@githubRepository"
+    >GitHub Repo</a
+  >
+</footer>

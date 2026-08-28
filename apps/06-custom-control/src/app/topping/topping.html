@@ -4,7 +4,7 @@
     class="w-32!"
     [class.cursor-not-allowed]="readonly()"
     [class.opacity-50]="readonly()"
-    [style.--nb-border]="dirty() && invalid() ? 'var(--nb-danger)' : null"
+    [style.--nb-border]="errorBorder() ? 'var(--nb-danger)' : null"
   >
     <div nbInputPrefix>
       <img
@@ -48,6 +48,6 @@
   <app-validation-errors
     class="min-h-5"
     [errors]="errors()"
-    [visible]="invalid() && (dirty() || touched())"
+    [visible]="showErrors()"
   />
 </div>

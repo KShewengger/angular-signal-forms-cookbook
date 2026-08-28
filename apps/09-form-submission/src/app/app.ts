@@ -1,5 +1,11 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { FieldTree, form, FormField, FormRoot } from '@angular/forms/signals';
+import {
+  FieldTree,
+  form,
+  FormField,
+  FormRoot,
+  required,
+} from '@angular/forms/signals';
 import {
   NbButton,
   NbButtonTrailingIcon,
@@ -22,7 +28,6 @@ import {
 } from '@ng-icons/tabler-icons/fill';
 import { INITIAL_ANSWER, Question, QuizAnswer, QuizPhase } from './app.model';
 import { QUESTIONS } from './app.data';
-import { answerSchema } from './app.schema';
 import { GraderService } from './grader.service';
 import { ValidationErrors } from './validation-errors';
 
@@ -78,14 +83,22 @@ export class App {
 
   protected readonly answerModel = signal<QuizAnswer>({ ...INITIAL_ANSWER });
 
-  protected readonly answerForm = form(this.answerModel, answerSchema, {
-    submission: {
-      action: (field) => this.gradeSubmission(field),
-      onInvalid: (field) =>
-        field().errorSummary()[0]?.fieldTree().focusBoundControl(),
-      ignoreValidators: 'none',
+  protected readonly answerForm = form(
+    this.answerModel,
+    (path) => {
+      required(path.answer, {
+        message: 'Answer this question before submitting.',
+      });
     },
-  });
+    {
+      submission: {
+        action: (field) => this.gradeSubmission(field),
+        onInvalid: (field) =>
+          field().errorSummary()[0]?.fieldTree().focusBoundControl(),
+        ignoreValidators: 'none',
+      },
+    },
+  );
 
   protected readonly answerField = this.answerForm.answer;
 

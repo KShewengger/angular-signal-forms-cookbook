@@ -1,0 +1,75 @@
+<div nbStack gap="sm" align="stretch">
+  <label nbLabel i18n="@@skillsLabel" [attr.for]="inputId()">Core skills</label>
+
+  <div
+    nbSurface
+    nbStack
+    class="focus-within:outline-3 focus-within:outline-offset-3 focus-within:outline-black"
+    gap="md"
+    radius="lg"
+    border="thick"
+    shadow="sm"
+    padding="sm"
+    [tone]="tone()"
+  >
+    <div
+      nbChipGroup
+      nbCluster
+      class="flex flex-wrap"
+      gap="sm"
+      aria-label="Selected skills"
+      i18n-aria-label="@@selectedSkillsLabel"
+    >
+      @for (chip of skillChips(); track chip.name) {
+        <span nbChip class="gap-1.5! pr-1!" tone="background">
+          {{ chip.name }}
+          <button
+            type="button"
+            class="cursor-pointer grid size-5 place-items-center rounded-full border-2 border-black text-black"
+            [class.bg-nb-success]="tone() === 'success'"
+            [class.bg-nb-pink]="tone() === 'pink'"
+            [attr.aria-label]="chip.removeLabel"
+            (click)="removeSkill(chip.name)"
+          >
+            <ng-icon size="12" name="tablerX" aria-hidden="true" />
+          </button>
+        </span>
+      }
+    </div>
+
+    <div class="flex items-center gap-2">
+      <input
+        nbInput
+        class="h-11! min-w-0 flex-1"
+        type="text"
+        autocomplete="off"
+        [id]="inputId()"
+        [placeholder]="placeholder()"
+        [formField]="skillForm"
+        [attr.aria-describedby]="draftErrorsId()"
+        [attr.aria-invalid]="skillInvalid()"
+        [style.--nb-border]="skillInvalid() ? 'var(--nb-danger)' : null"
+        (keydown.enter)="addSkillFromEnter($event)"
+      />
+
+      <button
+        nbButton
+        class="h-11!"
+        type="button"
+        size="md"
+        tone="yellow"
+        i18n="@@addSkillLabel"
+        [disabled]="!canAddSkill()"
+        (click)="addSkill()"
+      >
+        Add
+      </button>
+    </div>
+  </div>
+
+  @if (draftSettled()) {
+    <app-validation-errors [messageId]="draftErrorsId()" [field]="skillForm" />
+  }
+
+  <app-validation-errors [messageId]="skillsErrorsId()" [field]="skills()" />
+</div>

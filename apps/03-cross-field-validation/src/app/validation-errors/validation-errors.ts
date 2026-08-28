@@ -14,15 +14,11 @@ export class ValidationErrors {
 
   protected readonly errors = computed(() => {
     const fieldRef = this.field();
+
     return fieldRef().errors();
   });
 
   protected readonly hasMultipleErrors = computed(
     () => this.errors().length > 1,
   );
-
-  protected readonly visible = computed(() => {
-    const fieldRef = this.field();
-    return (fieldRef().dirty() || fieldRef().touched()) && fieldRef().invalid();
-  });
 }

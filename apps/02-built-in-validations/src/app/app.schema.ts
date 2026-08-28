@@ -5,11 +5,13 @@ import {
   minLength,
   pattern,
   required,
-  schema,
+  SchemaPathTree,
 } from '@angular/forms/signals';
 import { RegistrationFormModel } from './app.model';
 
-export const registrationSchema = schema<RegistrationFormModel>((path) => {
+export function registrationSchema(
+  path: SchemaPathTree<RegistrationFormModel>,
+): void {
   required(path.username, {
     message: 'Please enter a username.',
   });
@@ -47,4 +49,4 @@ export const registrationSchema = schema<RegistrationFormModel>((path) => {
   minLength(path.bio, 5, {
     message: 'Bio must be at least 5 characters long.',
   });
-});
+}

@@ -24,6 +24,7 @@ const buildSearchForm = (
   initial: Partial<SearchFormModel> = {},
 ): FieldTree<SearchFormModel> => {
   const model = signal<SearchFormModel>({ ...INITIAL_SEARCH, ...initial });
+
   return form(model, searchSchema, { injector: TestBed.inject(Injector) });
 };
 
@@ -34,21 +35,25 @@ describe('App (07 · Debounce Input)', () => {
     describe('query', () => {
       it('accepts an empty query (which lists every fruit)', () => {
         const searchForm = buildSearchForm();
+
         expect(searchForm.query().valid()).toBe(true);
       });
 
       it('accepts a query that matches a known fruit', () => {
         const searchForm = buildSearchForm({ query: 'Apple' });
+
         expect(searchForm.query().valid()).toBe(true);
       });
 
       it('matches case-insensitively and on partial input', () => {
         const searchForm = buildSearchForm({ query: 'app' });
+
         expect(searchForm.query().valid()).toBe(true);
       });
 
       it('rejects special characters with the pattern rule', () => {
         const searchForm = buildSearchForm({ query: 'a@b' });
+
         expect(searchForm.query().valid()).toBe(false);
         expect(kindsOf(searchForm.query)).toContain('pattern');
         expect(messagesOf(searchForm.query)).toContain(
@@ -58,6 +63,7 @@ describe('App (07 · Debounce Input)', () => {
 
       it('rejects a query that matches no fruit with unknownFruit', () => {
         const searchForm = buildSearchForm({ query: 'xyz' });
+
         expect(searchForm.query().valid()).toBe(false);
         expect(kindsOf(searchForm.query)).toContain('unknownFruit');
         expect(messagesOf(searchForm.query)).toContain(
@@ -67,6 +73,7 @@ describe('App (07 · Debounce Input)', () => {
 
       it('does not raise unknownFruit while the pattern is violated', () => {
         const searchForm = buildSearchForm({ query: 'a@b' });
+
         expect(kindsOf(searchForm.query)).not.toContain('unknownFruit');
       });
     });
@@ -74,11 +81,13 @@ describe('App (07 · Debounce Input)', () => {
     describe('form as a whole', () => {
       it('is valid when the query is empty', () => {
         const searchForm = buildSearchForm();
+
         expect(searchForm().valid()).toBe(true);
       });
 
       it('is invalid when the query matches no fruit', () => {
         const searchForm = buildSearchForm({ query: 'xyz' });
+
         expect(searchForm().valid()).toBe(false);
         expect(searchForm().invalid()).toBe(true);
       });
@@ -88,6 +97,9 @@ describe('App (07 · Debounce Input)', () => {
   describe('component (DOM)', () => {
     let fixture: ComponentFixture<App>;
     let host: HTMLElement;
+
+    const DEBOUNCE_MS = 400;
+    const SEARCH_DELAY_MS = 600;
 
     // Fields are protected; read them through a narrow cast.
     const searchForm = (): FieldTree<SearchFormModel> =>
@@ -139,6 +151,37 @@ describe('App (07 · Debounce Input)', () => {
       expect(fruitRows().length).toBe(1);
       expect(host.textContent).toContain('Banana');
       expect(host.textContent).not.toContain('Apple');
+    });
+
+    it('debounces View→model before resolving the fruit list', async () => {
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+
+      try {
+        const input = host.querySelector('input') as HTMLInputElement;
+        input.value = 'Banana';
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        await fixture.whenStable();
+
+        expect(searchForm().query().controlValue()).toBe('Banana');
+        expect(searchForm().query().value()).toBe('');
+        // Empty model still drives the initial all-fruits result set.
+        expect(fruitRows().length).toBe(10);
+        expect(host.textContent).toContain('Apple');
+
+        await vi.advanceTimersByTimeAsync(DEBOUNCE_MS);
+        await fixture.whenStable();
+
+        expect(searchForm().query().value()).toBe('Banana');
+
+        await vi.advanceTimersByTimeAsync(SEARCH_DELAY_MS);
+        await fixture.whenStable();
+
+        expect(fruitRows().length).toBe(1);
+        expect(host.textContent).toContain('Banana');
+        expect(host.textContent).not.toContain('Apple');
+      } finally {
+        vi.useRealTimers();
+      }
     });
   });
 });

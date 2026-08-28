@@ -40,6 +40,7 @@ import {
   tablerCircleArrowRightFill,
   tablerCircleArrowLeftFill,
 } from '@ng-icons/tabler-icons/fill';
+import { fieldTouchedInvalid, keepOrder } from './app.utils';
 import { ValidationErrors } from './validation-errors';
 import { ROLES } from './app.data';
 
@@ -113,8 +114,22 @@ export class App {
 
   protected readonly value = computed(() => this.userForm().value());
 
+  protected readonly formDirty = computed(() => this.userForm().dirty());
+
+  protected readonly canSave = computed(
+    () => this.userForm().dirty() && !this.userForm().invalid(),
+  );
+
+  protected readonly ariaInvalid = computed(() => ({
+    username: fieldTouchedInvalid(this.userForm.username()),
+    email: fieldTouchedInvalid(this.userForm.email()),
+    age: fieldTouchedInvalid(this.userForm.age()),
+    role: fieldTouchedInvalid(this.userForm.role()),
+    bio: fieldTouchedInvalid(this.userForm.bio()),
+  }));
+
   protected readonly roles = ROLES;
-  protected readonly keepOrder = () => 0;
+  protected readonly keepOrder = keepOrder;
 
   protected clear(): void {
     this.dialog().close();

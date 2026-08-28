@@ -5,13 +5,13 @@ import {
   disabled,
   min,
   required,
-  schema,
+  SchemaPathTree,
   validate,
 } from '@angular/forms/signals';
 import { PROMO_CODE } from './app.data';
 import { Booking, Experience } from './app.model';
 
-export const bookingSchema = schema<Booking>((path) => {
+export function bookingSchema(path: SchemaPathTree<Booking>): void {
   applyEach(path.tickets, (ticket) => {
     required(ticket.seat);
   });
@@ -50,4 +50,4 @@ export const bookingSchema = schema<Booking>((path) => {
 
     return { kind: 'invalidCoupon', message: 'Invalid coupon.' };
   });
-});
+}

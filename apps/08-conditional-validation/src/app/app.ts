@@ -115,28 +115,6 @@ export class App {
     () => this.bookingForm.experience().value().format,
   );
 
-  protected readonly glassesInvalid = computed(() => {
-    if (this.selectedFormat() !== 'imax') return false;
-
-    const field = this.glassesField();
-
-    return (field.dirty() || field.touched()) && field.invalid();
-  });
-
-  protected readonly mealInvalid = computed(() => {
-    if (this.selectedFormat() !== 'vip') return false;
-
-    const field = this.mealField();
-
-    return (field.dirty() || field.touched()) && field.invalid();
-  });
-
-  protected readonly comboInvalid = computed(() => {
-    const field = this.bookingForm.comboSize();
-
-    return (field.dirty() || field.touched()) && field.invalid();
-  });
-
   protected readonly seatCount = computed(() => this.selectedSeats().size);
 
   protected readonly promoDisabled = computed(() =>
@@ -163,10 +141,13 @@ export class App {
       this.bookingForm.promoCode().value().trim().toUpperCase() === PROMO_CODE,
   );
 
-  protected readonly couponInvalid = computed(() => {
-    const field = this.bookingForm.promoCode();
+  protected readonly couponTone = computed(() => {
+    if (this.promoDisabled()) return 'muted';
 
-    return (field.dirty() || field.touched()) && field.invalid();
+    const promo = this.bookingForm.promoCode();
+    const couponInvalid = (promo.dirty() || promo.touched()) && promo.invalid();
+
+    return couponInvalid ? 'danger' : 'success';
   });
 
   protected readonly subtotalDisplay = computed(
@@ -184,6 +165,10 @@ export class App {
   );
 
   protected readonly booked = signal(false);
+
+  protected readonly bookDisabled = computed(
+    () => !this.booked() && !this.canBook(),
+  );
 
   protected selectExperience(format: Experience['format']): void {
     if (this.selectedFormat() === format) return;

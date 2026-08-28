@@ -17,6 +17,7 @@ describe('SIGNAL_EXAMPLES', () => {
 
   it('has a unique link per recipe', () => {
     const links = SIGNAL_EXAMPLES.map((r) => r.link);
+
     expect(new Set(links).size).toBe(links.length);
   });
 

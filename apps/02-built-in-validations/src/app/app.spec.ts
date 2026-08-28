@@ -30,6 +30,7 @@ describe('App (02 · Built-in Validations)', () => {
         ...INITIAL_REGISTRATION,
         ...initial,
       });
+
       return form(model, registrationSchema, {
         injector: TestBed.inject(Injector),
       });
@@ -38,6 +39,7 @@ describe('App (02 · Built-in Validations)', () => {
     describe('username', () => {
       it('is required', () => {
         const registrationForm = buildRegistrationForm();
+
         expect(registrationForm.username().valid()).toBe(false);
         expect(messagesOf(registrationForm.username)).toContain(
           'Please enter a username.',
@@ -46,6 +48,7 @@ describe('App (02 · Built-in Validations)', () => {
 
       it('enforces a minimum length of 5', () => {
         const registrationForm = buildRegistrationForm({ username: 'ab' });
+
         expect(messagesOf(registrationForm.username)).toContain(
           'Username must be at least 5 characters long.',
         );
@@ -55,6 +58,7 @@ describe('App (02 · Built-in Validations)', () => {
         const registrationForm = buildRegistrationForm({
           username: 'U'.repeat(21),
         });
+
         expect(messagesOf(registrationForm.username)).toContain(
           'Username cannot exceed 20 characters.',
         );
@@ -64,6 +68,7 @@ describe('App (02 · Built-in Validations)', () => {
         const registrationForm = buildRegistrationForm({
           username: 'username-1',
         });
+
         expect(messagesOf(registrationForm.username)).toContain(
           'Username must follow the format USER-123.',
         );
@@ -71,6 +76,7 @@ describe('App (02 · Built-in Validations)', () => {
 
       it('reports both the length and pattern rules for a short, malformed value', () => {
         const registrationForm = buildRegistrationForm({ username: 'ab' });
+
         expect(kindsOf(registrationForm.username)).toEqual(
           expect.arrayContaining(['minLength', 'pattern']),
         );
@@ -80,6 +86,7 @@ describe('App (02 · Built-in Validations)', () => {
         const registrationForm = buildRegistrationForm({
           username: 'USER-123',
         });
+
         expect(registrationForm.username().valid()).toBe(true);
       });
     });
@@ -87,6 +94,7 @@ describe('App (02 · Built-in Validations)', () => {
     describe('email', () => {
       it('is required', () => {
         const registrationForm = buildRegistrationForm();
+
         expect(messagesOf(registrationForm.email)).toContain(
           'Please enter your email address.',
         );
@@ -96,6 +104,7 @@ describe('App (02 · Built-in Validations)', () => {
         const registrationForm = buildRegistrationForm({
           email: 'not-an-email',
         });
+
         expect(messagesOf(registrationForm.email)).toContain(
           'Please enter a valid email address.',
         );
@@ -103,6 +112,7 @@ describe('App (02 · Built-in Validations)', () => {
 
       it('accepts a valid address', () => {
         const registrationForm = buildRegistrationForm({ email: 'ada@dev.io' });
+
         expect(registrationForm.email().valid()).toBe(true);
       });
     });
@@ -110,6 +120,7 @@ describe('App (02 · Built-in Validations)', () => {
     describe('age', () => {
       it('is required', () => {
         const registrationForm = buildRegistrationForm();
+
         expect(messagesOf(registrationForm.age)).toContain(
           'Please enter your age.',
         );
@@ -117,6 +128,7 @@ describe('App (02 · Built-in Validations)', () => {
 
       it('enforces a minimum of 10', () => {
         const registrationForm = buildRegistrationForm({ age: 5 });
+
         expect(messagesOf(registrationForm.age)).toContain(
           'You must be at least 10 years old.',
         );
@@ -124,6 +136,7 @@ describe('App (02 · Built-in Validations)', () => {
 
       it('accepts an age of 10 or more', () => {
         const registrationForm = buildRegistrationForm({ age: 18 });
+
         expect(registrationForm.age().valid()).toBe(true);
       });
     });
@@ -131,6 +144,7 @@ describe('App (02 · Built-in Validations)', () => {
     describe('role', () => {
       it('is required', () => {
         const registrationForm = buildRegistrationForm();
+
         expect(messagesOf(registrationForm.role)).toContain(
           'Please select a role.',
         );
@@ -138,6 +152,7 @@ describe('App (02 · Built-in Validations)', () => {
 
       it('accepts a selected role', () => {
         const registrationForm = buildRegistrationForm({ role: 'user' });
+
         expect(registrationForm.role().valid()).toBe(true);
       });
     });
@@ -145,6 +160,7 @@ describe('App (02 · Built-in Validations)', () => {
     describe('bio', () => {
       it('is required', () => {
         const registrationForm = buildRegistrationForm();
+
         expect(messagesOf(registrationForm.bio)).toContain(
           'Please enter a short bio.',
         );
@@ -152,6 +168,7 @@ describe('App (02 · Built-in Validations)', () => {
 
       it('enforces a minimum length of 5', () => {
         const registrationForm = buildRegistrationForm({ bio: 'hi' });
+
         expect(messagesOf(registrationForm.bio)).toContain(
           'Bio must be at least 5 characters long.',
         );
@@ -159,6 +176,7 @@ describe('App (02 · Built-in Validations)', () => {
 
       it('accepts a bio of 5 characters or more', () => {
         const registrationForm = buildRegistrationForm({ bio: 'Hello world' });
+
         expect(registrationForm.bio().valid()).toBe(true);
       });
     });
@@ -166,6 +184,7 @@ describe('App (02 · Built-in Validations)', () => {
     describe('form as a whole', () => {
       it('is invalid while empty', () => {
         const registrationForm = buildRegistrationForm();
+
         expect(registrationForm().valid()).toBe(false);
         expect(registrationForm().invalid()).toBe(true);
       });
@@ -178,6 +197,7 @@ describe('App (02 · Built-in Validations)', () => {
           role: 'user',
           bio: 'Enchantress of numbers',
         });
+
         expect(registrationForm().valid()).toBe(true);
       });
     });
@@ -207,17 +227,20 @@ describe('App (02 · Built-in Validations)', () => {
       value: string,
     ): Promise<void> => {
       control.value = value;
+
       control.dispatchEvent(new Event('input', { bubbles: true }));
       await fixture.whenStable();
     };
 
     const blur = async (control: HTMLElement): Promise<void> => {
       control.dispatchEvent(new Event('blur', { bubbles: true }));
+
       await fixture.whenStable();
     };
 
     const fillValidForm = async (): Promise<void> => {
       await typeInto(controlById<HTMLInputElement>('username'), 'USER-123');
+
       await typeInto(controlById<HTMLInputElement>('email'), 'ada@dev.io');
       await typeInto(controlById<HTMLInputElement>('age'), '18');
       await typeInto(controlById<HTMLTextAreaElement>('bio'), 'Enchantress');
@@ -278,6 +301,7 @@ describe('App (02 · Built-in Validations)', () => {
       await typeInto(controlById<HTMLTextAreaElement>('bio'), 'Enchantress');
 
       const value = registrationForm()().value();
+
       expect(value.username).toBe('USER-123');
       expect(value.age).toBe(30);
       expect(value.bio).toBe('Enchantress');
@@ -297,6 +321,7 @@ describe('App (02 · Built-in Validations)', () => {
       await fixture.whenStable();
 
       const dialog = host.querySelector('dialog');
+
       expect(dialog?.open).toBe(true);
       expect(dialog?.textContent).toContain('USER-123');
     });

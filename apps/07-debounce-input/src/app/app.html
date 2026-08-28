@@ -85,8 +85,12 @@
       <div nbStack gap="lg" class="px-6 pb-6">
         <!-- SEARCH -->
         <div nbStack gap="xs" class="w-full">
+          @let query = searchForm.query();
+          @let queryInvalid =
+            (query.dirty() || query.touched()) && query.invalid();
+
           <nb-input-group
-            [style.--nb-border]="queryInvalid() ? 'var(--nb-danger)' : null"
+            [style.--nb-border]="queryInvalid ? 'var(--nb-danger)' : null"
           >
             <span nbInputPrefix>
               <ng-icon name="tablerSearch" size="24" />
@@ -100,7 +104,7 @@
 
           <app-validation-errors
             [errors]="queryErrors()"
-            [visible]="queryInvalid()"
+            [visible]="queryInvalid"
           />
         </div>
 

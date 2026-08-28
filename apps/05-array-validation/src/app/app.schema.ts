@@ -8,9 +8,7 @@ import {
 import { PIZZA_TOPPINGS_MAP } from './app.data';
 import { PizzaFormModel, PizzaFormModelItem } from './app.model';
 
-export function pizzaToppingItemSchema(
-  item: SchemaPathTree<PizzaFormModelItem>,
-) {
+export const pizzaToppingItemSchema = schema<PizzaFormModelItem>((item) => {
   min(item.count, 0, { message: 'Count cannot be negative' });
 
   validate(item.count, ({ value, valueOf }) => {
@@ -25,8 +23,8 @@ export function pizzaToppingItemSchema(
     }
     return null;
   });
-}
-
-export const pizzaMakerSchema = schema<PizzaFormModel>((path) => {
-  applyEach(path.toppings, pizzaToppingItemSchema);
 });
+
+export function pizzaMakerSchema(path: SchemaPathTree<PizzaFormModel>): void {
+  applyEach(path.toppings, pizzaToppingItemSchema);
+}

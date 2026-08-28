@@ -15,6 +15,7 @@ describe('ValidationErrors (04 · Async Validation)', () => {
     initial: Partial<BookingFormModel> = {},
   ): FieldTree<BookingFormModel> => {
     const model = signal<BookingFormModel>({ ...INITIAL_BOOKING, ...initial });
+
     return form(model, bookingSchema, { injector: TestBed.inject(Injector) });
   };
 
@@ -24,6 +25,7 @@ describe('ValidationErrors (04 · Async Validation)', () => {
 
   const showErrorsFor = async (field: FieldTree<unknown>): Promise<void> => {
     fixture.componentRef.setInput('field', field);
+
     await fixture.whenStable();
   };
 
@@ -49,6 +51,7 @@ describe('ValidationErrors (04 · Async Validation)', () => {
       const referenceField = buildBookingForm({
         reference: 'ABC1234',
       }).reference;
+
       referenceField().markAsTouched();
       await showErrorsFor(referenceField);
       await settle();
@@ -59,6 +62,7 @@ describe('ValidationErrors (04 · Async Validation)', () => {
 
     it('shows the errors once an invalid field is touched', async () => {
       const referenceField = buildBookingForm().reference;
+
       referenceField().markAsTouched();
       await showErrorsFor(referenceField);
 
@@ -67,6 +71,7 @@ describe('ValidationErrors (04 · Async Validation)', () => {
 
     it('shows the errors once an invalid field is dirty', async () => {
       const lastNameField = buildBookingForm().lastName;
+
       lastNameField().markAsDirty();
       await showErrorsFor(lastNameField);
 
@@ -77,6 +82,7 @@ describe('ValidationErrors (04 · Async Validation)', () => {
   describe('rendering the real recipe errors', () => {
     it("surfaces the reference 'required' message", async () => {
       const referenceField = buildBookingForm().reference;
+
       referenceField().markAsTouched();
       await showErrorsFor(referenceField);
 
@@ -89,6 +95,7 @@ describe('ValidationErrors (04 · Async Validation)', () => {
       const referenceField = buildBookingForm({
         reference: 'ZZZ0000',
       }).reference;
+
       referenceField().markAsTouched();
       await showErrorsFor(referenceField);
       await settle();
@@ -99,6 +106,7 @@ describe('ValidationErrors (04 · Async Validation)', () => {
 
     it("surfaces the last-name 'required' message", async () => {
       const lastNameField = buildBookingForm().lastName;
+
       lastNameField().markAsTouched();
       await showErrorsFor(lastNameField);
 
@@ -107,10 +115,12 @@ describe('ValidationErrors (04 · Async Validation)', () => {
 
     it('renders a flat list for a single error', async () => {
       const referenceField = buildBookingForm().reference;
+
       referenceField().markAsTouched();
       await showErrorsFor(referenceField);
 
       const list = errorList();
+
       expect(list?.classList.contains('list-disc')).toBe(false);
       expect(host.querySelectorAll('li').length).toBe(1);
     });
@@ -119,10 +129,12 @@ describe('ValidationErrors (04 · Async Validation)', () => {
   describe('accessibility', () => {
     it('exposes the errors to assistive technology', async () => {
       const referenceField = buildBookingForm().reference;
+
       referenceField().markAsTouched();
       await showErrorsFor(referenceField);
 
       const list = errorList();
+
       expect(list?.getAttribute('role')).toBe('alert');
     });
   });

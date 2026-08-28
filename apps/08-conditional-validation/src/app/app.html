@@ -119,6 +119,10 @@
       @switch (selectedFormat()) {
         @case ('imax') {
           <div class="grid w-full gap-2">
+            @let glasses = glassesField();
+            @let glassesInvalid =
+              (glasses.dirty() || glasses.touched()) && glasses.invalid();
+
             <label nbLabel for="glasses" i18n="@@glassesLabel">
               3D glasses
             </label>
@@ -132,7 +136,7 @@
               [formField]="glassesField"
             />
 
-            @if (glassesInvalid()) {
+            @if (glassesInvalid) {
               <span
                 nbText
                 size="xs"
@@ -146,6 +150,10 @@
         }
         @case ('vip') {
           <div class="grid w-full gap-2">
+            @let mealState = mealField();
+            @let mealInvalid =
+              (mealState.dirty() || mealState.touched()) && mealState.invalid();
+
             <label nbLabel id="meal-label" for="meal" i18n="@@mealLabel">
               Meal pre-order
             </label>
@@ -155,7 +163,7 @@
               aria-labelledby="meal-label"
               placeholder="Select a dish…"
               i18n-placeholder="@@mealPlaceholder"
-              [attr.aria-invalid]="mealInvalid()"
+              [attr.aria-invalid]="mealInvalid"
               [formField]="mealField"
               (openChange)="markMealTouched($event)"
             >
@@ -166,7 +174,7 @@
               }
             </nb-select>
 
-            @if (mealInvalid()) {
+            @if (mealInvalid) {
               <span nbText size="xs" tone="danger" i18n="@@mealRequiredError">
                 Pick a dish to continue.
               </span>
@@ -283,6 +291,10 @@
 
       @if (bookingForm.addSnacks().value()) {
         <div class="grid w-full gap-2 px-1">
+          @let combo = bookingForm.comboSize();
+          @let comboInvalid =
+            (combo.dirty() || combo.touched()) && combo.invalid();
+
           <label nbLabel id="combo-label" for="combo" i18n="@@comboSizeLabel">
             Combo size
           </label>
@@ -291,7 +303,7 @@
             id="combo"
             aria-labelledby="combo-label"
             placeholder="Choose size…"
-            [attr.aria-invalid]="comboInvalid()"
+            [attr.aria-invalid]="comboInvalid"
             [formField]="bookingForm.comboSize"
             (openChange)="markComboTouched($event)"
           >
@@ -302,7 +314,7 @@
             }
           </nb-select>
 
-          @if (comboInvalid()) {
+          @if (comboInvalid) {
             <span nbText size="xs" tone="danger" i18n="@@comboRequiredError">
               Choose a combo size.
             </span>
@@ -319,6 +331,10 @@
       [class.opacity-60]="booked()"
       [attr.inert]="booked() || null"
     >
+      @let promo = bookingForm.promoCode();
+      @let couponInvalid =
+        (promo.dirty() || promo.touched()) && promo.invalid();
+
       <label nbLabel for="promo" i18n="@@promoCodeLabel">
         Group promo code
       </label>
@@ -327,23 +343,17 @@
         nbInput
         id="promo"
         type="text"
-        [attr.aria-invalid]="couponInvalid()"
+        [attr.aria-invalid]="couponInvalid"
         [placeholder]="promoPlaceholder()"
         [formField]="bookingForm.promoCode"
       />
 
-      <span
-        nbText
-        size="xs"
-        [tone]="
-          promoDisabled() ? 'muted' : couponInvalid() ? 'danger' : 'success'
-        "
-      >
+      <span nbText size="xs" [tone]="couponTone()">
         @if (promoDisabled()) {
           <span i18n="@@promoLockedHint"
             >🔒 Unlocks when you book 4+ seats ({{ seatCount() }}/4)</span
           >
-        } @else if (couponInvalid()) {
+        } @else if (couponInvalid) {
           <span i18n="@@invalidCouponError">Invalid coupon.</span>
         } @else if (promoApplied()) {
           <span i18n="@@promoAppliedHint">🔓 Group rate applied · 50% off</span>
@@ -381,7 +391,7 @@
       fullWidth
       type="button"
       [tone]="booked() ? 'accent' : 'success'"
-      [disabled]="!booked() && !canBook()"
+      [disabled]="bookDisabled()"
       (click)="book()"
     >
       @if (booked()) {

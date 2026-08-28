@@ -27,12 +27,14 @@ describe('App (03 · Cross-Field Validation)', () => {
       initial: Partial<UserFormModel> = {},
     ): FieldTree<UserFormModel> => {
       const model = signal<UserFormModel>({ ...INITIAL_USER, ...initial });
+
       return form(model, userSchema, { injector: TestBed.inject(Injector) });
     };
 
     describe('email', () => {
       it('is required', () => {
         const userForm = buildUserForm();
+
         expect(userForm.email().valid()).toBe(false);
         expect(messagesOf(userForm.email)).toContain(
           'Please enter your email.',
@@ -41,6 +43,7 @@ describe('App (03 · Cross-Field Validation)', () => {
 
       it('rejects a malformed address', () => {
         const userForm = buildUserForm({ email: 'not-an-email' });
+
         expect(messagesOf(userForm.email)).toContain(
           'Please enter a valid email address',
         );
@@ -48,6 +51,7 @@ describe('App (03 · Cross-Field Validation)', () => {
 
       it('accepts a valid address', () => {
         const userForm = buildUserForm({ email: 'ada@dev.io' });
+
         expect(userForm.email().valid()).toBe(true);
       });
     });
@@ -55,6 +59,7 @@ describe('App (03 · Cross-Field Validation)', () => {
     describe('confirmEmail', () => {
       it('is required', () => {
         const userForm = buildUserForm();
+
         expect(messagesOf(userForm.confirmEmail)).toContain(
           'Please enter your email.',
         );
@@ -62,6 +67,7 @@ describe('App (03 · Cross-Field Validation)', () => {
 
       it('rejects a malformed address', () => {
         const userForm = buildUserForm({ confirmEmail: 'not-an-email' });
+
         expect(messagesOf(userForm.confirmEmail)).toContain(
           'Please enter a valid email address',
         );
@@ -74,6 +80,7 @@ describe('App (03 · Cross-Field Validation)', () => {
           email: 'ada@dev.io',
           confirmEmail: 'grace@dev.io',
         });
+
         expect(kindsOf(userForm.confirmEmail)).toContain('emailMismatch');
         expect(messagesOf(userForm.confirmEmail)).toContain(
           'Email addresses do not match.',
@@ -86,6 +93,7 @@ describe('App (03 · Cross-Field Validation)', () => {
           email: 'ada@dev.io',
           confirmEmail: 'ada@dev.io',
         });
+
         expect(kindsOf(userForm.confirmEmail)).not.toContain('emailMismatch');
         expect(userForm.confirmEmail().valid()).toBe(true);
       });
@@ -95,6 +103,7 @@ describe('App (03 · Cross-Field Validation)', () => {
           email: 'Ada@Dev.io',
           confirmEmail: 'ada@dev.io',
         });
+
         expect(kindsOf(userForm.confirmEmail)).not.toContain('emailMismatch');
         expect(userForm.confirmEmail().valid()).toBe(true);
       });
@@ -104,11 +113,13 @@ describe('App (03 · Cross-Field Validation)', () => {
           email: 'ada@dev.io',
           confirmEmail: '  ada@dev.io  ',
         });
+
         expect(kindsOf(userForm.confirmEmail)).not.toContain('emailMismatch');
       });
 
       it('does not compare until both fields have a value', () => {
         const userForm = buildUserForm({ confirmEmail: 'ada@dev.io' });
+
         expect(kindsOf(userForm.confirmEmail)).not.toContain('emailMismatch');
       });
 
@@ -117,6 +128,7 @@ describe('App (03 · Cross-Field Validation)', () => {
           email: 'ada@dev.io',
           confirmEmail: 'nope',
         });
+
         expect(kindsOf(userForm.confirmEmail)).toEqual(
           expect.arrayContaining(['email', 'emailMismatch']),
         );
@@ -126,6 +138,7 @@ describe('App (03 · Cross-Field Validation)', () => {
     describe('form as a whole', () => {
       it('is invalid while empty', () => {
         const userForm = buildUserForm();
+
         expect(userForm().valid()).toBe(false);
         expect(userForm().invalid()).toBe(true);
       });
@@ -135,6 +148,7 @@ describe('App (03 · Cross-Field Validation)', () => {
           email: 'ada@dev.io',
           confirmEmail: 'ada@dev.io',
         });
+
         expect(userForm().valid()).toBe(true);
       });
     });

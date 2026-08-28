@@ -1,12 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Injector, signal } from '@angular/core';
-import { form } from '@angular/forms/signals';
+import { form, required } from '@angular/forms/signals';
 import { App } from './app';
 import { INITIAL_REGISTRATION, RegistrationFormModel } from './app.model';
-import { registrationSchema } from './app.schema';
 
 describe('App (01 · Basic Form)', () => {
-  describe('form schema (isolated)', () => {
+  describe('validation schema (isolated)', () => {
     beforeEach(() => TestBed.configureTestingModule({}));
 
     const buildRegistrationForm = (
@@ -16,13 +15,21 @@ describe('App (01 · Basic Form)', () => {
         ...INITIAL_REGISTRATION,
         ...initial,
       });
-      return form(model, registrationSchema, {
-        injector: TestBed.inject(Injector),
-      });
+
+      return form(
+        model,
+        (path) => {
+          required(path.name);
+        },
+        {
+          injector: TestBed.inject(Injector),
+        },
+      );
     };
 
     it('starts pristine, untouched, and empty', () => {
       const registrationForm = buildRegistrationForm();
+
       expect(registrationForm().value()).toEqual(INITIAL_REGISTRATION);
       expect(registrationForm().dirty()).toBe(false);
       expect(registrationForm().touched()).toBe(false);
@@ -30,29 +37,44 @@ describe('App (01 · Basic Form)', () => {
 
     it('is invalid while the required Name is empty', () => {
       const registrationForm = buildRegistrationForm();
+
       expect(registrationForm.name().valid()).toBe(false);
       expect(registrationForm().valid()).toBe(false);
       expect(registrationForm().invalid()).toBe(true);
+      expect(registrationForm.name().errors()).toEqual([
+        expect.objectContaining({ kind: 'required' }),
+      ]);
     });
 
     it('reports a required error on Name', () => {
       const registrationForm = buildRegistrationForm();
-      expect(registrationForm.name().errors().length).toBeGreaterThan(0);
+
+      expect(registrationForm.name().errors()).toEqual([
+        expect.objectContaining({ kind: 'required' }),
+      ]);
     });
 
     it('becomes valid once Name has a value', () => {
       const registrationForm = buildRegistrationForm();
-      registrationForm.name().value.set('Ada Lovelace');
+
+      registrationForm.name().value.set('Kristy Mae Almuete');
+
       expect(registrationForm.name().valid()).toBe(true);
       expect(registrationForm().valid()).toBe(true);
     });
 
     it('returns to invalid when Name is cleared again', () => {
-      const registrationForm = buildRegistrationForm({ name: 'Ada' });
+      const registrationForm = buildRegistrationForm({
+        name: 'Kristy Mae Almuete',
+      });
+
       expect(registrationForm().valid()).toBe(true);
 
       registrationForm.name().value.set('');
       expect(registrationForm().valid()).toBe(false);
+      expect(registrationForm.name().errors()).toEqual([
+        expect.objectContaining({ kind: 'required' }),
+      ]);
     });
   });
 
@@ -62,6 +84,7 @@ describe('App (01 · Basic Form)', () => {
 
     const formState = (): {
       value(): RegistrationFormModel;
+
       dirty(): boolean;
     } =>
       (
@@ -83,6 +106,7 @@ describe('App (01 · Basic Form)', () => {
       value: string,
     ): Promise<void> => {
       control.value = value;
+
       control.dispatchEvent(new Event('input', { bubbles: true }));
       await fixture.whenStable();
     };
@@ -119,7 +143,10 @@ describe('App (01 · Basic Form)', () => {
     });
 
     it('marks the form dirty and enables Save/Clear after editing', async () => {
-      await typeInto(controlById<HTMLInputElement>('name'), 'Ada');
+      await typeInto(
+        controlById<HTMLInputElement>('name'),
+        'Kristy Mae Almuete',
+      );
 
       expect(formState().dirty()).toBe(true);
       expect(buttonByText('Save').disabled).toBe(false);
@@ -127,7 +154,10 @@ describe('App (01 · Basic Form)', () => {
     });
 
     it('flows typed values into the form model', async () => {
-      await typeInto(controlById<HTMLInputElement>('name'), 'Ada');
+      await typeInto(
+        controlById<HTMLInputElement>('name'),
+        'Kristy Mae Almuete',
+      );
       await typeInto(controlById<HTMLInputElement>('age'), '30');
       await typeInto(
         controlById<HTMLTextAreaElement>('bio'),
@@ -135,13 +165,15 @@ describe('App (01 · Basic Form)', () => {
       );
 
       const value = formState().value();
-      expect(value.name).toBe('Ada');
+
+      expect(value.name).toBe('Kristy Mae Almuete');
       expect(value.age).toBe(30);
       expect(value.bio).toBe('Enchantress of numbers');
     });
 
     it('toggles the beginner flag from the checkbox', async () => {
       const beginnerCheckbox = controlById<HTMLInputElement>('beginner');
+
       beginnerCheckbox.click();
       await fixture.whenStable();
 
@@ -149,7 +181,10 @@ describe('App (01 · Basic Form)', () => {
     });
 
     it('surfaces the captured values after submitting', async () => {
-      await typeInto(controlById<HTMLInputElement>('name'), 'Ada');
+      await typeInto(
+        controlById<HTMLInputElement>('name'),
+        'Kristy Mae Almuete',
+      );
 
       buttonByText('Save').click();
       await fixture.whenStable();
@@ -157,11 +192,15 @@ describe('App (01 · Basic Form)', () => {
       const shownValues = Array.from(document.querySelectorAll('dd')).map(
         (valueCell) => valueCell.textContent?.trim(),
       );
-      expect(shownValues).toContain('Ada');
+
+      expect(shownValues).toContain('Kristy Mae Almuete');
     });
 
     it('clears the form back to its initial state', async () => {
-      await typeInto(controlById<HTMLInputElement>('name'), 'Ada');
+      await typeInto(
+        controlById<HTMLInputElement>('name'),
+        'Kristy Mae Almuete',
+      );
       expect(formState().dirty()).toBe(true);
 
       buttonByText('Clear').click();
