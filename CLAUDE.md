@@ -20,14 +20,11 @@ the whole point of a cookbook is small, self-contained, individually-runnable
 examples, and it lets `nx affected` rebuild only the recipe you touched.
 
 - **Landing app** (`apps/cookbook`) - a neo-brutalist "table of contents" grid that
-  links out to each recipe app (opened in a new tab / at its own deployed URL). This
-  is the only app that exists today.
-- **Recipe apps** (planned) - each a standalone Nx app at `apps/NN-name/` (e.g.
-  `apps/01-basic-form/`) with its own `project.json`, `public/` assets, and a
-  folder-level `README.md` explaining the approach and gotchas. ~10 recipes covering:
-  basic form, built-in / cross-field / async / array / custom / conditional
-  validation, custom `FormValueControl` controls, Zod-schema validation, and form
-  submission.
+  links out to each recipe app (opened in a new tab / at its own deployed URL).
+- **Recipe apps** (`apps/01-basic-form` … `apps/10-dynamic-forms`) - each a standalone
+  Nx app with its own `project.json`, `public/` assets, and a folder-level `README.md`.
+  Recipe **11** (Zod) is listed on the landing as planned; do not assume `apps/11-zod`
+  exists until it is scaffolded.
 
 Scaffold a new recipe app with the Nx Angular generator (don't hand-roll the folder):
 
@@ -125,12 +122,11 @@ apps/
     tsconfig.app.json           # includes "@angular/localize" in types
     tsconfig.spec.json          # includes "vitest/globals" + "@angular/localize"
 
-  01-basic-form/                # first recipe app (exists) - standalone, same internal shape
-    public/                     # its OWN assets, e.g. hero-cover.png (flattened, not nested)
-    src/ ...                    # app.ts, app.config.ts, app.routes.ts, styles.css, ...
-    project.json                # name: "01-basic-form" (see naming note below)
-  02-validation/                # (planned) ...one per recipe, named NN-name
-  ...                           #   each owns its own project.json, public/, README.md
+  01-basic-form/                # recipe apps 01…10 (same internal shape as cookbook)
+  02-built-in-validations/
+  …
+  10-dynamic-forms/
+  # 11-zod/                     # planned - landing card may exist before the folder does
 ```
 
 Every app mirrors the same internal shape and the same conventions below (Tailwind
@@ -230,12 +226,39 @@ Recipes use Angular's **signal forms** API (`@angular/forms/signals`), not the l
   `userForm().valid()`, `userForm.name().touched()`, `userForm().value()`. Drive the UI
   from those (`.value()`, `.errors()`, `.touched()`, `.dirty()`, `.valid()`,
   submit/pending state).
+- **Show-invalid gate in templates:** prefer signals-native `@let` on **field state**,
+  not an impure pipe on a stable `Field` reference (`Field` identity does not change
+  when dirty/touched/invalid flip, so `| isFieldInvalid` needs `pure: false` and fights
+  OnPush). Canonical pattern:
+
+  ```html
+  @let name = form().name(); @let nameInvalid = (name.dirty() || name.touched()) && name.invalid();
+  ```
+
+  Same formula inside ValidationErrors (`@let state = field()(); @if (…)`) or a tiny
+  plain helper used from a `computed` when TS needs the gate (format-gated fields in 08).
+  Do **not** introduce a shared impure `IsFieldInvalidPipe` across recipes.
+
+- **`debounce(path, ms)` only delays View→model** (typed/`input` events). Direct
+  `value.set()` and isolated schema tests skip it. DOM tests that assert debounce must
+  type via the control, use fake timers, and `advanceTimersByTimeAsync` with the **same
+  ms** as production (drift like 500 vs 300 is a real bug).
+- **Sibling forms** (e.g. 10 skill composer draft) own their own `form()` + schema
+  callback; do not fold that into `applicationSchema` or claim it in `app.spec` isolated
+  suites - cover it on the child that owns the form.
+- Leaf ValidationErrors bind `errors()`; group / array-item bindings use
+  `errorSummary()`. Presentational VE (06/07: `errors` + `visible` inputs) stays that
+  way - parent owns the gate.
 - Custom controls implement **`FormValueControl`** with their own validation.
 - Zod recipe: derive validation from a Zod v4 schema rather than hand-writing rules.
+  Per-app copies of ValidationErrors / small helpers are fine until a real shared
+  library is justified - don't invent `libs/forms-testing` for one helper.
 
 When writing or reviewing a recipe, read
 `.claude/skills/angular-developer/references/signal-forms.md` first, and keep each
-recipe focused on **one** concept with a clear `README.md`.
+recipe focused on **one** concept with a clear `README.md`. Finish or refresh a recipe
+with the local **`finalize-recipe`** skill (gap-based: fix drift, don't rewrite already-
+green suites).
 
 ---
 
@@ -279,13 +302,23 @@ recipe focused on **one** concept with a clear `README.md`.
   `vitest` command. There is no standalone `vitest.config`; the Angular builder wires
   jsdom, the compiler, and `setupFiles`. Running `vitest --run app.spec.ts` directly
   (e.g. from an IDE runner) compiles nothing and exits 1 with no output - point IDE
-  test runners at `nx test <app>` instead.
+  test runners at `nx test <app>` instead. To run one file:
+  `pnpm exec nx test NN-name --include='**/foo.spec.ts'`.
 - Follow the zoneless testing pattern: **Act, then `await fixture.whenStable()`, then
   Assert.** Do not call `fixture.detectChanges()`.
+- Prefer the [Signal Forms testing guide](https://angular.dev/guide/forms/signals/testing)
+  split: **`validation schema (isolated)`** via
+  `form(model, schemaFn, { injector: TestBed.inject(Injector) })`, plus
+  **`component (DOM)`** for bindings / typing / a11y. Describe titles:
+  `App (NN · Title)`, `ValidationErrors (NN · Title)`, blocks
+  `validation schema (isolated)` / `component (DOM)`.
+- Assert `errors()` **kind and message** when the schema defines messages; kind alone
+  only when production has no custom message (e.g. bare `required()` in 01).
 - Tests that touch `$localize`-wrapped data need `@angular/localize/init` - already
   wired through `test-setup.ts` (`setupFiles` in the test target) and the spec
-  tsconfig `types`. Note: `polyfills` is **not** valid on the unit-test builder - use
-  `setupFiles`.
+  tsconfig `types`. **Also** put `"types": ["@angular/localize"]` in each app's
+  `tsconfig.app.json` (empty `types: []` drops localize for the app compile). Note:
+  `polyfills` is **not** valid on the unit-test builder - use `setupFiles`.
 - **ng-brutalism `NbDialog` under jsdom:** jsdom does not implement the native
   `<dialog>` methods (`show` / `showModal` / `close`) that `NbDialog` calls, so any
   test that opens or closes a dialog throws. `test-setup.ts` stubs them; reuse that
@@ -322,6 +355,14 @@ width: 100% }` fixes ng-brutalism cards, not `!w-full` hacks.
   the bug hides, but Prettier's `angular` parser rejects it outright
   (`SyntaxError: Incomplete block ""`). Only text content is affected; `@` inside an
   attribute value (`placeholder="user@example.com"`) is fine.
+- **No impure pipes on `Field` for dirty/touched/invalid.** Use `@let` on field state
+  (see §6). Impure pipes re-run every CD of that view and are not what this cookbook
+  teaches.
+- **Prev/Next / footer links are GitHub tree URLs**, never StackBlitz. Point at the
+  correct `apps/NN-name`; a Next link to a not-yet-built recipe may use
+  `…/tree/main/apps` until that folder exists.
+- **Debounce timer drift:** README, fake-timer advances, and `debounce(path, ms)` must
+  agree. Updating one without the others breaks DOM debounce tests.
 
 ---
 
@@ -349,3 +390,6 @@ width: 100% }` fixes ng-brutalism cards, not `!w-full` hacks.
 - Don't add dependencies without need; prefer Angular/Nx built-ins.
 - Confirm before outward/irreversible actions (pushing, publishing, deleting).
 - After changes: `pnpm format` → relevant `nx affected` targets → `pnpm build`.
+- When finishing or auditing a recipe, use **`finalize-recipe` gap-based**: fix real
+  drift (links, docs, specs vs code). Do not mass-rewrite already-green suites or
+  reintroduce removed patterns (e.g. impure field-invalid pipes).
