@@ -63,16 +63,19 @@ export class SkillComposer {
 
   protected readonly draftSettled = computed(() => {
     const field = this.skillForm();
+
     return field.controlValue() === field.value();
   });
 
   protected readonly canAddSkill = computed(() => {
     const field = this.skillForm();
+
     return this.draftSettled() && field.valid();
   });
 
   protected readonly skillChips = computed(() => {
     const skillsField = this.skills();
+
     return skillsField()
       .value()
       .map((name) => ({
@@ -108,6 +111,7 @@ export class SkillComposer {
 
   protected removeSkill(skill: string): void {
     const skillsField = this.skills();
+
     skillsField().value.update((skills) =>
       skills.filter((existing) => existing !== skill),
     );

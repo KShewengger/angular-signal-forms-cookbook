@@ -8,6 +8,7 @@ import { type Field } from '@angular/forms/signals';
 export class IsFieldInvalidPipe implements PipeTransform {
   transform(field: Field<unknown>): boolean {
     const state = field();
+
     return (state.dirty() || state.touched()) && state.invalid();
   }
 }

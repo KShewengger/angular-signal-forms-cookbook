@@ -32,6 +32,7 @@ describe('IsFieldInvalidPipe (10 · Dynamic Forms)', () => {
     initial: Application = { ...INITIAL_APPLICATION },
   ): FieldTree<Application> => {
     const model = signal<Application>({ ...initial });
+
     return form(model, applicationSchema, {
       injector: TestBed.inject(Injector),
     });
@@ -71,8 +72,9 @@ describe('IsFieldInvalidPipe (10 · Dynamic Forms)', () => {
     it('is false for a valid field, even after it is touched', () => {
       const nameField = buildApplicationForm({
         ...INITIAL_APPLICATION,
-        name: 'Ada Lovelace',
+        name: 'Kristy Mae Almuete',
       }).name;
+
       nameField().markAsTouched();
 
       expect(pipe.transform(nameField)).toBe(false);
@@ -80,6 +82,7 @@ describe('IsFieldInvalidPipe (10 · Dynamic Forms)', () => {
 
     it('is true once an invalid field is touched', () => {
       const nameField = buildApplicationForm().name;
+
       nameField().markAsTouched();
 
       expect(pipe.transform(nameField)).toBe(true);
@@ -87,6 +90,7 @@ describe('IsFieldInvalidPipe (10 · Dynamic Forms)', () => {
 
     it('is true once an invalid field is dirty', () => {
       const nameField = buildApplicationForm().name;
+
       nameField().markAsDirty();
 
       expect(pipe.transform(nameField)).toBe(true);
@@ -94,11 +98,12 @@ describe('IsFieldInvalidPipe (10 · Dynamic Forms)', () => {
 
     it('becomes false once the field becomes valid', () => {
       const nameField = buildApplicationForm().name;
+
       nameField().markAsTouched();
 
       expect(pipe.transform(nameField)).toBe(true);
 
-      nameField().value.set('Ada Lovelace');
+      nameField().value.set('Kristy Mae Almuete');
 
       expect(pipe.transform(nameField)).toBe(false);
     });
@@ -107,6 +112,7 @@ describe('IsFieldInvalidPipe (10 · Dynamic Forms)', () => {
   describe('frontend form fields', () => {
     it('flags an empty name after it is touched', () => {
       const nameField = buildApplicationForm().name;
+
       nameField().markAsTouched();
 
       expect(pipe.transform(nameField)).toBe(true);
@@ -115,8 +121,9 @@ describe('IsFieldInvalidPipe (10 · Dynamic Forms)', () => {
     it('does not flag a filled name after it is touched', () => {
       const nameField = buildApplicationForm({
         ...INITIAL_APPLICATION,
-        name: 'Ada Lovelace',
+        name: 'Kristy Mae Almuete',
       }).name;
+
       nameField().markAsTouched();
 
       expect(pipe.transform(nameField)).toBe(false);
@@ -124,6 +131,7 @@ describe('IsFieldInvalidPipe (10 · Dynamic Forms)', () => {
 
     it('flags empty years after they are touched', () => {
       const yearsField = buildApplicationForm().years;
+
       yearsField().markAsTouched();
 
       expect(pipe.transform(yearsField)).toBe(true);
@@ -134,6 +142,7 @@ describe('IsFieldInvalidPipe (10 · Dynamic Forms)', () => {
         ...INITIAL_APPLICATION,
         years: 11,
       }).years;
+
       yearsField().markAsTouched();
 
       expect(pipe.transform(yearsField)).toBe(true);
@@ -144,6 +153,7 @@ describe('IsFieldInvalidPipe (10 · Dynamic Forms)', () => {
         ...INITIAL_APPLICATION,
         years: 5,
       }).years;
+
       yearsField().markAsTouched();
 
       expect(pipe.transform(yearsField)).toBe(false);
@@ -156,6 +166,7 @@ describe('IsFieldInvalidPipe (10 · Dynamic Forms)', () => {
           engagement: { kind: 'contract', dayRate: null },
         }),
       );
+
       dayRateField().markAsTouched();
 
       expect(pipe.transform(dayRateField)).toBe(true);
@@ -168,6 +179,7 @@ describe('IsFieldInvalidPipe (10 · Dynamic Forms)', () => {
           engagement: { kind: 'contract', dayRate: 150 },
         }),
       );
+
       dayRateField().markAsTouched();
 
       expect(pipe.transform(dayRateField)).toBe(false);
@@ -179,6 +191,7 @@ describe('IsFieldInvalidPipe (10 · Dynamic Forms)', () => {
       const portfolioField = portfolioOf(
         buildApplicationForm({ ...EMPTY_DESIGNER }),
       );
+
       portfolioField().markAsTouched();
 
       expect(pipe.transform(portfolioField)).toBe(true);
@@ -191,6 +204,7 @@ describe('IsFieldInvalidPipe (10 · Dynamic Forms)', () => {
           portfolio: 'https://ada.dev',
         }),
       );
+
       portfolioField().markAsTouched();
 
       expect(pipe.transform(portfolioField)).toBe(false);
@@ -203,6 +217,7 @@ describe('IsFieldInvalidPipe (10 · Dynamic Forms)', () => {
           portfolio: 'https://ada.dev',
         }),
       );
+
       portfolioField().markAsTouched();
 
       expect(pipe.transform(portfolioField)).toBe(false);
@@ -219,6 +234,7 @@ describe('IsFieldInvalidPipe (10 · Dynamic Forms)', () => {
           engagement: { kind: 'contract', dayRate: null },
         }),
       );
+
       dayRateField().markAsTouched();
 
       expect(pipe.transform(dayRateField)).toBe(true);
@@ -228,6 +244,7 @@ describe('IsFieldInvalidPipe (10 · Dynamic Forms)', () => {
   describe('skill composer fields', () => {
     it('flags an empty skill draft after it is touched', () => {
       const skillField = buildSkillDraft();
+
       skillField().markAsTouched();
 
       expect(pipe.transform(skillField)).toBe(true);
@@ -235,6 +252,7 @@ describe('IsFieldInvalidPipe (10 · Dynamic Forms)', () => {
 
     it('does not flag a letters-only skill draft after it is touched', () => {
       const skillField = buildSkillDraft('Signals');
+
       skillField().markAsTouched();
 
       expect(pipe.transform(skillField)).toBe(false);
@@ -245,6 +263,7 @@ describe('IsFieldInvalidPipe (10 · Dynamic Forms)', () => {
         ...INITIAL_APPLICATION,
         skills: ['---'],
       }).skills[0];
+
       skillField().markAsTouched();
 
       expect(pipe.transform(skillField)).toBe(true);
@@ -252,6 +271,7 @@ describe('IsFieldInvalidPipe (10 · Dynamic Forms)', () => {
 
     it('does not flag a letters-only skill chip after it is touched', () => {
       const skillField = buildApplicationForm().skills[0];
+
       skillField().markAsTouched();
 
       expect(pipe.transform(skillField)).toBe(false);

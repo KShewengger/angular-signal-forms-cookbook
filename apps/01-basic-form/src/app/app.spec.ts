@@ -15,6 +15,7 @@ describe('App (01 · Basic Form)', () => {
         ...INITIAL_REGISTRATION,
         ...initial,
       });
+
       return form(
         model,
         (path) => {
@@ -28,6 +29,7 @@ describe('App (01 · Basic Form)', () => {
 
     it('starts pristine, untouched, and empty', () => {
       const registrationForm = buildRegistrationForm();
+
       expect(registrationForm().value()).toEqual(INITIAL_REGISTRATION);
       expect(registrationForm().dirty()).toBe(false);
       expect(registrationForm().touched()).toBe(false);
@@ -35,6 +37,7 @@ describe('App (01 · Basic Form)', () => {
 
     it('is invalid while the required Name is empty', () => {
       const registrationForm = buildRegistrationForm();
+
       expect(registrationForm.name().valid()).toBe(false);
       expect(registrationForm().valid()).toBe(false);
       expect(registrationForm().invalid()).toBe(true);
@@ -42,18 +45,24 @@ describe('App (01 · Basic Form)', () => {
 
     it('reports a required error on Name', () => {
       const registrationForm = buildRegistrationForm();
+
       expect(registrationForm.name().errors().length).toBeGreaterThan(0);
     });
 
     it('becomes valid once Name has a value', () => {
       const registrationForm = buildRegistrationForm();
-      registrationForm.name().value.set('Ada Lovelace');
+
+      registrationForm.name().value.set('Kristy Mae Almuete');
+
       expect(registrationForm.name().valid()).toBe(true);
       expect(registrationForm().valid()).toBe(true);
     });
 
     it('returns to invalid when Name is cleared again', () => {
-      const registrationForm = buildRegistrationForm({ name: 'Ada' });
+      const registrationForm = buildRegistrationForm({
+        name: 'Kristy Mae Almuete',
+      });
+
       expect(registrationForm().valid()).toBe(true);
 
       registrationForm.name().value.set('');
@@ -124,7 +133,10 @@ describe('App (01 · Basic Form)', () => {
     });
 
     it('marks the form dirty and enables Save/Clear after editing', async () => {
-      await typeInto(controlById<HTMLInputElement>('name'), 'Ada');
+      await typeInto(
+        controlById<HTMLInputElement>('name'),
+        'Kristy Mae Almuete',
+      );
 
       expect(formState().dirty()).toBe(true);
       expect(buttonByText('Save').disabled).toBe(false);
@@ -132,7 +144,10 @@ describe('App (01 · Basic Form)', () => {
     });
 
     it('flows typed values into the form model', async () => {
-      await typeInto(controlById<HTMLInputElement>('name'), 'Ada');
+      await typeInto(
+        controlById<HTMLInputElement>('name'),
+        'Kristy Mae Almuete',
+      );
       await typeInto(controlById<HTMLInputElement>('age'), '30');
       await typeInto(
         controlById<HTMLTextAreaElement>('bio'),
@@ -140,7 +155,7 @@ describe('App (01 · Basic Form)', () => {
       );
 
       const value = formState().value();
-      expect(value.name).toBe('Ada');
+      expect(value.name).toBe('Kristy Mae Almuete');
       expect(value.age).toBe(30);
       expect(value.bio).toBe('Enchantress of numbers');
     });
@@ -154,7 +169,10 @@ describe('App (01 · Basic Form)', () => {
     });
 
     it('surfaces the captured values after submitting', async () => {
-      await typeInto(controlById<HTMLInputElement>('name'), 'Ada');
+      await typeInto(
+        controlById<HTMLInputElement>('name'),
+        'Kristy Mae Almuete',
+      );
 
       buttonByText('Save').click();
       await fixture.whenStable();
@@ -162,11 +180,14 @@ describe('App (01 · Basic Form)', () => {
       const shownValues = Array.from(document.querySelectorAll('dd')).map(
         (valueCell) => valueCell.textContent?.trim(),
       );
-      expect(shownValues).toContain('Ada');
+      expect(shownValues).toContain('Kristy Mae Almuete');
     });
 
     it('clears the form back to its initial state', async () => {
-      await typeInto(controlById<HTMLInputElement>('name'), 'Ada');
+      await typeInto(
+        controlById<HTMLInputElement>('name'),
+        'Kristy Mae Almuete',
+      );
       expect(formState().dirty()).toBe(true);
 
       buttonByText('Clear').click();

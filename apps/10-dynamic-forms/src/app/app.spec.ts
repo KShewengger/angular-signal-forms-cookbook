@@ -35,7 +35,7 @@ const kindsOf = (field: ErrorReader): ReadonlyArray<string> =>
 
 const VALID_FRONTEND: Application = {
   role: 'frontend',
-  name: 'Ada Lovelace',
+  name: 'Kristy Mae Almuete',
   years: 5,
   engagement: { kind: 'fulltime' },
   skills: ['Angular', 'TypeScript', 'RxJS'],
@@ -43,7 +43,7 @@ const VALID_FRONTEND: Application = {
 
 const VALID_DESIGNER: DesignerApplication = {
   role: 'designer',
-  name: 'Ada Lovelace',
+  name: 'Kristy Mae Almuete',
   years: 5,
   engagement: { kind: 'fulltime' },
   skills: ['Angular', 'Figma', 'Sass'],
@@ -54,6 +54,7 @@ const buildApplicationForm = (
   initial: Application = { ...INITIAL_APPLICATION },
 ): FieldTree<Application> => {
   const model = signal<Application>({ ...initial });
+
   return form(model, applicationSchema, {
     injector: TestBed.inject(Injector),
   });
@@ -77,6 +78,7 @@ describe('App (10 · Dynamic Forms)', () => {
     describe('name', () => {
       it('is required', () => {
         const applicationForm = buildApplicationForm();
+
         expect(applicationForm.name().valid()).toBe(false);
         expect(kindsOf(applicationForm.name)).toContain('required');
         expect(messagesOf(applicationForm.name)).toContain('Name is required.');
@@ -85,8 +87,9 @@ describe('App (10 · Dynamic Forms)', () => {
       it('accepts a filled name', () => {
         const applicationForm = buildApplicationForm({
           ...INITIAL_APPLICATION,
-          name: 'Ada Lovelace',
+          name: 'Kristy Mae Almuete',
         });
+
         expect(applicationForm.name().valid()).toBe(true);
       });
     });
@@ -94,6 +97,7 @@ describe('App (10 · Dynamic Forms)', () => {
     describe('years', () => {
       it('is required', () => {
         const applicationForm = buildApplicationForm();
+
         expect(applicationForm.years().valid()).toBe(false);
         expect(messagesOf(applicationForm.years)).toContain(
           'Years of experience is required.',
@@ -105,6 +109,7 @@ describe('App (10 · Dynamic Forms)', () => {
           ...INITIAL_APPLICATION,
           years: 11,
         });
+
         expect(applicationForm.years().valid()).toBe(false);
         expect(kindsOf(applicationForm.years)).toContain('max');
         expect(messagesOf(applicationForm.years)).toContain(
@@ -117,6 +122,7 @@ describe('App (10 · Dynamic Forms)', () => {
           ...INITIAL_APPLICATION,
           years: 0,
         });
+
         expect(applicationForm.years().valid()).toBe(true);
       });
     });
@@ -124,6 +130,7 @@ describe('App (10 · Dynamic Forms)', () => {
     describe('engagement (applyWhenValue)', () => {
       it('does not require a day rate for fulltime', () => {
         const applicationForm = buildApplicationForm(VALID_FRONTEND);
+
         expect(applicationForm.engagement().valid()).toBe(true);
       });
 
@@ -132,6 +139,7 @@ describe('App (10 · Dynamic Forms)', () => {
           ...VALID_FRONTEND,
           engagement: { kind: 'contract', dayRate: null },
         });
+
         expect(dayRateOf(applicationForm)().valid()).toBe(false);
         expect(kindsOf(dayRateOf(applicationForm))).toContain('required');
         expect(messagesOf(dayRateOf(applicationForm))).toContain(
@@ -144,6 +152,7 @@ describe('App (10 · Dynamic Forms)', () => {
           ...VALID_FRONTEND,
           engagement: { kind: 'contract', dayRate: 400 },
         });
+
         expect(dayRateOf(applicationForm)().valid()).toBe(true);
       });
     });
@@ -151,6 +160,7 @@ describe('App (10 · Dynamic Forms)', () => {
     describe('role (applyWhenValue)', () => {
       it('does not require a portfolio for frontend', () => {
         const applicationForm = buildApplicationForm(VALID_FRONTEND);
+
         expect(applicationForm().valid()).toBe(true);
       });
 
@@ -159,6 +169,7 @@ describe('App (10 · Dynamic Forms)', () => {
           ...VALID_DESIGNER,
           portfolio: '',
         });
+
         expect(portfolioOf(applicationForm)().valid()).toBe(false);
         expect(kindsOf(portfolioOf(applicationForm))).toContain('required');
         expect(messagesOf(portfolioOf(applicationForm))).toContain(
@@ -171,6 +182,7 @@ describe('App (10 · Dynamic Forms)', () => {
           ...VALID_DESIGNER,
           portfolio: 'not-a-url',
         });
+
         expect(portfolioOf(applicationForm)().valid()).toBe(false);
         expect(kindsOf(portfolioOf(applicationForm))).toContain('pattern');
         expect(messagesOf(portfolioOf(applicationForm))).toContain(
@@ -183,12 +195,14 @@ describe('App (10 · Dynamic Forms)', () => {
           ...VALID_DESIGNER,
           portfolio: 'http://test---',
         });
+
         expect(portfolioOf(applicationForm)().valid()).toBe(false);
         expect(kindsOf(portfolioOf(applicationForm))).toContain('pattern');
       });
 
       it('accepts designer once the portfolio is a URL', () => {
         const applicationForm = buildApplicationForm(VALID_DESIGNER);
+
         expect(portfolioOf(applicationForm)().valid()).toBe(true);
       });
     });
@@ -199,6 +213,7 @@ describe('App (10 · Dynamic Forms)', () => {
           ...INITIAL_APPLICATION,
           skills: ['---'],
         });
+
         expect(applicationForm.skills[0]().valid()).toBe(false);
         expect(kindsOf(applicationForm.skills[0])).toContain('pattern');
         expect(messagesOf(applicationForm.skills[0])).toContain(
@@ -211,6 +226,7 @@ describe('App (10 · Dynamic Forms)', () => {
           ...INITIAL_APPLICATION,
           skills: ['Angular'],
         });
+
         expect(applicationForm.skills[0]().valid()).toBe(true);
       });
     });
@@ -218,6 +234,7 @@ describe('App (10 · Dynamic Forms)', () => {
     describe('skill draft (composer form)', () => {
       const buildSkillDraftForm = (initial = ''): FieldTree<string> => {
         const model = signal(initial);
+
         return form(
           model,
           (path) => {
@@ -233,6 +250,7 @@ describe('App (10 · Dynamic Forms)', () => {
 
       it('is required', () => {
         const skillDraftForm = buildSkillDraftForm();
+
         expect(skillDraftForm().valid()).toBe(false);
         expect(kindsOf(skillDraftForm)).toContain('required');
         expect(messagesOf(skillDraftForm)).toContain('A skill is required.');
@@ -240,6 +258,7 @@ describe('App (10 · Dynamic Forms)', () => {
 
       it('rejects a skill that is not letters-only', () => {
         const skillDraftForm = buildSkillDraftForm('C++');
+
         expect(skillDraftForm().valid()).toBe(false);
         expect(kindsOf(skillDraftForm)).toContain('pattern');
         expect(messagesOf(skillDraftForm)).toContain(
@@ -249,6 +268,7 @@ describe('App (10 · Dynamic Forms)', () => {
 
       it('accepts a letters-only skill', () => {
         const skillDraftForm = buildSkillDraftForm('Signals');
+
         expect(skillDraftForm().valid()).toBe(true);
       });
     });
@@ -256,12 +276,14 @@ describe('App (10 · Dynamic Forms)', () => {
     describe('form as a whole', () => {
       it('is invalid while empty', () => {
         const applicationForm = buildApplicationForm();
+
         expect(applicationForm().valid()).toBe(false);
         expect(applicationForm().invalid()).toBe(true);
       });
 
       it('is valid once every frontend field is filled', () => {
         const applicationForm = buildApplicationForm(VALID_FRONTEND);
+
         expect(applicationForm().valid()).toBe(true);
       });
 
@@ -270,6 +292,7 @@ describe('App (10 · Dynamic Forms)', () => {
           ...VALID_DESIGNER,
           portfolio: '',
         });
+
         expect(applicationForm().valid()).toBe(false);
       });
     });
@@ -345,7 +368,7 @@ describe('App (10 · Dynamic Forms)', () => {
     });
 
     it('resets the form to pristine when the role tab switches', async () => {
-      appForm().name().value.set('Ada');
+      appForm().name().value.set('Kristy Mae Almuete');
       appForm().name().markAsDirty();
       appForm().name().markAsTouched();
       await fixture.whenStable();
