@@ -1,12 +1,11 @@
 import { Component, computed, input } from '@angular/core';
 import { type Field } from '@angular/forms/signals';
 import { NbText } from '@ng-brutalism/ui';
-import { IsFieldInvalidPipe } from '../is-field-invalid';
 
 @Component({
   selector: 'app-validation-errors',
   templateUrl: 'validation-errors.html',
-  imports: [NbText, IsFieldInvalidPipe],
+  imports: [NbText],
   host: {
     class: 'contents',
   },

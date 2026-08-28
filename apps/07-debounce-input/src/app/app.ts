@@ -89,12 +89,6 @@ export class App {
     this.searchForm.query().errors(),
   );
 
-  protected readonly queryInvalid = computed(() => {
-    const field = this.searchForm.query();
-
-    return (field.dirty() || field.touched()) && field.invalid();
-  });
-
   private readonly searchResource = rxResource({
     params: () =>
       this.searchForm.query().valid() ? this.query().trim() : undefined,

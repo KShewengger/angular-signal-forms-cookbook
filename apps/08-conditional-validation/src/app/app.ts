@@ -15,7 +15,7 @@ import {
   SEATS,
   SEAT_LEGEND,
 } from './app.data';
-import { createExperience, fieldInvalid } from './app.utils';
+import { createExperience } from './app.utils';
 import { FieldTree, form, FormField, submit } from '@angular/forms/signals';
 import {
   NbButton,
@@ -115,22 +115,6 @@ export class App {
     () => this.bookingForm.experience().value().format,
   );
 
-  protected readonly glassesInvalid = computed(() => {
-    if (this.selectedFormat() !== 'imax') return false;
-
-    return fieldInvalid(this.glassesField());
-  });
-
-  protected readonly mealInvalid = computed(() => {
-    if (this.selectedFormat() !== 'vip') return false;
-
-    return fieldInvalid(this.mealField());
-  });
-
-  protected readonly comboInvalid = computed(() =>
-    fieldInvalid(this.bookingForm.comboSize()),
-  );
-
   protected readonly seatCount = computed(() => this.selectedSeats().size);
 
   protected readonly promoDisabled = computed(() =>
@@ -157,17 +141,14 @@ export class App {
       this.bookingForm.promoCode().value().trim().toUpperCase() === PROMO_CODE,
   );
 
-  protected readonly couponInvalid = computed(() =>
-    fieldInvalid(this.bookingForm.promoCode()),
-  );
+  protected readonly couponTone = computed(() => {
+    if (this.promoDisabled()) return 'muted';
 
-  protected readonly couponTone = computed(() =>
-    this.promoDisabled()
-      ? 'muted'
-      : this.couponInvalid()
-        ? 'danger'
-        : 'success',
-  );
+    const promo = this.bookingForm.promoCode();
+    const couponInvalid = (promo.dirty() || promo.touched()) && promo.invalid();
+
+    return couponInvalid ? 'danger' : 'success';
+  });
 
   protected readonly subtotalDisplay = computed(
     () => `$${this.subtotal().toFixed(2)}`,

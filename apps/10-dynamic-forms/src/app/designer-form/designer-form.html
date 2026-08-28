@@ -81,7 +81,9 @@
 
           <!-- NAME -->
           <div nbStack gap="sm" align="stretch">
-            @let nameInvalid = form().name | isFieldInvalid;
+            @let name = form().name();
+            @let nameInvalid =
+              (name.dirty() || name.touched()) && name.invalid();
 
             <label nbLabel for="designer-name" i18n="@@fullNameLabel">
               Full name <span aria-hidden="true">*</span>
@@ -108,7 +110,9 @@
 
           <!-- YEARS -->
           <div nbStack gap="sm" align="stretch">
-            @let yearsInvalid = form().years | isFieldInvalid;
+            @let years = form().years();
+            @let yearsInvalid =
+              (years.dirty() || years.touched()) && years.invalid();
 
             <label nbLabel for="designer-years" i18n="@@yearsLabel">
               Years of experience <span aria-hidden="true">*</span>
@@ -146,7 +150,9 @@
 
           <!-- PORTFOLIO -->
           <div nbStack gap="sm" align="stretch">
-            @let portfolioInvalid = portfolioField | isFieldInvalid;
+            @let portfolio = portfolioField();
+            @let portfolioInvalid =
+              (portfolio.dirty() || portfolio.touched()) && portfolio.invalid();
 
             <label nbLabel for="designer-portfolio" i18n="@@portfolioUrlLabel">
               Portfolio URL <span aria-hidden="true">*</span>
@@ -215,7 +221,9 @@
           <!-- DAY RATE -->
           @if (isContract()) {
             <div nbStack gap="sm" align="stretch">
-              @let dayRateInvalid = dayRateField | isFieldInvalid;
+              @let dayRate = dayRateField();
+              @let dayRateInvalid =
+                (dayRate.dirty() || dayRate.touched()) && dayRate.invalid();
 
               <label nbLabel for="designer-day-rate" i18n="@@dayRateLabel">
                 Day rate (USD)

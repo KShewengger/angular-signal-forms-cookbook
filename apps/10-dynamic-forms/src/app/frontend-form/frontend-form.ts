@@ -26,7 +26,6 @@ import {
   EngagementKind,
 } from '../app.model';
 import { createEngagement } from '../app.utils';
-import { IsFieldInvalidPipe } from '../is-field-invalid';
 import { SkillComposer } from '../skill-composer/skill-composer';
 import { SubmittedBanner } from '../submitted-banner/submitted-banner';
 import { ValidationErrors } from '../validation-errors';
@@ -52,7 +51,6 @@ import { ValidationErrors } from '../validation-errors';
     NbStack,
     NbSticker,
     NbText,
-    IsFieldInvalidPipe,
     SkillComposer,
     SubmittedBanner,
     ValidationErrors,
