@@ -19,6 +19,7 @@ const EMAIL_CHANNEL: ChannelOption = {
   label: $localize`:@@channelEmailLabel:Email`,
   contactLabel: $localize`:@@channelEmailContactLabel:Email address`,
   placeholder: $localize`:@@channelEmailPlaceholder:you@example.com`,
+  requirement: $localize`:@@channelEmailRequirement:A valid email`,
 };
 
 const PHONE_CHANNEL: ChannelOption = {
@@ -27,6 +28,7 @@ const PHONE_CHANNEL: ChannelOption = {
   label: $localize`:@@channelPhoneLabel:Phone`,
   contactLabel: $localize`:@@channelPhoneContactLabel:Phone number`,
   placeholder: $localize`:@@channelPhonePlaceholder:+639171234567`,
+  requirement: $localize`:@@channelPhoneRequirement:International format`,
 };
 
 export const CHANNELS: ChannelOption[] = [EMAIL_CHANNEL, PHONE_CHANNEL];

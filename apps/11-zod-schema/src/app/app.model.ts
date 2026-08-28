@@ -16,6 +16,7 @@ export type ChannelOption = {
   label: string;
   contactLabel: string;
   placeholder: string;
+  requirement: string;
 };
 
 export type SeverityOption = {
