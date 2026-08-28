@@ -9,6 +9,7 @@ const GRADE_DELAY_MS = 500;
 
 const buildAnswerForm = (value = ''): FieldTree<QuizAnswer> => {
   const model = signal<QuizAnswer>({ ...INITIAL_ANSWER, answer: value });
+
   return form(
     model,
     (path) => {
@@ -26,12 +27,14 @@ describe('App (09 · Form Submission)', () => {
 
     it('requires an answer', () => {
       const answerForm = buildAnswerForm('');
+
       expect(answerForm.answer().valid()).toBe(false);
       expect(answerForm.answer().errors()[0].kind).toBe('required');
     });
 
     it('is valid once an answer is present', () => {
       const answerForm = buildAnswerForm('form');
+
       expect(answerForm.answer().valid()).toBe(true);
     });
   });
@@ -50,6 +53,7 @@ describe('App (09 · Form Submission)', () => {
     it('accepts the right answer, case-insensitively and trimmed', async () => {
       const q1 = grader.grade('q1', '  Form ');
       const q2 = grader.grade('q2', 'submitting');
+
       await vi.advanceTimersByTimeAsync(GRADE_DELAY_MS);
       expect(await q1).toEqual({ correct: true });
       expect(await q2).toEqual({ correct: true });
@@ -57,6 +61,7 @@ describe('App (09 · Form Submission)', () => {
 
     it('reports a wrong answer', async () => {
       const result = grader.grade('q1', 'schema');
+
       await vi.advanceTimersByTimeAsync(GRADE_DELAY_MS);
       expect(await result).toEqual({
         correct: false,
@@ -66,6 +71,7 @@ describe('App (09 · Form Submission)', () => {
 
     it('treats an unknown question as wrong', async () => {
       const result = grader.grade('nope', 'form');
+
       await vi.advanceTimersByTimeAsync(GRADE_DELAY_MS);
       expect(await result).toMatchObject({ correct: false });
     });
@@ -77,12 +83,14 @@ describe('App (09 · Form Submission)', () => {
 
     const submitForm = (): void => {
       const formEl = host.querySelector<HTMLFormElement>('form');
+
       if (!formEl) throw new Error('no form rendered');
       formEl.requestSubmit();
     };
 
     const typeAnswer = (value: string): void => {
       const input = host.querySelector<HTMLInputElement>('input');
+
       if (!input) throw new Error('no text input rendered');
       input.value = value;
       input.dispatchEvent(new Event('input'));
@@ -90,6 +98,7 @@ describe('App (09 · Form Submission)', () => {
 
     const gradeAndSettle = async (): Promise<void> => {
       await vi.advanceTimersByTimeAsync(GRADE_DELAY_MS);
+
       await fixture.whenStable();
       await Promise.resolve();
       await fixture.whenStable();

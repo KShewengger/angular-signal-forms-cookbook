@@ -91,9 +91,7 @@
                 placeholder="Enter your username"
                 aria-describedby="username-errors"
                 [formField]="userForm.username"
-                [attr.aria-invalid]="
-                  userForm.username().touched() && userForm.username().invalid()
-                "
+                [attr.aria-invalid]="ariaInvalid().username"
               />
 
               <app-validation-errors
@@ -114,9 +112,7 @@
                 placeholder="Enter your email"
                 aria-describedby="email-errors"
                 [formField]="userForm.email"
-                [attr.aria-invalid]="
-                  userForm.email().touched() && userForm.email().invalid()
-                "
+                [attr.aria-invalid]="ariaInvalid().email"
               />
 
               <app-validation-errors
@@ -136,9 +132,7 @@
                 placeholder="Enter your age"
                 aria-describedby="age-errors"
                 [formField]="userForm.age"
-                [attr.aria-invalid]="
-                  userForm.age().touched() && userForm.age().invalid()
-                "
+                [attr.aria-invalid]="ariaInvalid().age"
               />
 
               <app-validation-errors
@@ -157,9 +151,7 @@
                 aria-labelledby="role-label"
                 aria-describedby="role-errors"
                 placeholder="Select a role"
-                [attr.aria-invalid]="
-                  userForm.role().touched() && userForm.role().invalid()
-                "
+                [attr.aria-invalid]="ariaInvalid().role"
                 [formField]="userForm.role"
               >
                 @for (role of roles; track role.value) {
@@ -185,9 +177,7 @@
                 placeholder="Tell us a little about yourself"
                 aria-describedby="bio-errors"
                 [formField]="userForm.bio"
-                [attr.aria-invalid]="
-                  userForm.bio().touched() && userForm.bio().invalid()
-                "
+                [attr.aria-invalid]="ariaInvalid().bio"
               ></textarea>
 
               <app-validation-errors
@@ -217,15 +207,13 @@
 
         <!-- ACTIONS -->
         <nb-card-actions align="end" class="mt-4">
-          @let dirty = userForm().dirty(); @let invalid = userForm().invalid();
-
           <button
             nbButton
             type="button"
             size="sm"
             tone="background"
             i18n="@@clearLabel"
-            [disabled]="!dirty"
+            [disabled]="!formDirty()"
             (click)="clear()"
           >
             Clear
@@ -236,7 +224,7 @@
             type="submit"
             size="sm"
             i18n="@@saveLabel"
-            [disabled]="!dirty || invalid"
+            [disabled]="!canSave()"
           >
             Save
           </button>

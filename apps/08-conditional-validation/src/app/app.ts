@@ -15,7 +15,7 @@ import {
   SEATS,
   SEAT_LEGEND,
 } from './app.data';
-import { createExperience } from './app.utils';
+import { createExperience, fieldInvalid } from './app.utils';
 import { FieldTree, form, FormField, submit } from '@angular/forms/signals';
 import {
   NbButton,
@@ -118,24 +118,18 @@ export class App {
   protected readonly glassesInvalid = computed(() => {
     if (this.selectedFormat() !== 'imax') return false;
 
-    const field = this.glassesField();
-
-    return (field.dirty() || field.touched()) && field.invalid();
+    return fieldInvalid(this.glassesField());
   });
 
   protected readonly mealInvalid = computed(() => {
     if (this.selectedFormat() !== 'vip') return false;
 
-    const field = this.mealField();
-
-    return (field.dirty() || field.touched()) && field.invalid();
+    return fieldInvalid(this.mealField());
   });
 
-  protected readonly comboInvalid = computed(() => {
-    const field = this.bookingForm.comboSize();
-
-    return (field.dirty() || field.touched()) && field.invalid();
-  });
+  protected readonly comboInvalid = computed(() =>
+    fieldInvalid(this.bookingForm.comboSize()),
+  );
 
   protected readonly seatCount = computed(() => this.selectedSeats().size);
 
@@ -163,11 +157,17 @@ export class App {
       this.bookingForm.promoCode().value().trim().toUpperCase() === PROMO_CODE,
   );
 
-  protected readonly couponInvalid = computed(() => {
-    const field = this.bookingForm.promoCode();
+  protected readonly couponInvalid = computed(() =>
+    fieldInvalid(this.bookingForm.promoCode()),
+  );
 
-    return (field.dirty() || field.touched()) && field.invalid();
-  });
+  protected readonly couponTone = computed(() =>
+    this.promoDisabled()
+      ? 'muted'
+      : this.couponInvalid()
+        ? 'danger'
+        : 'success',
+  );
 
   protected readonly subtotalDisplay = computed(
     () => `$${this.subtotal().toFixed(2)}`,
@@ -184,6 +184,10 @@ export class App {
   );
 
   protected readonly booked = signal(false);
+
+  protected readonly bookDisabled = computed(
+    () => !this.booked() && !this.canBook(),
+  );
 
   protected selectExperience(format: Experience['format']): void {
     if (this.selectedFormat() === format) return;

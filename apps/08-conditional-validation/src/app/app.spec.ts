@@ -29,6 +29,7 @@ const buildBookingForm = (
   initial: Partial<Booking> = {},
 ): FieldTree<Booking> => {
   const model = signal<Booking>({ ...INITIAL_BOOKING, ...initial });
+
   return form(model, bookingSchema, { injector: TestBed.inject(Injector) });
 };
 
@@ -54,6 +55,7 @@ describe('App (08 · Conditional Validation)', () => {
     describe('experience (applyWhenValue)', () => {
       it('adds no extra rule for the standard variant', () => {
         const bookingForm = buildBookingForm();
+
         expect(bookingForm.experience().valid()).toBe(true);
       });
 
@@ -61,6 +63,7 @@ describe('App (08 · Conditional Validation)', () => {
         const bookingForm = buildBookingForm({
           experience: { format: 'imax', glasses: null },
         });
+
         expect(glassesOf(bookingForm)().valid()).toBe(false);
         expect(kindsOf(glassesOf(bookingForm))).toContain('required');
       });
@@ -69,6 +72,7 @@ describe('App (08 · Conditional Validation)', () => {
         const bookingForm = buildBookingForm({
           experience: { format: 'imax', glasses: 0 },
         });
+
         expect(kindsOf(glassesOf(bookingForm))).toContain('min');
         expect(glassesOf(bookingForm)().valid()).toBe(false);
       });
@@ -77,6 +81,7 @@ describe('App (08 · Conditional Validation)', () => {
         const bookingForm = buildBookingForm({
           experience: { format: 'imax', glasses: 2 },
         });
+
         expect(glassesOf(bookingForm)().valid()).toBe(true);
       });
 
@@ -84,6 +89,7 @@ describe('App (08 · Conditional Validation)', () => {
         const bookingForm = buildBookingForm({
           experience: { format: 'vip', mealChoice: '' },
         });
+
         expect(mealOf(bookingForm)().valid()).toBe(false);
         expect(kindsOf(mealOf(bookingForm))).toContain('required');
       });
@@ -92,6 +98,7 @@ describe('App (08 · Conditional Validation)', () => {
         const bookingForm = buildBookingForm({
           experience: { format: 'vip', mealChoice: 'Wagyu slider trio' },
         });
+
         expect(mealOf(bookingForm)().valid()).toBe(true);
       });
     });
@@ -102,6 +109,7 @@ describe('App (08 · Conditional Validation)', () => {
           addSnacks: false,
           comboSize: '',
         });
+
         expect(bookingForm.comboSize().valid()).toBe(true);
       });
 
@@ -110,6 +118,7 @@ describe('App (08 · Conditional Validation)', () => {
           addSnacks: true,
           comboSize: '',
         });
+
         expect(bookingForm.comboSize().valid()).toBe(false);
         expect(kindsOf(bookingForm.comboSize)).toContain('required');
       });
@@ -119,6 +128,7 @@ describe('App (08 · Conditional Validation)', () => {
           addSnacks: true,
           comboSize: 'Medium',
         });
+
         expect(bookingForm.comboSize().valid()).toBe(true);
       });
     });
@@ -126,12 +136,14 @@ describe('App (08 · Conditional Validation)', () => {
     describe('seats (applyEach)', () => {
       it('requires a seat on every ticket', () => {
         const bookingForm = buildBookingForm({ tickets: [{ seat: '' }] });
+
         expect(bookingForm.tickets[0].seat().valid()).toBe(false);
         expect(kindsOf(bookingForm.tickets[0].seat)).toContain('required');
       });
 
       it('accepts a ticket that has a seat', () => {
         const bookingForm = buildBookingForm({ tickets: [{ seat: 'R1' }] });
+
         expect(bookingForm.tickets[0].seat().valid()).toBe(true);
       });
     });
@@ -139,6 +151,7 @@ describe('App (08 · Conditional Validation)', () => {
     describe('promo code (disabled + when + validate)', () => {
       it('is disabled until four seats are chosen', () => {
         const bookingForm = buildBookingForm({ tickets: [{ seat: 'R1' }] });
+
         expect(bookingForm.promoCode().disabled()).toBe(true);
       });
 
@@ -147,11 +160,13 @@ describe('App (08 · Conditional Validation)', () => {
           tickets: [{ seat: 'R1' }],
           promoCode: 'WRONG',
         });
+
         expect(bookingForm.promoCode().valid()).toBe(true);
       });
 
       it('unlocks once four seats are chosen', () => {
         const bookingForm = buildBookingForm({ tickets: FOUR_SEATS });
+
         expect(bookingForm.promoCode().disabled()).toBe(false);
       });
 
@@ -160,6 +175,7 @@ describe('App (08 · Conditional Validation)', () => {
           tickets: FOUR_SEATS,
           promoCode: 'FREESTUFF',
         });
+
         expect(bookingForm.promoCode().valid()).toBe(false);
         expect(kindsOf(bookingForm.promoCode)).toContain('invalidCoupon');
         expect(messagesOf(bookingForm.promoCode)).toContain('Invalid coupon.');
@@ -170,6 +186,7 @@ describe('App (08 · Conditional Validation)', () => {
           tickets: FOUR_SEATS,
           promoCode: PROMO_CODE.toLowerCase(),
         });
+
         expect(bookingForm.promoCode().valid()).toBe(true);
       });
 
@@ -178,6 +195,7 @@ describe('App (08 · Conditional Validation)', () => {
           tickets: FOUR_SEATS,
           promoCode: '',
         });
+
         expect(bookingForm.promoCode().valid()).toBe(true);
       });
     });
@@ -185,6 +203,7 @@ describe('App (08 · Conditional Validation)', () => {
     describe('form as a whole', () => {
       it('is valid when empty (standard, no seats)', () => {
         const bookingForm = buildBookingForm();
+
         expect(bookingForm().valid()).toBe(true);
       });
 
@@ -192,6 +211,7 @@ describe('App (08 · Conditional Validation)', () => {
         const bookingForm = buildBookingForm({
           experience: { format: 'imax', glasses: null },
         });
+
         expect(bookingForm().valid()).toBe(false);
         expect(bookingForm().invalid()).toBe(true);
       });
@@ -261,6 +281,7 @@ describe('App (08 · Conditional Validation)', () => {
     it('disables the promo code until four seats are booked', async () => {
       const promo = (): HTMLInputElement =>
         host.querySelector<HTMLInputElement>('#promo') as HTMLInputElement;
+
       expect(promo().disabled).toBe(true);
 
       appForm().tickets().value.set(FOUR_SEATS);

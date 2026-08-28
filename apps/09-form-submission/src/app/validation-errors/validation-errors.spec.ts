@@ -10,6 +10,7 @@ describe('ValidationErrors (09 · Form Submission)', () => {
 
   const buildAnswerForm = (value = ''): FieldTree<QuizAnswer> => {
     const model = signal<QuizAnswer>({ ...INITIAL_ANSWER, answer: value });
+
     return form(
       model,
       (path) => {
@@ -25,6 +26,7 @@ describe('ValidationErrors (09 · Form Submission)', () => {
     answerForm: FieldTree<QuizAnswer>,
   ): Promise<void> => {
     fixture.componentRef.setInput('field', answerForm.answer);
+
     await fixture.whenStable();
   };
 
@@ -45,6 +47,7 @@ describe('ValidationErrors (09 · Form Submission)', () => {
 
     it('renders nothing for a valid answer, even after it is touched', async () => {
       const answerForm = buildAnswerForm('form');
+
       answerForm.answer().markAsTouched();
       await showErrorsFor(answerForm);
 
@@ -53,6 +56,7 @@ describe('ValidationErrors (09 · Form Submission)', () => {
 
     it('shows the error once an empty answer is touched', async () => {
       const answerForm = buildAnswerForm('');
+
       answerForm.answer().markAsTouched();
       await showErrorsFor(answerForm);
 
@@ -61,6 +65,7 @@ describe('ValidationErrors (09 · Form Submission)', () => {
 
     it('shows the error once an empty answer is dirty', async () => {
       const answerForm = buildAnswerForm('');
+
       answerForm.answer().markAsDirty();
       await showErrorsFor(answerForm);
 
@@ -71,6 +76,7 @@ describe('ValidationErrors (09 · Form Submission)', () => {
   describe('rendering the real recipe error', () => {
     it('surfaces the required message (via errorSummary)', async () => {
       const answerForm = buildAnswerForm('');
+
       answerForm.answer().markAsTouched();
       await showErrorsFor(answerForm);
 
@@ -81,10 +87,12 @@ describe('ValidationErrors (09 · Form Submission)', () => {
 
     it('renders a flat list for a single error', async () => {
       const answerForm = buildAnswerForm('');
+
       answerForm.answer().markAsTouched();
       await showErrorsFor(answerForm);
 
       const list = errorList();
+
       expect(list?.classList.contains('list-disc')).toBe(false);
       expect(host.querySelectorAll('li').length).toBe(1);
     });
@@ -93,10 +101,12 @@ describe('ValidationErrors (09 · Form Submission)', () => {
   describe('accessibility', () => {
     it('exposes the error to assistive technology', async () => {
       const answerForm = buildAnswerForm('');
+
       answerForm.answer().markAsTouched();
       await showErrorsFor(answerForm);
 
       const list = errorList();
+
       expect(list?.getAttribute('role')).toBe('alert');
       expect(list?.getAttribute('aria-live')).toBe('polite');
     });

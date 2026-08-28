@@ -169,12 +169,7 @@
 
           <!-- ACTIONS -->
           <nb-card-actions class="mt-6">
-            <button
-              nbButton
-              fullWidth
-              tone="secondary"
-              [disabled]="!bookingForm().dirty() || bookingForm().invalid()"
-            >
+            <button nbButton fullWidth tone="secondary" [disabled]="!canFind()">
               <span i18n="@@findBookingLabel">Find my booking</span>
 
               <span nbButtonTrailingIcon class="grid place-items-center">

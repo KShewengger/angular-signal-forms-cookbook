@@ -23,6 +23,7 @@ describe('ValidationErrors (05 · Array Validation)', () => {
         count: counts[topping.id] ?? 0,
       })),
     });
+
     return form(model, pizzaMakerSchema, {
       injector: TestBed.inject(Injector),
     });
@@ -33,6 +34,7 @@ describe('ValidationErrors (05 · Array Validation)', () => {
     id: PizzaToppingId,
   ): FieldTree<PizzaFormModelItem> => {
     const index = PIZZA_TOPPINGS.findIndex((topping) => topping.id === id);
+
     return pizzaForm.toppings[index];
   };
 
@@ -40,6 +42,7 @@ describe('ValidationErrors (05 · Array Validation)', () => {
     field: FieldTree<PizzaFormModelItem>,
   ): Promise<void> => {
     fixture.componentRef.setInput('field', field);
+
     await fixture.whenStable();
   };
 
@@ -60,6 +63,7 @@ describe('ValidationErrors (05 · Array Validation)', () => {
 
     it('renders nothing for a valid item, even after it is touched', async () => {
       const item = itemOf(buildPizzaForm({ pepperoni: 3 }), 'pepperoni');
+
       item.count().markAsTouched();
       await showErrorsFor(item);
 
@@ -68,6 +72,7 @@ describe('ValidationErrors (05 · Array Validation)', () => {
 
     it('shows the errors once an invalid item is touched', async () => {
       const item = itemOf(buildPizzaForm({ pepperoni: 6 }), 'pepperoni');
+
       item.count().markAsTouched();
       await showErrorsFor(item);
 
@@ -76,6 +81,7 @@ describe('ValidationErrors (05 · Array Validation)', () => {
 
     it('shows the errors once an invalid item is dirty', async () => {
       const item = itemOf(buildPizzaForm({ pepperoni: 6 }), 'pepperoni');
+
       item.count().markAsDirty();
       await showErrorsFor(item);
 
@@ -86,6 +92,7 @@ describe('ValidationErrors (05 · Array Validation)', () => {
   describe('rendering the real recipe errors', () => {
     it('surfaces the per-topping max message (aggregated via errorSummary)', async () => {
       const item = itemOf(buildPizzaForm({ pepperoni: 6 }), 'pepperoni');
+
       item.count().markAsTouched();
       await showErrorsFor(item);
 
@@ -94,6 +101,7 @@ describe('ValidationErrors (05 · Array Validation)', () => {
 
     it('surfaces the negative-count message', async () => {
       const item = itemOf(buildPizzaForm({ pepperoni: -1 }), 'pepperoni');
+
       item.count().markAsTouched();
       await showErrorsFor(item);
 
@@ -102,10 +110,12 @@ describe('ValidationErrors (05 · Array Validation)', () => {
 
     it('renders a flat list for a single error', async () => {
       const item = itemOf(buildPizzaForm({ mozzarella: 2 }), 'mozzarella');
+
       item.count().markAsTouched();
       await showErrorsFor(item);
 
       const list = errorList();
+
       expect(list?.classList.contains('list-disc')).toBe(false);
       expect(host.querySelectorAll('li').length).toBe(1);
     });
@@ -114,10 +124,12 @@ describe('ValidationErrors (05 · Array Validation)', () => {
   describe('accessibility', () => {
     it('exposes the errors to assistive technology', async () => {
       const item = itemOf(buildPizzaForm({ pepperoni: 6 }), 'pepperoni');
+
       item.count().markAsTouched();
       await showErrorsFor(item);
 
       const list = errorList();
+
       expect(list?.getAttribute('role')).toBe('alert');
       expect(list?.getAttribute('aria-live')).toBe('polite');
     });

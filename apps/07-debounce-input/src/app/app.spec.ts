@@ -24,6 +24,7 @@ const buildSearchForm = (
   initial: Partial<SearchFormModel> = {},
 ): FieldTree<SearchFormModel> => {
   const model = signal<SearchFormModel>({ ...INITIAL_SEARCH, ...initial });
+
   return form(model, searchSchema, { injector: TestBed.inject(Injector) });
 };
 
@@ -34,21 +35,25 @@ describe('App (07 · Debounce Input)', () => {
     describe('query', () => {
       it('accepts an empty query (which lists every fruit)', () => {
         const searchForm = buildSearchForm();
+
         expect(searchForm.query().valid()).toBe(true);
       });
 
       it('accepts a query that matches a known fruit', () => {
         const searchForm = buildSearchForm({ query: 'Apple' });
+
         expect(searchForm.query().valid()).toBe(true);
       });
 
       it('matches case-insensitively and on partial input', () => {
         const searchForm = buildSearchForm({ query: 'app' });
+
         expect(searchForm.query().valid()).toBe(true);
       });
 
       it('rejects special characters with the pattern rule', () => {
         const searchForm = buildSearchForm({ query: 'a@b' });
+
         expect(searchForm.query().valid()).toBe(false);
         expect(kindsOf(searchForm.query)).toContain('pattern');
         expect(messagesOf(searchForm.query)).toContain(
@@ -58,6 +63,7 @@ describe('App (07 · Debounce Input)', () => {
 
       it('rejects a query that matches no fruit with unknownFruit', () => {
         const searchForm = buildSearchForm({ query: 'xyz' });
+
         expect(searchForm.query().valid()).toBe(false);
         expect(kindsOf(searchForm.query)).toContain('unknownFruit');
         expect(messagesOf(searchForm.query)).toContain(
@@ -67,6 +73,7 @@ describe('App (07 · Debounce Input)', () => {
 
       it('does not raise unknownFruit while the pattern is violated', () => {
         const searchForm = buildSearchForm({ query: 'a@b' });
+
         expect(kindsOf(searchForm.query)).not.toContain('unknownFruit');
       });
     });
@@ -74,11 +81,13 @@ describe('App (07 · Debounce Input)', () => {
     describe('form as a whole', () => {
       it('is valid when the query is empty', () => {
         const searchForm = buildSearchForm();
+
         expect(searchForm().valid()).toBe(true);
       });
 
       it('is invalid when the query matches no fruit', () => {
         const searchForm = buildSearchForm({ query: 'xyz' });
+
         expect(searchForm().valid()).toBe(false);
         expect(searchForm().invalid()).toBe(true);
       });

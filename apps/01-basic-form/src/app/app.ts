@@ -112,8 +112,25 @@ export class App {
 
   protected readonly value = computed(() => this.userForm().value());
 
+  protected readonly formTouched = computed(() => this.userForm().touched());
+
+  protected readonly formDirty = computed(() => this.userForm().dirty());
+
+  protected readonly formValid = computed(() => this.userForm().valid());
+
+  protected readonly invalidDotLive = computed(
+    () => this.userForm().dirty() && this.userForm().invalid(),
+  );
+
+  protected readonly canSave = computed(
+    () => this.userForm().dirty() && !this.userForm().invalid(),
+  );
+
   protected readonly roles = ROLES;
-  protected readonly keepOrder = () => 0;
+
+  protected keepOrder(): number {
+    return 0;
+  }
 
   protected clear(): void {
     this.dialog().close();

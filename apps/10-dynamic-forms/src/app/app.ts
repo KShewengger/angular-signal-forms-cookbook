@@ -68,6 +68,7 @@ export class App {
       submission: {
         action: async () => {
           const sent = await this.sendApplication();
+
           this.submitted.set(sent);
         },
         onInvalid: (field) =>

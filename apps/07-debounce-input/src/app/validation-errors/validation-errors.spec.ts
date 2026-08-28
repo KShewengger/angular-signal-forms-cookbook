@@ -15,6 +15,7 @@ describe('ValidationErrors (07 · Debounce Input)', () => {
     visible: boolean,
   ): Promise<void> => {
     fixture.componentRef.setInput('errors', errors);
+
     fixture.componentRef.setInput('visible', visible);
     await fixture.whenStable();
   };
@@ -52,6 +53,7 @@ describe('ValidationErrors (07 · Debounce Input)', () => {
       await render(errorsOf('No special characters allowed.'), true);
 
       const list = errorList();
+
       expect(list?.classList.contains('list-disc')).toBe(false);
       expect(host.querySelectorAll('li').length).toBe(1);
       expect(host.textContent).toContain('No special characters allowed.');
@@ -64,6 +66,7 @@ describe('ValidationErrors (07 · Debounce Input)', () => {
       );
 
       const list = errorList();
+
       expect(list?.classList.contains('list-disc')).toBe(true);
       expect(list?.classList.contains('pl-5')).toBe(true);
       expect(host.querySelectorAll('li').length).toBe(2);
@@ -77,6 +80,7 @@ describe('ValidationErrors (07 · Debounce Input)', () => {
       await render(errorsOf('No special characters allowed.'), true);
 
       const list = errorList();
+
       expect(list?.getAttribute('role')).toBe('alert');
       expect(list?.getAttribute('aria-live')).toBe('polite');
     });

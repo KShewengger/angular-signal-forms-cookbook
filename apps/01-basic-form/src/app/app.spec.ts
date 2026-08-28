@@ -76,6 +76,7 @@ describe('App (01 · Basic Form)', () => {
 
     const formState = (): {
       value(): RegistrationFormModel;
+
       dirty(): boolean;
     } =>
       (
@@ -97,6 +98,7 @@ describe('App (01 · Basic Form)', () => {
       value: string,
     ): Promise<void> => {
       control.value = value;
+
       control.dispatchEvent(new Event('input', { bubbles: true }));
       await fixture.whenStable();
     };
@@ -155,6 +157,7 @@ describe('App (01 · Basic Form)', () => {
       );
 
       const value = formState().value();
+
       expect(value.name).toBe('Kristy Mae Almuete');
       expect(value.age).toBe(30);
       expect(value.bio).toBe('Enchantress of numbers');
@@ -162,6 +165,7 @@ describe('App (01 · Basic Form)', () => {
 
     it('toggles the beginner flag from the checkbox', async () => {
       const beginnerCheckbox = controlById<HTMLInputElement>('beginner');
+
       beginnerCheckbox.click();
       await fixture.whenStable();
 
@@ -180,6 +184,7 @@ describe('App (01 · Basic Form)', () => {
       const shownValues = Array.from(document.querySelectorAll('dd')).map(
         (valueCell) => valueCell.textContent?.trim(),
       );
+
       expect(shownValues).toContain('Kristy Mae Almuete');
     });
 

@@ -1,6 +1,7 @@
 import '@angular/localize/init';
 
 const dialogProto = globalThis.HTMLDialogElement?.prototype;
+
 if (dialogProto) {
   if (!dialogProto.show) {
     dialogProto.show = function (this: HTMLDialogElement): void {

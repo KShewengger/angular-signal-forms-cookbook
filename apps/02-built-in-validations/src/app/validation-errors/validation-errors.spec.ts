@@ -16,6 +16,7 @@ describe('ValidationErrors', () => {
       ...INITIAL_REGISTRATION,
       ...initial,
     });
+
     return form(model, registrationSchema, {
       injector: TestBed.inject(Injector),
     });
@@ -23,6 +24,7 @@ describe('ValidationErrors', () => {
 
   const showErrorsFor = async (field: FieldTree<unknown>): Promise<void> => {
     fixture.componentRef.setInput('field', field);
+
     await fixture.whenStable();
   };
 
@@ -45,6 +47,7 @@ describe('ValidationErrors', () => {
       const usernameField = buildRegistrationForm({
         username: 'USER-123',
       }).username;
+
       usernameField().markAsTouched();
       await showErrorsFor(usernameField);
 
@@ -53,6 +56,7 @@ describe('ValidationErrors', () => {
 
     it('shows the errors once an invalid field is touched', async () => {
       const usernameField = buildRegistrationForm().username;
+
       usernameField().markAsTouched();
       await showErrorsFor(usernameField);
 
@@ -61,6 +65,7 @@ describe('ValidationErrors', () => {
 
     it('shows the errors once an invalid field is dirty', async () => {
       const usernameField = buildRegistrationForm().username;
+
       usernameField().markAsDirty();
       await showErrorsFor(usernameField);
 
@@ -71,6 +76,7 @@ describe('ValidationErrors', () => {
   describe('rendering real registration errors', () => {
     it("surfaces the username 'required' message", async () => {
       const usernameField = buildRegistrationForm().username;
+
       usernameField().markAsTouched();
       await showErrorsFor(usernameField);
 
@@ -80,10 +86,12 @@ describe('ValidationErrors', () => {
     it('renders a bullet list with every message when a username has multiple errors', async () => {
       // 'ab' is too short AND breaks the pattern.
       const usernameField = buildRegistrationForm({ username: 'ab' }).username;
+
       usernameField().markAsTouched();
       await showErrorsFor(usernameField);
 
       const list = errorList();
+
       expect(list?.classList.contains('list-disc')).toBe(true);
       expect(list?.classList.contains('pl-5')).toBe(true);
       expect(host.querySelectorAll('li').length).toBe(2);
@@ -100,10 +108,12 @@ describe('ValidationErrors', () => {
       const usernameField = buildRegistrationForm({
         username: 'abcde',
       }).username;
+
       usernameField().markAsTouched();
       await showErrorsFor(usernameField);
 
       const list = errorList();
+
       expect(list?.classList.contains('list-disc')).toBe(false);
       expect(host.querySelectorAll('li').length).toBe(1);
       expect(host.textContent).toContain(
@@ -115,6 +125,7 @@ describe('ValidationErrors', () => {
       const emailField = buildRegistrationForm({
         email: 'not-an-email',
       }).email;
+
       emailField().markAsTouched();
       await showErrorsFor(emailField);
 
@@ -123,6 +134,7 @@ describe('ValidationErrors', () => {
 
     it('surfaces the age minimum message', async () => {
       const ageField = buildRegistrationForm({ age: 5 }).age;
+
       ageField().markAsTouched();
       await showErrorsFor(ageField);
 
@@ -133,6 +145,7 @@ describe('ValidationErrors', () => {
   describe('accessibility', () => {
     it('exposes the errors to assistive technology', async () => {
       const usernameField = buildRegistrationForm().username;
+
       usernameField().markAsTouched();
       await showErrorsFor(usernameField);
 

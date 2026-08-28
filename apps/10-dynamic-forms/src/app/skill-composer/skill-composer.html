@@ -1,5 +1,5 @@
 <div nbStack gap="sm" align="stretch">
-  <label nbLabel [attr.for]="inputId()" i18n="@@skillsLabel">Core skills</label>
+  <label nbLabel i18n="@@skillsLabel" [attr.for]="inputId()">Core skills</label>
 
   <div
     nbSurface
@@ -38,8 +38,6 @@
     </div>
 
     <div class="flex items-center gap-2">
-      @let skillInvalid = draftSettled() && (skillForm | isFieldInvalid);
-
       <input
         nbInput
         class="h-11! min-w-0 flex-1"
@@ -49,8 +47,8 @@
         [placeholder]="placeholder()"
         [formField]="skillForm"
         [attr.aria-describedby]="draftErrorsId()"
-        [attr.aria-invalid]="skillInvalid"
-        [style.--nb-border]="skillInvalid ? 'var(--nb-danger)' : null"
+        [attr.aria-invalid]="skillInvalid()"
+        [style.--nb-border]="skillInvalid() ? 'var(--nb-danger)' : null"
         (keydown.enter)="addSkillFromEnter($event)"
       />
 

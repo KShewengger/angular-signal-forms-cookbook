@@ -91,6 +91,7 @@ export class App {
 
   protected readonly queryInvalid = computed(() => {
     const field = this.searchForm.query();
+
     return (field.dirty() || field.touched()) && field.invalid();
   });
 
@@ -110,11 +111,13 @@ export class App {
 
   protected readonly isLoading = computed(() => {
     const status = this.status();
+
     return this.dirty() && (status === 'loading' || status === 'reloading');
   });
 
   protected readonly isResolved = computed(() => {
     const status = this.status();
+
     return this.dirty() && (status === 'resolved' || status === 'local');
   });
 }

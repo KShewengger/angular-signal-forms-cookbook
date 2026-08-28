@@ -52,6 +52,7 @@ describe('ValidationErrors (10 · Dynamic Forms)', () => {
 
   const showErrorsFor = async (field: FieldTree<unknown>): Promise<void> => {
     fixture.componentRef.setInput('field', field);
+
     await fixture.whenStable();
   };
 
@@ -230,6 +231,7 @@ describe('ValidationErrors (10 · Dynamic Forms)', () => {
       await showErrorsFor(nameField);
 
       const list = errorList();
+
       expect(list?.classList.contains('list-disc')).toBe(false);
       expect(host.querySelectorAll('li').length).toBe(1);
     });
@@ -243,6 +245,7 @@ describe('ValidationErrors (10 · Dynamic Forms)', () => {
       await showErrorsFor(nameField);
 
       const list = errorList();
+
       expect(list?.getAttribute('role')).toBe('alert');
       expect(list?.getAttribute('aria-live')).toBe('polite');
     });

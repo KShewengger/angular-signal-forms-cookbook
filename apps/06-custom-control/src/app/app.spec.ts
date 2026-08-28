@@ -33,6 +33,7 @@ const buildPizzaForm = (
       count: counts[topping.id] ?? 0,
     })),
   });
+
   return form(model, pizzaMakerSchema, { injector: TestBed.inject(Injector) });
 };
 
@@ -41,6 +42,7 @@ const itemOf = (
   id: PizzaToppingId,
 ): FieldTree<PizzaFormModelItem> => {
   const index = PIZZA_TOPPINGS.findIndex((topping) => topping.id === id);
+
   return pizzaForm.toppings[index];
 };
 
@@ -51,11 +53,13 @@ describe('App (06 · Custom Control)', () => {
     describe('per-item rules', () => {
       it('accepts a count within the topping max', () => {
         const item = itemOf(buildPizzaForm({ pepperoni: 3 }), 'pepperoni');
+
         expect(item.count().valid()).toBe(true);
       });
 
       it('rejects a negative count', () => {
         const item = itemOf(buildPizzaForm({ pepperoni: -1 }), 'pepperoni');
+
         expect(item.count().valid()).toBe(false);
         expect(messagesOf(item.count)).toContain('No negative');
         expect(kindsOf(item.count)).toContain('min');
@@ -66,6 +70,7 @@ describe('App (06 · Custom Control)', () => {
         // disabled and a disabled field runs no validators: the `toppingMax`
         // rule is shadowed and never reported.
         const item = itemOf(buildPizzaForm({ pepperoni: 6 }), 'pepperoni');
+
         expect(item.count().disabled()).toBe(true);
         expect(item.count().errors().length).toBe(0);
       });
@@ -98,6 +103,7 @@ describe('App (06 · Custom Control)', () => {
     describe('conditional hidden (the cross-field rule)', () => {
       it('hides pepperoni once there is more than one tomato', () => {
         const pizzaForm = buildPizzaForm({ tomato: 2 });
+
         expect(itemOf(pizzaForm, 'pepperoni').count().hidden()).toBe(true);
       });
 
@@ -111,6 +117,7 @@ describe('App (06 · Custom Control)', () => {
 
       it('never hides the other toppings', () => {
         const pizzaForm = buildPizzaForm({ tomato: 2 });
+
         expect(itemOf(pizzaForm, 'mozzarella').count().hidden()).toBe(false);
         expect(itemOf(pizzaForm, 'basil').count().hidden()).toBe(false);
       });
@@ -139,6 +146,7 @@ describe('App (06 · Custom Control)', () => {
 
     const stepper = (id: PizzaToppingId): HTMLElement => {
       const index = PIZZA_TOPPINGS.findIndex((topping) => topping.id === id);
+
       return toppingEls()[index];
     };
 

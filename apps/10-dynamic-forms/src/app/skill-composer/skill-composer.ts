@@ -20,7 +20,6 @@ import {
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { tablerX } from '@ng-icons/tabler-icons';
 import { skillItemSchema } from '../app.schema';
-import { IsFieldInvalidPipe } from '../is-field-invalid';
 import { ValidationErrors } from '../validation-errors';
 
 @Component({
@@ -37,7 +36,6 @@ import { ValidationErrors } from '../validation-errors';
     NbStack,
     NbSurface,
     NgIcon,
-    IsFieldInvalidPipe,
     ValidationErrors,
   ],
   viewProviders: [provideIcons({ tablerX })],
@@ -65,6 +63,14 @@ export class SkillComposer {
     const field = this.skillForm();
 
     return field.controlValue() === field.value();
+  });
+
+  protected readonly skillInvalid = computed(() => {
+    if (!this.draftSettled()) return false;
+
+    const field = this.skillForm();
+
+    return (field.dirty() || field.touched()) && field.invalid();
   });
 
   protected readonly canAddSkill = computed(() => {

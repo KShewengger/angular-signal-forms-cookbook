@@ -31,6 +31,7 @@ const buildBookingForm = (
   initial: Partial<BookingFormModel> = {},
 ): FieldTree<BookingFormModel> => {
   const model = signal<BookingFormModel>({ ...INITIAL_BOOKING, ...initial });
+
   return form(model, bookingSchema, { injector: TestBed.inject(Injector) });
 };
 
@@ -47,6 +48,7 @@ describe('App (04 · Async Validation)', () => {
     describe('reference', () => {
       it('is required (synchronously, before any request)', () => {
         const bookingForm = buildBookingForm();
+
         expect(bookingForm.reference().valid()).toBe(false);
         expect(messagesOf(bookingForm.reference)).toContain(
           'Please enter your booking reference.',
@@ -55,6 +57,7 @@ describe('App (04 · Async Validation)', () => {
 
       it('accepts a known booking reference once the async check resolves', async () => {
         const bookingForm = buildBookingForm({ reference: 'ABC1234' });
+
         await settle();
 
         expect(kindsOf(bookingForm.reference)).not.toContain('bookingNotFound');
@@ -63,6 +66,7 @@ describe('App (04 · Async Validation)', () => {
 
       it('rejects an unknown booking reference with bookingNotFound', async () => {
         const bookingForm = buildBookingForm({ reference: 'ZZZ0000' });
+
         await settle();
 
         expect(kindsOf(bookingForm.reference)).toContain('bookingNotFound');
@@ -74,6 +78,7 @@ describe('App (04 · Async Validation)', () => {
 
       it('ignores letter case when checking the reference', async () => {
         const bookingForm = buildBookingForm({ reference: 'abc1234' });
+
         await settle();
 
         expect(kindsOf(bookingForm.reference)).not.toContain('bookingNotFound');
@@ -84,6 +89,7 @@ describe('App (04 · Async Validation)', () => {
     describe('lastName', () => {
       it('is required', () => {
         const bookingForm = buildBookingForm();
+
         expect(messagesOf(bookingForm.lastName)).toContain(
           'Please enter your last name.',
         );
@@ -91,6 +97,7 @@ describe('App (04 · Async Validation)', () => {
 
       it('accepts any non-empty value', () => {
         const bookingForm = buildBookingForm({ lastName: 'Almuete' });
+
         expect(bookingForm.lastName().valid()).toBe(true);
       });
     });
@@ -98,6 +105,7 @@ describe('App (04 · Async Validation)', () => {
     describe('form as a whole', () => {
       it('is invalid while empty', () => {
         const bookingForm = buildBookingForm();
+
         expect(bookingForm().valid()).toBe(false);
         expect(bookingForm().invalid()).toBe(true);
       });
@@ -107,6 +115,7 @@ describe('App (04 · Async Validation)', () => {
           reference: 'ABC1234',
           lastName: 'Almuete',
         });
+
         await settle();
 
         expect(bookingForm().valid()).toBe(true);
@@ -129,6 +138,7 @@ describe('App (04 · Async Validation)', () => {
 
     it('surfaces networkError when the check cannot complete', async () => {
       const bookingForm = buildBookingForm({ reference: 'ABC1234' });
+
       await settle();
 
       expect(kindsOf(bookingForm.reference)).toContain('networkError');
@@ -193,6 +203,7 @@ describe('App (04 · Async Validation)', () => {
       await fixture.whenStable();
 
       const submit = buttonByText('Find my booking');
+
       expect(submit.disabled).toBe(false);
 
       submit.click();

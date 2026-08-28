@@ -47,6 +47,7 @@ export function pizzaMakerSchema(path: SchemaPathTree<PizzaFormModel>): void {
         if (valueOf(topping.id) !== 'pepperoni') return false;
 
         const tomato = valueOf(path.toppings).find((t) => t.id === 'tomato');
+
         return (tomato?.count ?? 0) > 1;
       },
     });

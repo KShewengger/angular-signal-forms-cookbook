@@ -14,6 +14,7 @@ export class ValidationErrors {
 
   protected readonly errors = computed(() => {
     const fieldRef = this.field();
+
     return fieldRef().errors();
   });
 
@@ -23,6 +24,7 @@ export class ValidationErrors {
 
   protected readonly visible = computed(() => {
     const fieldRef = this.field();
+
     return (fieldRef().dirty() || fieldRef().touched()) && fieldRef().invalid();
   });
 }

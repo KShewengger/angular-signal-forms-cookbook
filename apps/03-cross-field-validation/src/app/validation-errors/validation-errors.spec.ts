@@ -13,11 +13,13 @@ describe('ValidationErrors', () => {
     initial: Partial<UserFormModel> = {},
   ): FieldTree<UserFormModel> => {
     const model = signal<UserFormModel>({ ...INITIAL_USER, ...initial });
+
     return form(model, userSchema, { injector: TestBed.inject(Injector) });
   };
 
   const showErrorsFor = async (field: FieldTree<unknown>): Promise<void> => {
     fixture.componentRef.setInput('field', field);
+
     await fixture.whenStable();
   };
 
@@ -38,6 +40,7 @@ describe('ValidationErrors', () => {
 
     it('renders nothing for a valid field, even after it is touched', async () => {
       const emailField = buildUserForm({ email: 'ada@dev.io' }).email;
+
       emailField().markAsTouched();
       await showErrorsFor(emailField);
 
@@ -46,6 +49,7 @@ describe('ValidationErrors', () => {
 
     it('shows the errors once an invalid field is touched', async () => {
       const emailField = buildUserForm().email;
+
       emailField().markAsTouched();
       await showErrorsFor(emailField);
 
@@ -54,6 +58,7 @@ describe('ValidationErrors', () => {
 
     it('shows the errors once an invalid field is dirty', async () => {
       const emailField = buildUserForm().email;
+
       emailField().markAsDirty();
       await showErrorsFor(emailField);
 
@@ -64,6 +69,7 @@ describe('ValidationErrors', () => {
   describe('rendering real cross-field errors', () => {
     it("surfaces the email 'required' message", async () => {
       const emailField = buildUserForm().email;
+
       emailField().markAsTouched();
       await showErrorsFor(emailField);
 
@@ -72,6 +78,7 @@ describe('ValidationErrors', () => {
 
     it('surfaces the email format message', async () => {
       const emailField = buildUserForm({ email: 'nope' }).email;
+
       emailField().markAsTouched();
       await showErrorsFor(emailField);
 
@@ -83,6 +90,7 @@ describe('ValidationErrors', () => {
         email: 'ada@dev.io',
         confirmEmail: 'grace@dev.io',
       }).confirmEmail;
+
       confirmField().markAsTouched();
       await showErrorsFor(confirmField);
 
@@ -94,10 +102,12 @@ describe('ValidationErrors', () => {
         email: 'ada@dev.io',
         confirmEmail: 'nope',
       }).confirmEmail;
+
       confirmField().markAsTouched();
       await showErrorsFor(confirmField);
 
       const list = errorList();
+
       expect(list?.classList.contains('list-disc')).toBe(true);
       expect(list?.classList.contains('pl-5')).toBe(true);
       expect(host.querySelectorAll('li').length).toBe(2);
@@ -107,10 +117,12 @@ describe('ValidationErrors', () => {
 
     it('renders a flat list for a single error', async () => {
       const emailField = buildUserForm({ email: 'nope' }).email;
+
       emailField().markAsTouched();
       await showErrorsFor(emailField);
 
       const list = errorList();
+
       expect(list?.classList.contains('list-disc')).toBe(false);
       expect(host.querySelectorAll('li').length).toBe(1);
     });
@@ -119,10 +131,12 @@ describe('ValidationErrors', () => {
   describe('accessibility', () => {
     it('exposes the errors to assistive technology', async () => {
       const emailField = buildUserForm().email;
+
       emailField().markAsTouched();
       await showErrorsFor(emailField);
 
       const list = errorList();
+
       expect(list?.getAttribute('role')).toBe('alert');
       expect(list?.getAttribute('aria-live')).toBeNull();
     });

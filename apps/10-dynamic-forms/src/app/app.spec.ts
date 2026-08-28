@@ -329,12 +329,14 @@ describe('App (10 · Dynamic Forms)', () => {
 
     const submitForm = (): void => {
       const formEl = host.querySelector<HTMLFormElement>('form');
+
       if (!formEl) throw new Error('no form rendered');
       formEl.requestSubmit();
     };
 
     const settleSubmit = async (): Promise<void> => {
       await vi.advanceTimersByTimeAsync(SUBMIT_DELAY_MS);
+
       await fixture.whenStable();
       await Promise.resolve();
       await fixture.whenStable();
@@ -424,6 +426,7 @@ describe('App (10 · Dynamic Forms)', () => {
 
     it('does not flash the skill required error while debounce is in flight', async () => {
       const input = host.querySelector('#frontend-skill') as HTMLInputElement;
+
       input.value = 'Signals';
       input.dispatchEvent(new Event('input', { bubbles: true }));
       await fixture.whenStable();
@@ -463,6 +466,7 @@ describe('App (10 · Dynamic Forms)', () => {
       const retryButton = Array.from(host.querySelectorAll('button')).find(
         (button) => button.textContent?.includes('Retry'),
       ) as HTMLButtonElement;
+
       retryButton.click();
       await fixture.whenStable();
 

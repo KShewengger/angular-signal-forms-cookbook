@@ -332,13 +332,7 @@
         [formField]="bookingForm.promoCode"
       />
 
-      <span
-        nbText
-        size="xs"
-        [tone]="
-          promoDisabled() ? 'muted' : couponInvalid() ? 'danger' : 'success'
-        "
-      >
+      <span nbText size="xs" [tone]="couponTone()">
         @if (promoDisabled()) {
           <span i18n="@@promoLockedHint"
             >🔒 Unlocks when you book 4+ seats ({{ seatCount() }}/4)</span
@@ -381,7 +375,7 @@
       fullWidth
       type="button"
       [tone]="booked() ? 'accent' : 'success'"
-      [disabled]="!booked() && !canBook()"
+      [disabled]="bookDisabled()"
       (click)="book()"
     >
       @if (booked()) {

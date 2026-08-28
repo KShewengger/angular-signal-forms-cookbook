@@ -33,6 +33,7 @@ const buildPizzaForm = (
       count: counts[topping.id] ?? 0,
     })),
   });
+
   return form(model, pizzaMakerSchema, { injector: TestBed.inject(Injector) });
 };
 
@@ -41,6 +42,7 @@ const itemOf = (
   id: PizzaToppingId,
 ): FieldTree<PizzaFormModelItem> => {
   const index = PIZZA_TOPPINGS.findIndex((topping) => topping.id === id);
+
   return pizzaForm.toppings[index];
 };
 
@@ -51,22 +53,26 @@ describe('App (05 · Array Validation)', () => {
     describe('per-item rules (applyEach)', () => {
       it('accepts a count within the topping max', () => {
         const item = itemOf(buildPizzaForm({ pepperoni: 3 }), 'pepperoni');
+
         expect(item.count().valid()).toBe(true);
       });
 
       it('accepts a zero count', () => {
         const item = itemOf(buildPizzaForm(), 'pepperoni');
+
         expect(item.count().valid()).toBe(true);
       });
 
       it('rejects a negative count with the min rule', () => {
         const item = itemOf(buildPizzaForm({ pepperoni: -1 }), 'pepperoni');
+
         expect(item.count().valid()).toBe(false);
         expect(messagesOf(item.count)).toContain('Count cannot be negative');
       });
 
       it('rejects a count above the topping max with toppingMax', () => {
         const item = itemOf(buildPizzaForm({ pepperoni: 6 }), 'pepperoni');
+
         expect(kindsOf(item.count)).toContain('toppingMax');
         expect(messagesOf(item.count)).toContain('Max 5');
         expect(item.count().valid()).toBe(false);
@@ -87,6 +93,7 @@ describe('App (05 · Array Validation)', () => {
             Record<PizzaToppingId, number>
           >;
           const item = itemOf(buildPizzaForm(counts), id);
+
           expect(kindsOf(item.count)).toContain('toppingMax');
           expect(messagesOf(item.count)).toContain(message);
         });
@@ -96,6 +103,7 @@ describe('App (05 · Array Validation)', () => {
     describe('items validate independently', () => {
       it('keeps a valid item valid while a sibling is invalid', () => {
         const pizzaForm = buildPizzaForm({ pepperoni: 3, mozzarella: 2 });
+
         expect(itemOf(pizzaForm, 'pepperoni').count().valid()).toBe(true);
         expect(itemOf(pizzaForm, 'mozzarella').count().valid()).toBe(false);
       });
@@ -104,11 +112,13 @@ describe('App (05 · Array Validation)', () => {
     describe('form as a whole', () => {
       it('is valid when every topping is within range', () => {
         const pizzaForm = buildPizzaForm({ pepperoni: 5, tomato: 4 });
+
         expect(pizzaForm().valid()).toBe(true);
       });
 
       it('is invalid when any topping exceeds its max', () => {
         const pizzaForm = buildPizzaForm({ mozzarella: 2 });
+
         expect(pizzaForm().valid()).toBe(false);
         expect(pizzaForm().invalid()).toBe(true);
       });
@@ -150,6 +160,7 @@ describe('App (05 · Array Validation)', () => {
 
     it('shows the max message when a topping exceeds its limit', async () => {
       const item = itemOf(pizzaForm(), 'pepperoni');
+
       item.count().value.set(6);
       item.count().markAsTouched();
       await fixture.whenStable();

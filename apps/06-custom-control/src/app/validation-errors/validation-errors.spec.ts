@@ -15,6 +15,7 @@ describe('ValidationErrors (06 · Custom Control)', () => {
     visible: boolean,
   ): Promise<void> => {
     fixture.componentRef.setInput('errors', errors);
+
     fixture.componentRef.setInput('visible', visible);
     await fixture.whenStable();
   };
@@ -52,6 +53,7 @@ describe('ValidationErrors (06 · Custom Control)', () => {
       await render(errorsOf('Max 5'), true);
 
       const list = errorList();
+
       expect(list?.classList.contains('list-disc')).toBe(false);
       expect(host.querySelectorAll('li').length).toBe(1);
       expect(host.textContent).toContain('Max 5');
@@ -61,6 +63,7 @@ describe('ValidationErrors (06 · Custom Control)', () => {
       await render(errorsOf('No negative', 'Max 5'), true);
 
       const list = errorList();
+
       expect(list?.classList.contains('list-disc')).toBe(true);
       expect(list?.classList.contains('pl-5')).toBe(true);
       expect(host.querySelectorAll('li').length).toBe(2);
@@ -74,6 +77,7 @@ describe('ValidationErrors (06 · Custom Control)', () => {
       await render(errorsOf('Max 5'), true);
 
       const list = errorList();
+
       expect(list?.getAttribute('role')).toBe('alert');
       expect(list?.getAttribute('aria-live')).toBe('polite');
     });

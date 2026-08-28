@@ -107,6 +107,12 @@ export class App {
 
   protected readonly value = computed(() => this.bookingForm().value());
 
+  protected readonly canFind = computed(() => {
+    const field = this.bookingForm();
+
+    return field.dirty() && !field.invalid();
+  });
+
   private readonly bookingResource = rxResource({
     params: this.payload,
     stream: ({ params }) =>
