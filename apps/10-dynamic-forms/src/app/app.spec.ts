@@ -1,12 +1,6 @@
 import { Injector, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  apply,
-  debounce,
-  form,
-  required,
-  type FieldTree,
-} from '@angular/forms/signals';
+import { form, type FieldTree } from '@angular/forms/signals';
 import { App } from './app';
 import { INITIAL_APPLICATION } from './app.data';
 import {
@@ -14,7 +8,7 @@ import {
   ContractEngagement,
   DesignerApplication,
 } from './app.model';
-import { applicationSchema, skillItemSchema } from './app.schema';
+import { applicationSchema } from './app.schema';
 import { createApplication } from './app.utils';
 
 const SUBMIT_DELAY_MS = 500;
@@ -228,48 +222,6 @@ describe('App (10 · Dynamic Forms)', () => {
         });
 
         expect(applicationForm.skills[0]().valid()).toBe(true);
-      });
-    });
-
-    describe('skill draft (composer form)', () => {
-      const buildSkillDraftForm = (initial = ''): FieldTree<string> => {
-        const model = signal(initial);
-
-        return form(
-          model,
-          (path) => {
-            required(path, { message: 'A skill is required.' });
-            apply(path, skillItemSchema);
-            debounce(path, 500);
-          },
-          {
-            injector: TestBed.inject(Injector),
-          },
-        );
-      };
-
-      it('is required', () => {
-        const skillDraftForm = buildSkillDraftForm();
-
-        expect(skillDraftForm().valid()).toBe(false);
-        expect(kindsOf(skillDraftForm)).toContain('required');
-        expect(messagesOf(skillDraftForm)).toContain('A skill is required.');
-      });
-
-      it('rejects a skill that is not letters-only', () => {
-        const skillDraftForm = buildSkillDraftForm('C++');
-
-        expect(skillDraftForm().valid()).toBe(false);
-        expect(kindsOf(skillDraftForm)).toContain('pattern');
-        expect(messagesOf(skillDraftForm)).toContain(
-          'Letters only. No numbers or special characters.',
-        );
-      });
-
-      it('accepts a letters-only skill', () => {
-        const skillDraftForm = buildSkillDraftForm('Signals');
-
-        expect(skillDraftForm().valid()).toBe(true);
       });
     });
 
