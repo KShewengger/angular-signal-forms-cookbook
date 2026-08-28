@@ -84,6 +84,12 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["nx", "serve", "10-dynamic-forms", "--port", "4310"],
       "port": 4310
+    },
+    {
+      "name": "11-zod-schema",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["nx", "serve", "11-zod-schema", "--port", "4311"],
+      "port": 4311
     }
   ]
 }

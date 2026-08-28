@@ -137,7 +137,7 @@ export const SIGNAL_EXAMPLES: {
     api: 'zod()',
     level: 'Pro',
     tags: ['zod', 'standardSchema'],
-    link: '11-zod/',
+    link: '11-zod-schema/',
     tone: 'warning',
   },
 ];

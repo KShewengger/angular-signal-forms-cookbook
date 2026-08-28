@@ -44,7 +44,7 @@ Each recipe is a small, runnable example that solves one problem, with a folder-
 | 08  | [Conditional Validation](./apps/08-conditional-validation) | Rules that switch on based on other field values                                                                      |
 | 09  | [Form Submission](./apps/09-form-submission)               | Submit to a server with `[formRoot]` and a submission `action`, then route the server's errors back onto the fields   |
 | 10  | [Dynamic Forms](./apps/10-dynamic-forms)                   | Swap the form shape with the role using `applyWhenValue`, then submit with `[formRoot]`                               |
-| 11  | [Zod schema Validation](./apps/11-zod)                     | Drive validation straight from a Zod schema                                                                           |
+| 11  | [Zod schema Validation](./apps/11-zod-schema)              | Drive validation straight from a Zod schema                                                                           |
 
 ---
 
