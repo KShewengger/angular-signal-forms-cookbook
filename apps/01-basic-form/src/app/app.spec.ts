@@ -5,7 +5,7 @@ import { App } from './app';
 import { INITIAL_REGISTRATION, RegistrationFormModel } from './app.model';
 
 describe('App (01 · Basic Form)', () => {
-  describe('form schema (isolated)', () => {
+  describe('validation schema (isolated)', () => {
     beforeEach(() => TestBed.configureTestingModule({}));
 
     const buildRegistrationForm = (
@@ -41,12 +41,17 @@ describe('App (01 · Basic Form)', () => {
       expect(registrationForm.name().valid()).toBe(false);
       expect(registrationForm().valid()).toBe(false);
       expect(registrationForm().invalid()).toBe(true);
+      expect(registrationForm.name().errors()).toEqual([
+        expect.objectContaining({ kind: 'required' }),
+      ]);
     });
 
     it('reports a required error on Name', () => {
       const registrationForm = buildRegistrationForm();
 
-      expect(registrationForm.name().errors().length).toBeGreaterThan(0);
+      expect(registrationForm.name().errors()).toEqual([
+        expect.objectContaining({ kind: 'required' }),
+      ]);
     });
 
     it('becomes valid once Name has a value', () => {
@@ -67,6 +72,9 @@ describe('App (01 · Basic Form)', () => {
 
       registrationForm.name().value.set('');
       expect(registrationForm().valid()).toBe(false);
+      expect(registrationForm.name().errors()).toEqual([
+        expect.objectContaining({ kind: 'required' }),
+      ]);
     });
   });
 

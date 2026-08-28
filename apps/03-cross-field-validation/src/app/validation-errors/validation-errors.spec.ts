@@ -5,7 +5,7 @@ import { INITIAL_USER, UserFormModel } from '../app.model';
 import { userSchema } from '../app.schema';
 import { ValidationErrors } from './validation-errors';
 
-describe('ValidationErrors', () => {
+describe('ValidationErrors (03 · Cross-Field Validation)', () => {
   let fixture: ComponentFixture<ValidationErrors>;
   let host: HTMLElement;
 

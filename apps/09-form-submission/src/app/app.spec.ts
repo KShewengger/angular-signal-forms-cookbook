@@ -22,7 +22,7 @@ const buildAnswerForm = (value = ''): FieldTree<QuizAnswer> => {
 };
 
 describe('App (09 · Form Submission)', () => {
-  describe('answer schema (isolated)', () => {
+  describe('validation schema (isolated)', () => {
     beforeEach(() => TestBed.configureTestingModule({}));
 
     it('requires an answer', () => {
@@ -30,6 +30,9 @@ describe('App (09 · Form Submission)', () => {
 
       expect(answerForm.answer().valid()).toBe(false);
       expect(answerForm.answer().errors()[0].kind).toBe('required');
+      expect(answerForm.answer().errors()[0].message).toBe(
+        'Answer this question before submitting.',
+      );
     });
 
     it('is valid once an answer is present', () => {

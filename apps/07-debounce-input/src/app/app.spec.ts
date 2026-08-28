@@ -98,6 +98,9 @@ describe('App (07 · Debounce Input)', () => {
     let fixture: ComponentFixture<App>;
     let host: HTMLElement;
 
+    const DEBOUNCE_MS = 400;
+    const SEARCH_DELAY_MS = 600;
+
     // Fields are protected; read them through a narrow cast.
     const searchForm = (): FieldTree<SearchFormModel> =>
       (
@@ -148,6 +151,37 @@ describe('App (07 · Debounce Input)', () => {
       expect(fruitRows().length).toBe(1);
       expect(host.textContent).toContain('Banana');
       expect(host.textContent).not.toContain('Apple');
+    });
+
+    it('debounces View→model before resolving the fruit list', async () => {
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+
+      try {
+        const input = host.querySelector('input') as HTMLInputElement;
+        input.value = 'Banana';
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        await fixture.whenStable();
+
+        expect(searchForm().query().controlValue()).toBe('Banana');
+        expect(searchForm().query().value()).toBe('');
+        // Empty model still drives the initial all-fruits result set.
+        expect(fruitRows().length).toBe(10);
+        expect(host.textContent).toContain('Apple');
+
+        await vi.advanceTimersByTimeAsync(DEBOUNCE_MS);
+        await fixture.whenStable();
+
+        expect(searchForm().query().value()).toBe('Banana');
+
+        await vi.advanceTimersByTimeAsync(SEARCH_DELAY_MS);
+        await fixture.whenStable();
+
+        expect(fruitRows().length).toBe(1);
+        expect(host.textContent).toContain('Banana');
+        expect(host.textContent).not.toContain('Apple');
+      } finally {
+        vi.useRealTimers();
+      }
     });
   });
 });

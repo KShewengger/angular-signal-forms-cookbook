@@ -5,7 +5,7 @@ import { INITIAL_REGISTRATION, RegistrationFormModel } from '../app.model';
 import { registrationSchema } from '../app.schema';
 import { ValidationErrors } from './validation-errors';
 
-describe('ValidationErrors', () => {
+describe('ValidationErrors (02 · Built-in Validations)', () => {
   let fixture: ComponentFixture<ValidationErrors>;
   let host: HTMLElement;
 
