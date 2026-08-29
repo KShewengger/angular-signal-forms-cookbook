@@ -104,9 +104,6 @@ import { ValidationErrors } from './validation-errors';
 })
 export class App {
   protected readonly lessonTopics = LESSON_TOPICS;
-  protected readonly channels = CHANNELS;
-  protected readonly severities = SEVERITIES;
-  protected readonly subjectMinLength = SUBJECT_MIN_LENGTH;
 
   protected readonly ticketModel = signal<Ticket>({ ...INITIAL_TICKET });
 
@@ -116,6 +113,7 @@ export class App {
     submission: {
       action: async () => {
         const sent = await this.sendTicket();
+
         this.filed.set(sent);
       },
       onInvalid: (field) =>
@@ -147,7 +145,7 @@ export class App {
   protected readonly channelTabs = computed(() => {
     const selected = this.selectedChannel();
 
-    return this.channels.map((channel) => {
+    return CHANNELS.map((channel) => {
       const active = channel.id === selected;
       const tone: NbToneToken = active ? 'yellow' : 'background';
 
@@ -158,7 +156,7 @@ export class App {
   protected readonly severityTabs = computed(() => {
     const selected = this.selectedSeverity();
 
-    return this.severities.map((severity) => {
+    return SEVERITIES.map((severity) => {
       const active = severity.id === selected;
       const tone: NbToneToken = active ? 'success' : 'background';
 
@@ -178,14 +176,6 @@ export class App {
     Math.max(this.detailMinLength() - this.detailLength(), 0),
   );
 
-  protected readonly contactSettled = computed(() =>
-    this.ticketForm.contact().valid(),
-  );
-
-  protected readonly subjectSettled = computed(() =>
-    this.ticketForm.subject().valid(),
-  );
-
   protected readonly detailSettled = computed(() =>
     this.ticketForm.detail().valid(),
   );
@@ -197,13 +187,13 @@ export class App {
       id: 'contact',
       label: $localize`:@@checkContactLabel:Reply address`,
       requirement: this.activeChannel().requirement,
-      done: this.contactSettled(),
+      done: this.ticketForm.contact().valid(),
     },
     {
       id: 'subject',
       label: $localize`:@@checkSubjectLabel:Subject`,
-      requirement: $localize`:@@checkCharactersRequirement:${this.subjectMinLength}:COUNT: characters or more`,
-      done: this.subjectSettled(),
+      requirement: $localize`:@@checkCharactersRequirement:${SUBJECT_MIN_LENGTH}:COUNT: characters or more`,
+      done: this.ticketForm.subject().valid(),
     },
     {
       id: 'detail',

@@ -1,3 +1,5 @@
+/* The notch is punched at the split boundary, so this must match the stub's
+   `lg:w-73` (292px) in app.html. Change one and the bite drifts off the seam. */
 .ticket {
   --ticket-stub: 292px;
   background: var(--nb-shadow);
@@ -69,7 +71,7 @@
 }
 
 .ticket__stub {
-  background: rgb(255 156 66 / 0.14);
+  background: color-mix(in srgb, var(--nb-warning) 14%, transparent);
 }
 
 .ticket__barcode {

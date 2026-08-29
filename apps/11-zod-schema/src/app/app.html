@@ -53,12 +53,12 @@
   <div class="ticket">
     <form
       nbSplit
+      novalidate
       class="ticket__body"
       ratio="fill:auto"
       collapse="lg"
       separator="dashed"
       gap="none"
-      novalidate
       [formRoot]="ticketForm"
       [attr.aria-busy]="submitting()"
     >
@@ -112,7 +112,7 @@
         </div>
 
         <div nbStack gap="xs">
-          <h1 nbDisplay size="lg" class="uppercase" i18n="@@supportDeskTitle">
+          <h1 nbDisplay class="uppercase" size="lg" i18n="@@supportDeskTitle">
             Support Desk
           </h1>
           <p
@@ -414,7 +414,10 @@
             </p>
 
             <ul
-              class="m-0 flex list-none flex-col gap-2 p-0"
+              nbStack
+              class="m-0 list-none p-0"
+              role="list"
+              gap="sm"
               aria-labelledby="checks-label"
             >
               @for (check of checks(); track check.id) {

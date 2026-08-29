@@ -132,9 +132,9 @@ export const SIGNAL_EXAMPLES: {
   {
     title: $localize`:@@recipe.11.title:Zod Schema Validation`,
     category: 'Schema',
-    app: $localize`:@@app.profileForm:Profile Form`,
+    app: $localize`:@@app.supportDesk:Support Desk`,
     description: $localize`:@@recipe.11.desc:Drive validation straight from a Zod schema.`,
-    api: 'zod()',
+    api: 'validateStandardSchema()',
     level: 'Pro',
     tags: ['zod', 'standardSchema'],
     link: '11-zod-schema/',
