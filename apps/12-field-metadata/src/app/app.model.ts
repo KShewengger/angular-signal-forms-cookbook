@@ -28,15 +28,12 @@ export type Bookmark = { id: string; title: string; url: string };
 
 export type BookmarkCollection = { bookmarks: Bookmark[] };
 
-export const TITLE_MAX_LENGTH = 40;
-
 export const INITIAL_COLLECTION: BookmarkCollection = {
   bookmarks: [
     {
       id: 'seed-1',
-      title: 'Signal Forms guide',
-      url: 'angular.dev/guide/forms/signals',
+      title: 'Angular on GitHub',
+      url: 'github.com/angular/angular',
     },
-    { id: 'seed-2', title: '', url: 'github.com/angular/angular' },
   ],
 };

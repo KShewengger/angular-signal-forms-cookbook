@@ -1,5 +1,7 @@
 import type { BadgeTone, Platform, Severity, StatusHint } from './app.model';
 
+export const TITLE_MAX_LENGTH = 40;
+
 export type PlatformInfo = { badge: string; tone: BadgeTone };
 
 export const PLATFORMS: Record<Platform, PlatformInfo> = {

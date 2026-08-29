@@ -7,12 +7,8 @@ import {
   schema,
   SchemaPathTree,
 } from '@angular/forms/signals';
-import { STATUS_HINTS } from './app.data';
-import {
-  type Bookmark,
-  type BookmarkCollection,
-  TITLE_MAX_LENGTH,
-} from './app.model';
+import { STATUS_HINTS, TITLE_MAX_LENGTH } from './app.data';
+import { type Bookmark, type BookmarkCollection } from './app.model';
 import { PLATFORM, STATUS, URL_PREVIEW } from './app.metadata';
 import { domainOf, platformOf } from './app.utils';
 

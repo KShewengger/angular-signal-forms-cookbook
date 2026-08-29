@@ -26,12 +26,13 @@ import {
   tablerCircleArrowLeftFill,
   tablerCircleArrowRightFill,
 } from '@ng-icons/tabler-icons/fill';
-import { PLATFORMS, SEVERITY_STATE, SEVERITY_TONE } from './app.data';
 import {
-  BookmarkCollection,
-  INITIAL_COLLECTION,
+  PLATFORMS,
+  SEVERITY_STATE,
+  SEVERITY_TONE,
   TITLE_MAX_LENGTH,
-} from './app.model';
+} from './app.data';
+import { BookmarkCollection, INITIAL_COLLECTION } from './app.model';
 import { PLATFORM, STATUS, URL_PREVIEW } from './app.metadata';
 import { bookmarkHubSchema } from './app.schema';
 import { ValidationErrors } from './validation-errors';
