@@ -21,8 +21,6 @@ $notch-radius: 14px;
 }
 
 .ticket {
-  /* The notch is punched at the split boundary, so this must match the stub's
-     `lg:w-73` (292px) in app.html. Change one and the bite drifts off the seam. */
   --ticket-stub: 292px;
 
   background: var(--nb-shadow);
@@ -30,8 +28,6 @@ $notch-radius: 14px;
   padding: $ticket-border;
   box-shadow: 8px 8px 0 0 var(--nb-shadow);
 
-  /* Matches `collapse="lg"` on nbSplit: below this the stub stacks under the
-     form and there is no vertical seam left to punch. */
   @media (width >= 64rem) {
     @include ticket-notch(
       $notch-radius,

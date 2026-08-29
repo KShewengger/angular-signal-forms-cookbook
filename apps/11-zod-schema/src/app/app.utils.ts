@@ -1,15 +1,10 @@
-import { DETAIL_MIN_LENGTH } from './app.data';
+import {
+  DETAIL_MIN_LENGTH,
+  SAMPLE_CONTACT,
+  SAMPLE_DETAIL,
+  SAMPLE_SUBJECT,
+} from './app.data';
 import type { ReplyChannel, Severity, Ticket } from './app.model';
-
-const SAMPLE_CONTACT: Record<ReplyChannel, string> = {
-  email: 'kristy@example.com',
-  phone: '+639171234567',
-};
-
-const SAMPLE_SUBJECT = 'Card was charged twice';
-
-const SAMPLE_DETAIL =
-  'I paid once on the billing page but my statement shows two identical charges made ten seconds apart.';
 
 export function createSampleTicket(
   channel: ReplyChannel,

@@ -4,7 +4,7 @@
 > move but the fields do not. **`validateStandardSchema`** hands validation to a **Zod v4**
 > schema, and because it accepts a `LogicFn` the schema itself is reactive: the reply
 > channel swaps the rule on `contact`, and the severity swaps the minimum on the
-> description. One call covers the whole ticket, another covers a single field. No
+> description. Each call binds to the one field it validates. No
 > `ReactiveFormsModule`, no `FormBuilder`.
 
 <p align="center">
@@ -37,10 +37,10 @@ all projects share a single root `package.json`.
 
 | API                                        | What it does                                                               | Where in this recipe                           |
 | ------------------------------------------ | -------------------------------------------------------------------------- | ---------------------------------------------- |
-| `validateStandardSchema(path, schema)`     | Validates a field or a subtree with any Standard Schema library            | `ticketSchema`, twice                          |
+| `validateStandardSchema(path, schema)`     | Validates a field or a subtree with any Standard Schema library            | `ticketSchema`, three times                    |
 | `validateStandardSchema(path, (ctx) => …)` | The `LogicFn` overload: pick the schema **at validation time**             | both calls, so the schema is reactive          |
 | `ctx.valueOf(path)`                        | Reads a sibling field from inside the logic function                       | `valueOf(path.channel)` picks the contact rule |
-| `ctx.value()`                              | Reads the field the logic is bound to                                      | `value().severity` picks the detail minimum    |
+| `ctx.valueOf(path)` (again)                | Every reactive rule here reads a sibling, never its own value              | `valueOf(path.severity)` picks the minimum     |
 | `form(model, schema, { submission })`      | Configures the submission `action`, `onInvalid`, and `ignoreValidators`    | `ticketForm`                                   |
 | `[formRoot]`                               | Wires a native `<form>` to submit (sets `novalidate`, prevents default)    | the ticket `<form [formRoot]="ticketForm">`    |
 | `field().submitting()`                     | `true` while the async action runs; drives the spinner                     | the File ticket button                         |
@@ -83,40 +83,48 @@ the signals it reads change, so a different Zod object validates the field.
 ```ts
 const E164_PATTERN = /^\+[1-9]\d{7,14}$/;
 
+export const subjectSchema = z.string().min(SUBJECT_MIN_LENGTH, `Give the ticket a subject of at least ${SUBJECT_MIN_LENGTH} characters.`);
+
 export function contactSchema(channel: ReplyChannel): z.ZodType<string> {
   return channel === 'email' ? z.email('We need a valid email to reply.') : z.string().regex(E164_PATTERN, 'Use international format, e.g. +639171234567.');
 }
 
-export function detailsSchema(severity: Severity) {
-  const detailMin = DETAIL_MIN_LENGTH[severity];
+export function detailSchema(severity: Severity): z.ZodType<string> {
+  const minimum = DETAIL_MIN_LENGTH[severity];
 
-  return z.object({
-    subject: z.string().min(SUBJECT_MIN_LENGTH, `Give the ticket a subject of at least ${SUBJECT_MIN_LENGTH} characters.`),
-    detail: z.string().min(detailMin, `Tell us at least ${detailMin} characters so we can route this.`),
-  });
+  return z.string().min(minimum, `Tell us at least ${minimum} characters so we can route this.`);
 }
 
 export function ticketSchema(path: SchemaPathTree<Ticket>): void {
   validateStandardSchema(path.contact, ({ valueOf }) => contactSchema(valueOf(path.channel)));
 
-  validateStandardSchema(path, ({ value }) => detailsSchema(value().severity));
+  validateStandardSchema(path.subject, subjectSchema);
+
+  validateStandardSchema(path.detail, ({ valueOf }) => detailSchema(valueOf(path.severity)));
 }
 ```
 
-| Call                                | Path bound to    | Depends on | Effect when it flips                               |
-| ----------------------------------- | ---------------- | ---------- | -------------------------------------------------- |
-| `validateStandardSchema(p.contact)` | one leaf field   | `channel`  | email format becomes E.164 format, message and all |
-| `validateStandardSchema(p)`         | the whole ticket | `severity` | the description minimum moves to 10, 15, or 20     |
+| Call                                | Reads      | Effect when it flips                               |
+| ----------------------------------- | ---------- | -------------------------------------------------- |
+| `validateStandardSchema(p.contact)` | `channel`  | email format becomes E.164 format, message and all |
+| `validateStandardSchema(p.subject)` | nothing    | static rule, so it takes the schema object itself  |
+| `validateStandardSchema(p.detail)`  | `severity` | the minimum moves to 10, 15, or 20                 |
 
-Two details worth reading twice:
+Three details worth reading twice:
 
-- **The path can be any field, not just the root.** `p.contact` carries its own schema, so
-  one field is validated independently of the rest.
-- **Issues route to the field named in their path.** The second call hands a
-  `z.object({ subject, detail })` to the _root_, and Angular puts each issue on
-  `ticketForm.subject` and `ticketForm.detail` separately. A partial schema is fine: the
-  signature is `TModel extends IgnoreUnknownProperties<TSchema>`, so a schema covering two
-  of the five fields still type-checks against the whole model.
+- **Every call binds to the field it validates.** An earlier draft handed one
+  `z.object({ subject, detail })` to the root and parameterised it by severity, but only
+  `detail` depends on severity. Subject was riding along in a function that took an argument
+  it never used. Splitting them makes each rule's real dependency visible in its signature.
+- **Both overloads are here.** `subject` passes the schema **object**, because its rule never
+  changes. `contact` and `detail` pass a **function**, which is what makes those two reactive.
+  If a rule does not vary, do not wrap it in a `LogicFn`.
+- **A schema bound higher up routes its issues by path.** Handing a `z.object` to a group or
+  to the root is legal, and Angular puts each issue on the field its path names. A partial
+  schema type-checks too, since the signature is
+  `TModel extends IgnoreUnknownProperties<TSchema>`. This recipe does not need it, because
+  no rule here spans more than one field, but it is the tool for a Zod schema shared with a
+  server contract.
 
 ### How this differs from recipe 10
 

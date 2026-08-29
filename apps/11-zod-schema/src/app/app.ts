@@ -226,9 +226,7 @@ export class App {
       this.selectedSeverity(),
     );
 
-    this.ticketForm.contact().value.set(sample.contact);
-    this.ticketForm.subject().value.set(sample.subject);
-    this.ticketForm.detail().value.set(sample.detail);
+    this.ticketForm().value.update((ticket) => ({ ...ticket, ...sample }));
   }
 
   protected retry(): void {

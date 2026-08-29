@@ -65,6 +65,15 @@ export const SEVERITIES_BY_ID: Record<Severity, SeverityOption> = {
   urgent: URGENT_SEVERITY,
 };
 
+export const SAMPLE_CONTACT: Record<ReplyChannel, string> = {
+  email: $localize`:@@sampleContactEmail:kristy@example.com`,
+  phone: $localize`:@@sampleContactPhone:+639171234567`,
+};
+
+export const SAMPLE_SUBJECT = $localize`:@@sampleSubject:Card was charged twice`;
+
+export const SAMPLE_DETAIL = $localize`:@@sampleDetail:I paid once on the billing page but my statement shows two identical charges made ten seconds apart.`;
+
 export const LESSON_TOPICS = [
   {
     id: 'angular',
