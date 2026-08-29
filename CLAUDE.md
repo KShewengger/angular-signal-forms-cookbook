@@ -253,6 +253,12 @@ Recipes use Angular's **signal forms** API (`@angular/forms/signals`), not the l
 - Zod recipe: derive validation from a Zod v4 schema rather than hand-writing rules.
   Per-app copies of ValidationErrors / small helpers are fine until a real shared
   library is justified - don't invent `libs/forms-testing` for one helper.
+- **Discriminated unions:** declare the narrowing **type guard** next to the type in
+  `app.model.ts` (`isImaxExperience`, `isContractEngagement`), not inline at each
+  `applyWhenValue` call. A guard cannot narrow a `FieldTree`, so reaching a variant's
+  own field still needs one cast: keep it in `variantOf` in `app.utils.ts`, which
+  checks the guard first and throws when the variant is not active. Never spread that
+  cast across components and specs.
 
 When writing or reviewing a recipe, read
 `.claude/skills/angular-developer/references/signal-forms.md` first, and keep each

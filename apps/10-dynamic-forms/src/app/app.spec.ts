@@ -5,11 +5,12 @@ import { App } from './app';
 import { INITIAL_APPLICATION } from './app.data';
 import {
   Application,
-  ContractEngagement,
   DesignerApplication,
+  isContractEngagement,
+  isDesignerApplication,
 } from './app.model';
 import { applicationSchema } from './app.schema';
-import { createApplication } from './app.utils';
+import { createApplication, variantOf } from './app.utils';
 
 const SUBMIT_DELAY_MS = 500;
 
@@ -57,12 +58,12 @@ const buildApplicationForm = (
 const portfolioOf = (
   applicationForm: FieldTree<Application>,
 ): FieldTree<string> =>
-  (applicationForm as unknown as FieldTree<DesignerApplication>).portfolio;
+  variantOf(applicationForm, isDesignerApplication, 'designer').portfolio;
 
 const dayRateOf = (
   applicationForm: FieldTree<Application>,
 ): FieldTree<number | null> =>
-  (applicationForm.engagement as unknown as FieldTree<ContractEngagement>)
+  variantOf(applicationForm.engagement, isContractEngagement, 'contract')
     .dayRate;
 
 describe('App (10 · Dynamic Forms)', () => {

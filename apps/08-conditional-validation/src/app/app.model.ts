@@ -10,6 +10,18 @@ export type Experience =
 export type ImaxExperience = Extract<Experience, { format: 'imax' }>;
 export type VipExperience = Extract<Experience, { format: 'vip' }>;
 
+export function isImaxExperience(
+  experience: Experience,
+): experience is ImaxExperience {
+  return experience.format === 'imax';
+}
+
+export function isVipExperience(
+  experience: Experience,
+): experience is VipExperience {
+  return experience.format === 'vip';
+}
+
 export type Booking = {
   tickets: Ticket[];
   addSnacks: boolean;

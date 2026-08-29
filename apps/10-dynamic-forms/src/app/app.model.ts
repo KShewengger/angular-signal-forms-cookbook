@@ -27,6 +27,18 @@ export type Application = FrontendApplication | DesignerApplication;
 export type RoleId = Application['role'];
 export type EngagementKind = Engagement['kind'];
 
+export function isDesignerApplication(
+  application: Application,
+): application is DesignerApplication {
+  return application.role === 'designer';
+}
+
+export function isContractEngagement(
+  engagement: Engagement,
+): engagement is ContractEngagement {
+  return engagement.kind === 'contract';
+}
+
 export type RoleOption = {
   id: RoleId;
   emoji: string;
