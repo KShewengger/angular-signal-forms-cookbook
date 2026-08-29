@@ -21,6 +21,9 @@ $notch-radius: 14px;
 }
 
 .ticket {
+  /* The stub's width inside the body, so it matches `lg:w-73` (292px) in
+     app.html. The shell subtracts one border on top of it, because the body is
+     inset by that much and the seam sits where the body's stub column starts. */
   --ticket-stub: 292px;
 
   background: var(--nb-shadow);
@@ -31,7 +34,7 @@ $notch-radius: 14px;
   @media (width >= 64rem) {
     @include ticket-notch(
       $notch-radius,
-      calc(100% - var(--ticket-stub)),
+      calc(100% - var(--ticket-stub) - #{$ticket-border}),
       0,
       100%
     );
@@ -45,10 +48,19 @@ $notch-radius: 14px;
     @media (width >= 64rem) {
       @include ticket-notch(
         $notch-radius + $ticket-border,
-        calc(100% - var(--ticket-stub) + #{$ticket-border}),
+        calc(100% - var(--ticket-stub)),
         -$ticket-border,
         calc(100% + #{$ticket-border})
       );
+    }
+
+    /* nbSplit centres its dashed separator with
+       `calc(var(--_nb-gap-resolved) / -2)`, but that variable is shadowed by the
+       nbStack on the first column, so the line picks up the stack's gap instead
+       of the split's and drifts off the seam. Pin it to the column boundary,
+       which is the x the notch is cut on. */
+    > :first-child::after {
+      inset-inline-end: -1px;
     }
   }
 
