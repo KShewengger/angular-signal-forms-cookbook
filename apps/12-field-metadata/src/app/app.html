@@ -1,0 +1,305 @@
+<!-- HERO -->
+<header class="relative flex flex-col gap-3" aria-label="Lesson header">
+  <div
+    class="absolute -top-4 -right-8 z-20 origin-top-right scale-90"
+    aria-hidden="true"
+  >
+    <nb-sticker
+      shape="burst-wide"
+      tone="yellow"
+      i18n="@@saveItLabel"
+      [rotate]="8"
+    >
+      Test<br />
+      IT!
+    </nb-sticker>
+  </div>
+
+  <div
+    nbCallout
+    tone="lavender"
+    size="md"
+    class="w-fit"
+    aria-label="Lesson 12: Field Metadata"
+  >
+    <span aria-hidden="true">12</span>
+    <hr nbSeparator orientation="vertical" aria-hidden="true" />
+    <span class="text-sm" i18n="@@lessonFieldMetadataLabel"
+      >Field Metadata</span
+    >
+  </div>
+
+  <div nbChipGroup nbCluster gap="md" aria-label="Lesson topics">
+    <span nbChip tone="danger" i18n="@@angular22Label">Angular 22</span>
+    <span nbChip tone="accent" i18n="@@signalFormsLabel">Signal Forms</span>
+    <span nbChip tone="black" i18n="@@basicLabel">Ng-Brutalism</span>
+  </div>
+
+  <h1
+    nbDisplay
+    size="lg"
+    underline="bar"
+    class="m-0 font-mono font-black uppercase leading-tight"
+    i18n="@@bookmarkHubTitle"
+  >
+    Bookmark Hub
+  </h1>
+</header>
+
+<!-- YOUR LINKS -->
+<section nbStack gap="lg" aria-label="Your links">
+  <div class="flex items-center justify-between mb-4">
+    <span
+      nbText
+      size="xs"
+      tone="muted"
+      weight="bold"
+      transform="uppercase"
+      tracking="wider"
+      i18n="@@yourLinksLabel"
+    >
+      Your links
+    </span>
+    <span nbBadge tone="mint">{{ bookmarks().length }}</span>
+  </div>
+
+  @for (bookmark of bookmarks(); track bookmark.id) {
+    @let item = bookmarkForm.bookmarks[$index];
+    @let titleField = item.title;
+    @let urlField = item.url;
+    @let titleState = titleField();
+    @let urlState = urlField();
+    @let count = titleState.value().length;
+    @let limit = titleState.metadata(maxLengthKey)?.() ?? titleMax;
+    @let platformValue = urlState.metadata(platformKey)?.();
+    @let status = item().metadata(statusKey)?.();
+    @let preview = urlState.metadata(previewKey);
+    @let titleId = 'title-' + bookmark.id;
+    @let urlId = 'url-' + bookmark.id;
+
+    <nb-card class="relative" animate.enter="card-enter">
+      <nb-card-content nbStack gap="sm" class="p-4">
+        <button
+          nbIconButton
+          type="button"
+          tone="danger"
+          class="absolute! -top-3 -right-3 z-10 size-8!"
+          aria-label="Remove bookmark"
+          i18n-aria-label="@@removeBookmark"
+          (click)="removeBookmark($index)"
+        >
+          <ng-icon size="16" name="tablerX" aria-hidden="true" />
+        </button>
+
+        @if (status) {
+          <span
+            nbBadge
+            class="inline-flex w-fit items-center gap-1.5"
+            [tone]="severityTone[status.level]"
+          >
+            <span
+              nbStatusDot
+              size="sm"
+              [state]="severityState[status.level]"
+            ></span>
+            {{ status.message }}
+          </span>
+        }
+
+        <!-- TITLE: the built-in maxLength metadata feeds the counter limit -->
+        <div nbStack gap="xs">
+          <div class="flex items-center justify-between">
+            <label nbLabel i18n="@@titleLabel" [attr.for]="titleId"
+              >Title</label
+            >
+            <span
+              class="font-mono text-xs font-bold"
+              [class.text-nb-warning]="count >= limit - 8 && count < limit"
+              [class.text-nb-danger]="count >= limit"
+            >
+              {{ count }} / {{ limit }}
+            </span>
+          </div>
+          <input
+            nbInput
+            type="text"
+            placeholder="Name this link"
+            i18n-placeholder="@@titlePlaceholder"
+            [id]="titleId"
+            [formField]="titleField"
+          />
+          <app-validation-errors [field]="titleField" />
+        </div>
+
+        <!-- URL: the custom PLATFORM metadata feeds the preview badge -->
+        <div nbStack gap="xs">
+          <label nbLabel i18n="@@urlLabel" [attr.for]="urlId">URL</label>
+          <input
+            nbInput
+            type="text"
+            placeholder="github.com/you/project"
+            i18n-placeholder="@@urlPlaceholder"
+            [id]="urlId"
+            [formField]="urlField"
+          />
+          <app-validation-errors [field]="urlField" />
+        </div>
+
+        <!-- PREVIEW: the managed metadata resource (Microlink), one per url field -->
+        <div
+          class="flex min-h-16 items-center gap-3 rounded-xl border-2 border-black bg-nb-card p-2.5"
+          [class.border-nb-danger]="!!preview?.error()"
+        >
+          @if (preview?.isLoading()) {
+            <span class="spinner" aria-hidden="true"></span>
+            <span nbText size="sm" tone="muted" i18n="@@previewLoading">
+              Fetching preview…
+            </span>
+          } @else if (preview?.error()) {
+            <span aria-hidden="true">⚠️</span>
+            <span nbText size="sm" tone="danger" i18n="@@previewError">
+              Could not reach that site.
+            </span>
+          } @else if (preview?.value(); as data) {
+            <span
+              class="grid size-11 flex-none place-items-center overflow-hidden rounded-lg border-2 border-black bg-white"
+            >
+              @if (data.imageUrl) {
+                <img
+                  class="size-full object-contain"
+                  [src]="data.imageUrl"
+                  [alt]="data.title"
+                />
+              } @else {
+                <span aria-hidden="true">🔗</span>
+              }
+            </span>
+            <span class="flex min-w-0 flex-1 flex-col">
+              <span nbText size="sm" weight="bold" class="truncate">
+                {{ data.title }}
+              </span>
+              <span nbText size="xs" tone="muted" class="truncate">
+                {{ data.domain }}
+              </span>
+            </span>
+            @if (platformValue) {
+              <span
+                nbBadge
+                class="flex-none"
+                [tone]="platforms[platformValue].tone"
+              >
+                {{ platforms[platformValue].badge }}
+              </span>
+            }
+          } @else {
+            <span nbText size="sm" tone="muted" i18n="@@previewIdle">
+              Link preview appears here.
+            </span>
+          }
+        </div>
+      </nb-card-content>
+    </nb-card>
+  } @empty {
+    <div
+      class="flex flex-col items-center gap-2 rounded-2xl border-3 border-dashed border-black bg-nb-card p-8 text-center"
+    >
+      <span class="text-3xl" aria-hidden="true">🔖</span>
+      <span nbText size="sm" tone="muted" i18n="@@emptyState">
+        No links yet. Add your first bookmark below.
+      </span>
+    </div>
+  }
+
+  <button
+    nbButton
+    type="button"
+    size="md"
+    tone="yellow"
+    class="w-full border-dashed!"
+    i18n="@@addBookmark"
+    (click)="addBookmark()"
+  >
+    <ng-icon size="18" name="tablerPlus" aria-hidden="true" />
+    Add bookmark
+  </button>
+</section>
+
+<!-- LESSON NAVIGATION -->
+<nav class="mt-4 flex justify-between gap-6" aria-label="Lesson navigation">
+  <a
+    nbButton
+    tone="warning"
+    size="sm"
+    radius="md"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Go to the previous lesson"
+    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/11-zod-schema"
+  >
+    <span nbButtonTrailingIcon shape="circle" class="grid place-items-center">
+      <ng-icon aria-hidden="true" size="20" name="tablerCircleArrowLeftFill" />
+    </span>
+    <span
+      nbText
+      size="md"
+      weight="black"
+      transform="uppercase"
+      tracking="wide"
+      i18n="@@prevZodSchema"
+    >
+      Prev: Zod Schema Validation
+    </span>
+  </a>
+
+  <a
+    nbButton
+    tone="success"
+    size="sm"
+    radius="md"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Browse all lessons"
+    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps"
+  >
+    <span
+      nbText
+      size="md"
+      weight="black"
+      transform="uppercase"
+      tracking="wide"
+      i18n="@@nextAllRecipes"
+    >
+      All recipes
+    </span>
+    <span nbButtonTrailingIcon shape="circle" class="grid place-items-center">
+      <ng-icon aria-hidden="true" size="20" name="tablerCircleArrowRightFill" />
+    </span>
+  </a>
+</nav>
+
+<!-- FOOTER -->
+<footer nbCluster gap="sm" align="center" justify="center" class="w-full">
+  <ng-icon
+    aria-hidden="true"
+    class="text-gray-300"
+    size="16"
+    name="tablerCopyright"
+  />
+
+  <small nbText tone="muted" size="xs" i18n="@@authorLabel">
+    Kristy Mae Almuete
+  </small>
+
+  <hr nbSeparator orientation="vertical" aria-hidden="true" />
+
+  <a
+    nbText
+    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/12-field-metadata"
+    tone="danger"
+    size="xs"
+    target="_blank"
+    rel="noopener noreferrer"
+    i18n="@@githubRepository"
+    >GitHub Repo</a
+  >
+</footer>

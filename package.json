@@ -38,6 +38,7 @@
     "test:10-dynamic-forms": "nx test 10-dynamic-forms",
     "test:watch:10-dynamic-forms": "nx test 10-dynamic-forms --watch",
     "serve:11-zod-schema": "nx serve 11-zod-schema --port 4211",
+    "serve:12-field-metadata": "nx serve 12-field-metadata --port 4212",
     "test:11-zod-schema": "nx test 11-zod-schema",
     "test:watch:11-zod-schema": "nx test 11-zod-schema --watch",
     "lint": "nx run-many -t lint",
