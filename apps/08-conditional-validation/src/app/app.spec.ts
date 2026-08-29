@@ -4,12 +4,13 @@ import { form, type FieldTree } from '@angular/forms/signals';
 import { App } from './app';
 import {
   Booking,
-  ImaxExperience,
   INITIAL_BOOKING,
-  VipExperience,
+  isImaxExperience,
+  isVipExperience,
 } from './app.model';
 import { bookingSchema } from './app.schema';
 import { PROMO_CODE } from './app.data';
+import { variantOf } from './app.utils';
 
 type ErrorReader = () => {
   errors(): ReadonlyArray<{ kind: string; message?: string }>;
@@ -34,12 +35,13 @@ const buildBookingForm = (
 };
 
 // `experience` is a discriminated union, so its FieldTree only exposes the
-// shared `format` key. Narrow to reach a variant's own field.
+// shared `format` key. `variantOf` owns the one narrowing cast and checks the
+// guard first, so reading an inactive variant fails loudly instead of silently.
 const glassesOf = (bookingForm: FieldTree<Booking>): FieldTree<number | null> =>
-  (bookingForm.experience as unknown as FieldTree<ImaxExperience>).glasses;
+  variantOf(bookingForm.experience, isImaxExperience, 'imax').glasses;
 
 const mealOf = (bookingForm: FieldTree<Booking>): FieldTree<string> =>
-  (bookingForm.experience as unknown as FieldTree<VipExperience>).mealChoice;
+  variantOf(bookingForm.experience, isVipExperience, 'vip').mealChoice;
 
 const FOUR_SEATS = [
   { seat: 'R1' },

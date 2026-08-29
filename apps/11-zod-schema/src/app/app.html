@@ -1,0 +1,643 @@
+<!-- LESSON HEADER -->
+<header
+  class="flex flex-col gap-3"
+  aria-label="Lesson header"
+  i18n-aria-label="@@lessonHeaderAriaLabel"
+>
+  <div
+    nbCallout
+    class="w-fit"
+    size="md"
+    tone="warning"
+    aria-label="Lesson 11: Zod Schema Validation"
+    i18n-aria-label="@@lesson11AriaLabel"
+  >
+    <span aria-hidden="true">11</span>
+    <hr nbSeparator orientation="vertical" aria-hidden="true" />
+    <span class="text-sm" i18n="@@lessonZodSchemaLabel">
+      Zod Schema Validation
+    </span>
+  </div>
+
+  <div
+    nbChipGroup
+    nbCluster
+    gap="md"
+    aria-label="Lesson topics"
+    i18n-aria-label="@@lessonTopicsAriaLabel"
+  >
+    @for (topic of lessonTopics; track topic.id) {
+      <span nbChip [tone]="topic.tone">{{ topic.label }}</span>
+    }
+  </div>
+</header>
+
+<!-- TICKET -->
+<div class="relative">
+  <!-- STAR STICKER -->
+  <div
+    class="absolute -top-10 -right-12 z-20 origin-top-right scale-68"
+    aria-hidden="true"
+  >
+    <nb-sticker
+      tone="yellow"
+      shape="burst-wide"
+      i18n="@@testItLabel"
+      [rotate]="5"
+    >
+      TEST<br />
+      IT!
+    </nb-sticker>
+  </div>
+
+  <div class="ticket">
+    <form
+      nbSplit
+      novalidate
+      class="ticket__body"
+      ratio="fill:auto"
+      collapse="lg"
+      separator="dashed"
+      gap="none"
+      [formRoot]="ticketForm"
+      [attr.aria-busy]="submitting()"
+    >
+      <!-- LEFT: THE FORM -->
+      <div nbStack class="relative p-6" gap="lg" align="stretch">
+        <div nbCluster gap="md" align="center" justify="between">
+          <div
+            nbCluster
+            class="w-fit rounded-full border-2 border-black bg-nb-pink px-3 py-1"
+            gap="sm"
+            align="center"
+          >
+            <ng-icon size="14" name="tablerTicket" aria-hidden="true" />
+            <span
+              nbText
+              size="xs"
+              weight="bold"
+              transform="uppercase"
+              tracking="wide"
+              i18n="@@newTicketLabel"
+            >
+              New ticket
+            </span>
+          </div>
+
+          @if (!filed()) {
+            <button
+              nbButton
+              type="button"
+              size="sm"
+              tone="lavender"
+              radius="full"
+              aria-label="Fill the ticket with sample data"
+              i18n-aria-label="@@prefillAriaLabel"
+              [disabled]="submitting()"
+              (click)="prefill()"
+            >
+              <ng-icon size="16" name="tablerWand" aria-hidden="true" />
+              <span
+                nbText
+                size="xs"
+                weight="black"
+                transform="uppercase"
+                tracking="wide"
+                i18n="@@prefillLabel"
+              >
+                Fill sample
+              </span>
+            </button>
+          }
+        </div>
+
+        <div nbStack gap="xs">
+          <h1 nbDisplay class="uppercase" size="lg" i18n="@@supportDeskTitle">
+            Support Desk
+          </h1>
+          <p
+            nbText
+            class="max-w-prose"
+            size="sm"
+            tone="subtle"
+            i18n="@@supportDeskIntro"
+          >
+            Tell us what broke. Pick how we reply and the rules for that field
+            change with you.
+          </p>
+        </div>
+
+        <fieldset nbStack gap="lg" [disabled]="submitting()">
+          <legend class="sr-only" i18n="@@ticketFieldsLabel">
+            Support ticket fields
+          </legend>
+
+          <!-- REPLY CHANNEL -->
+          <div nbStack gap="sm" align="stretch">
+            <p
+              nbText
+              class="m-0"
+              id="channel-label"
+              size="sm"
+              weight="bold"
+              i18n="@@replyChannelLabel"
+            >
+              Reply channel
+            </p>
+
+            <div
+              class="grid grid-cols-2 gap-2.5"
+              role="group"
+              aria-labelledby="channel-label"
+            >
+              @for (channel of channelTabs(); track channel.id) {
+                <button
+                  nbButton
+                  fullWidth
+                  type="button"
+                  size="md"
+                  radius="full"
+                  [tone]="channel.tone"
+                  [attr.aria-pressed]="channel.selected"
+                  (click)="selectChannel(channel.id)"
+                >
+                  <ng-icon size="18" [name]="channel.icon" aria-hidden="true" />
+                  <span
+                    nbText
+                    size="xs"
+                    weight="black"
+                    transform="uppercase"
+                    tracking="wide"
+                  >
+                    {{ channel.label }}
+                  </span>
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- CONTACT -->
+          <div nbStack gap="sm" align="stretch">
+            @let contact = ticketForm.contact();
+            @let contactInvalid =
+              (contact.dirty() || contact.touched()) && contact.invalid();
+
+            <label nbLabel for="ticket-contact">
+              {{ activeChannel().contactLabel }}
+              <span aria-hidden="true">*</span>
+            </label>
+
+            <input
+              nbInput
+              id="ticket-contact"
+              type="text"
+              autocomplete="off"
+              aria-describedby="ticket-contact-errors"
+              [placeholder]="activeChannel().placeholder"
+              [formField]="ticketForm.contact"
+              [attr.aria-invalid]="contactInvalid"
+              [style.--nb-border]="contactInvalid ? 'var(--nb-danger)' : null"
+            />
+
+            <app-validation-errors
+              messageId="ticket-contact-errors"
+              [field]="ticketForm.contact"
+            />
+          </div>
+
+          <!-- SEVERITY -->
+          <div nbStack gap="sm" align="stretch">
+            <p
+              nbText
+              class="m-0"
+              id="severity-label"
+              size="sm"
+              weight="bold"
+              i18n="@@severityLabel"
+            >
+              How urgent is it?
+            </p>
+
+            <div
+              class="grid grid-cols-3 gap-2"
+              role="group"
+              aria-labelledby="severity-label"
+            >
+              @for (severity of severityTabs(); track severity.id) {
+                <button
+                  nbButton
+                  fullWidth
+                  type="button"
+                  size="sm"
+                  radius="full"
+                  [tone]="severity.tone"
+                  [attr.aria-pressed]="severity.selected"
+                  (click)="selectSeverity(severity.id)"
+                >
+                  <span
+                    nbText
+                    size="xs"
+                    weight="black"
+                    transform="uppercase"
+                    tracking="wide"
+                  >
+                    {{ severity.label }}
+                  </span>
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- SUBJECT -->
+          <div nbStack gap="sm" align="stretch">
+            @let subject = ticketForm.subject();
+            @let subjectInvalid =
+              (subject.dirty() || subject.touched()) && subject.invalid();
+
+            <label nbLabel for="ticket-subject" i18n="@@subjectLabel">
+              Subject <span aria-hidden="true">*</span>
+            </label>
+
+            <input
+              nbInput
+              id="ticket-subject"
+              type="text"
+              autocomplete="off"
+              placeholder="Card was charged twice"
+              i18n-placeholder="@@subjectPlaceholder"
+              aria-describedby="ticket-subject-errors"
+              [formField]="ticketForm.subject"
+              [attr.aria-invalid]="subjectInvalid"
+              [style.--nb-border]="subjectInvalid ? 'var(--nb-danger)' : null"
+            />
+
+            <app-validation-errors
+              messageId="ticket-subject-errors"
+              [field]="ticketForm.subject"
+            />
+          </div>
+
+          <!-- DETAIL -->
+          <div nbStack gap="sm" align="stretch">
+            @let detail = ticketForm.detail();
+            @let detailInvalid =
+              (detail.dirty() || detail.touched()) && detail.invalid();
+
+            <label nbLabel for="ticket-detail" i18n="@@detailLabel">
+              What happened? <span aria-hidden="true">*</span>
+            </label>
+
+            <textarea
+              nbTextarea
+              id="ticket-detail"
+              rows="3"
+              placeholder="What did you expect, and what happened instead?"
+              i18n-placeholder="@@detailPlaceholder"
+              aria-describedby="ticket-detail-errors"
+              [formField]="ticketForm.detail"
+              [attr.aria-invalid]="detailInvalid"
+              [style.--nb-border]="detailInvalid ? 'var(--nb-danger)' : null"
+            ></textarea>
+
+            <div nbCluster gap="sm" align="center" justify="between">
+              <nb-progress
+                class="w-full max-w-40"
+                tone="success"
+                [value]="detailLength()"
+                [max]="detailMinLength()"
+              />
+
+              @if (detailSettled()) {
+                <span nbCluster gap="xs" align="center">
+                  <ng-icon size="14" name="tablerCheck" aria-hidden="true" />
+                  <span nbText size="xs" i18n="@@detailMinimumMet">
+                    Minimum met
+                  </span>
+                </span>
+              } @else {
+                <span nbText class="tabular-nums" size="xs" tone="subtle">
+                  <ng-container i18n="@@detailRemaining"
+                    >{{ detailRemaining() }} more characters</ng-container
+                  >
+                </span>
+              }
+            </div>
+
+            <app-validation-errors
+              messageId="ticket-detail-errors"
+              [field]="ticketForm.detail"
+            />
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- RIGHT: THE STUB -->
+      <aside
+        nbStack
+        class="ticket__stub w-full p-6 lg:w-73"
+        gap="lg"
+        align="stretch"
+        aria-label="Ticket summary"
+        i18n-aria-label="@@ticketSummaryAriaLabel"
+      >
+        @if (filed()) {
+          <div nbStack class="my-auto" gap="md" align="center">
+            <span
+              class="grid size-14 place-items-center rounded-full border-3 border-black bg-nb-success shadow-hard-sm"
+              aria-hidden="true"
+            >
+              <ng-icon size="26" name="tablerCheck" />
+            </span>
+
+            <span nbText size="md" weight="black" i18n="@@ticketReference">
+              SD-2214
+            </span>
+
+            <p
+              nbText
+              class="text-center"
+              size="xs"
+              tone="subtle"
+              role="status"
+              aria-live="polite"
+              i18n="@@ticketFiledMessage"
+            >
+              Ticket filed. We will reply on the channel you picked.
+            </p>
+          </div>
+        } @else {
+          <div nbStack gap="md" align="stretch">
+            <nb-media-item variant="boxed" size="sm" tone="blue">
+              <span nbMediaItemIcon>
+                <ng-icon
+                  size="18"
+                  [name]="activeChannel().icon"
+                  aria-hidden="true"
+                />
+              </span>
+              <span nbMediaItemTitle>{{ activeChannel().label }}</span>
+              <span nbMediaItemDescription i18n="@@stubChannelLabel">
+                Reply channel
+              </span>
+            </nb-media-item>
+
+            <nb-media-item variant="boxed" size="sm" tone="lavender">
+              <span nbMediaItemIcon>
+                <ng-icon size="18" name="tablerBolt" aria-hidden="true" />
+              </span>
+              <span nbMediaItemTitle>{{ activeSeverity().label }}</span>
+              <span nbMediaItemDescription i18n="@@stubSeverityLabel">
+                Severity
+              </span>
+            </nb-media-item>
+
+            <nb-media-item variant="boxed" size="sm" tone="yellow">
+              <span nbMediaItemIcon>
+                <ng-icon size="18" name="tablerPencil" aria-hidden="true" />
+              </span>
+              <span nbMediaItemTitle i18n="@@stubMinimumValue">
+                {{ detailMinLength() }} chars
+              </span>
+              <span nbMediaItemDescription i18n="@@stubMinimumLabel">
+                Minimum detail
+              </span>
+            </nb-media-item>
+          </div>
+
+          <hr nbSeparator variant="dashed" aria-hidden="true" />
+
+          <!-- LIVE CHECKS -->
+          <div nbStack gap="sm" align="stretch">
+            <p
+              nbText
+              class="m-0"
+              size="xs"
+              weight="bold"
+              transform="uppercase"
+              tracking="wide"
+              tone="subtle"
+              id="checks-label"
+              i18n="@@checksLabel"
+            >
+              Before we can file
+            </p>
+
+            <ul
+              nbStack
+              class="m-0 list-none p-0"
+              role="list"
+              gap="sm"
+              aria-labelledby="checks-label"
+            >
+              @for (check of checks(); track check.id) {
+                <li nbCluster class="text-left" gap="sm" align="center">
+                  <span
+                    class="grid size-5 shrink-0 place-items-center rounded-md border-2 border-black bg-white"
+                    aria-hidden="true"
+                    [class.bg-nb-mint!]="check.done"
+                  >
+                    @if (check.done) {
+                      <ng-icon size="12" name="tablerCheck" />
+                    }
+                  </span>
+
+                  <span nbStack gap="none">
+                    <span nbText size="xs" weight="bold">{{
+                      check.label
+                    }}</span>
+                    <span nbText size="xs" tone="subtle">
+                      {{ check.requirement }}
+                    </span>
+                  </span>
+
+                  @if (check.done) {
+                    <span class="sr-only" i18n="@@checkDone">Done</span>
+                  } @else {
+                    <span class="sr-only" i18n="@@checkNotDone">Not done</span>
+                  }
+                </li>
+              }
+            </ul>
+          </div>
+
+          <!-- READINESS STAMP -->
+          <div
+            class="mt-auto w-fit self-center -rotate-6 rounded-lg border-3 px-3 py-1 opacity-80"
+            role="status"
+            aria-live="polite"
+            [class.border-nb-success]="readyToFile()"
+            [class.text-nb-success]="readyToFile()"
+            [class.border-nb-danger]="!readyToFile()"
+            [class.text-nb-danger]="!readyToFile()"
+          >
+            @if (readyToFile()) {
+              <span
+                nbText
+                size="sm"
+                weight="black"
+                transform="uppercase"
+                tracking="wide"
+                i18n="@@stampReady"
+              >
+                Ready to file
+              </span>
+            } @else {
+              <span
+                nbText
+                size="xl"
+                weight="black"
+                transform="uppercase"
+                tracking="wide"
+                i18n="@@stampNotReady"
+              >
+                Not ready
+              </span>
+            }
+          </div>
+
+          <div nbStack gap="xs" align="center">
+            <div class="ticket__barcode w-full" aria-hidden="true"></div>
+            <span nbText class="tracking-widest" size="xs" i18n="@@ticketCode">
+              SD-2214
+            </span>
+          </div>
+        }
+
+        <!-- ACTIONS -->
+        @if (filed()) {
+          <button
+            nbButton
+            fullWidth
+            type="button"
+            size="md"
+            tone="white"
+            radius="full"
+            (click)="retry()"
+          >
+            <ng-icon size="16" name="tablerRefresh" aria-hidden="true" />
+            <span i18n="@@fileAnotherLabel">File another</span>
+          </button>
+        } @else {
+          <button
+            nbButton
+            fullWidth
+            type="submit"
+            size="lg"
+            tone="warning"
+            radius="full"
+            [disabled]="submitting()"
+          >
+            @if (submitting()) {
+              <span
+                class="size-4 shrink-0 rounded-full border-3 border-black/25 border-t-black motion-safe:animate-spin"
+                aria-hidden="true"
+              ></span>
+              <span i18n="@@filingTicket">Filing…</span>
+            } @else {
+              <span i18n="@@fileTicketLabel">File ticket</span>
+              <span
+                nbButtonTrailingIcon
+                class="grid place-items-center"
+                shape="circle"
+              >
+                <ng-icon size="18" name="tablerCircleArrowRightFill" />
+              </span>
+            }
+          </button>
+        }
+      </aside>
+    </form>
+  </div>
+</div>
+
+<!-- LESSON NAVIGATION -->
+<nav
+  nbCluster
+  class="mt-6 mb-4"
+  gap="md"
+  align="center"
+  justify="between"
+  aria-label="Lesson navigation"
+  i18n-aria-label="@@lessonNavigationAriaLabel"
+>
+  <a
+    nbButton
+    size="md"
+    tone="warning"
+    radius="md"
+    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/10-dynamic-forms"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Go to the previous lesson"
+    i18n-aria-label="@@prevLessonAriaLabel"
+  >
+    <span nbButtonTrailingIcon class="grid place-items-center" shape="circle">
+      <ng-icon size="20" name="tablerCircleArrowLeftFill" aria-hidden="true" />
+    </span>
+
+    <span
+      nbText
+      size="md"
+      weight="black"
+      transform="uppercase"
+      tracking="wide"
+      i18n="@@prevDynamicForms"
+    >
+      Prev: Dynamic Forms
+    </span>
+  </a>
+
+  <a
+    nbButton
+    size="md"
+    tone="success"
+    radius="md"
+    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Go to the next lesson"
+    i18n-aria-label="@@nextLessonAriaLabel"
+  >
+    <span
+      nbText
+      size="md"
+      weight="black"
+      transform="uppercase"
+      tracking="wide"
+      i18n="@@nextFieldMetadata"
+    >
+      Next: Field Metadata
+    </span>
+
+    <span nbButtonTrailingIcon class="grid place-items-center" shape="circle">
+      <ng-icon size="20" name="tablerCircleArrowRightFill" aria-hidden="true" />
+    </span>
+  </a>
+</nav>
+
+<!-- FOOTER -->
+<footer nbCluster class="w-full pt-4" gap="sm" align="center" justify="center">
+  <ng-icon
+    class="text-gray-300"
+    size="16"
+    name="tablerCopyright"
+    aria-hidden="true"
+  />
+
+  <small nbText size="xs" tone="muted" i18n="@@authorLabel">
+    Kristy Mae Almuete
+  </small>
+
+  <hr nbSeparator orientation="vertical" aria-hidden="true" />
+
+  <a
+    nbText
+    size="xs"
+    tone="danger"
+    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/11-zod-schema"
+    target="_blank"
+    rel="noopener noreferrer"
+    i18n="@@githubRepository"
+    >GitHub Repo</a
+  >
+</footer>

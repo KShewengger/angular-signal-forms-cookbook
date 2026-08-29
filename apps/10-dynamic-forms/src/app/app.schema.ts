@@ -10,8 +10,8 @@ import {
 } from '@angular/forms/signals';
 import {
   Application,
-  ContractEngagement,
-  DesignerApplication,
+  isContractEngagement,
+  isDesignerApplication,
 } from './app.model';
 
 export const skillItemSchema = schema<string>((path) => {
@@ -31,27 +31,17 @@ export function applicationSchema(path: SchemaPathTree<Application>): void {
 
   applyEach(path.skills, skillItemSchema);
 
-  applyWhenValue(
-    path.engagement,
-    (engagement): engagement is ContractEngagement =>
-      engagement.kind === 'contract',
-    (contract) => {
-      required(contract.dayRate, { message: 'Enter a day rate.' });
-      min(contract.dayRate, 1, { message: 'Enter a day rate.' });
-    },
-  );
+  applyWhenValue(path.engagement, isContractEngagement, (contract) => {
+    required(contract.dayRate, { message: 'Enter a day rate.' });
+    min(contract.dayRate, 1, { message: 'Enter a day rate.' });
+  });
 
-  applyWhenValue(
-    path,
-    (application): application is DesignerApplication =>
-      application.role === 'designer',
-    (designer) => {
-      required(designer.portfolio, {
-        message: 'Portfolio URL is required.',
-      });
-      pattern(designer.portfolio, /^https?:\/\/.+\..+/i, {
-        message: 'Enter a valid URL.',
-      });
-    },
-  );
+  applyWhenValue(path, isDesignerApplication, (designer) => {
+    required(designer.portfolio, {
+      message: 'Portfolio URL is required.',
+    });
+    pattern(designer.portfolio, /^https?:\/\/.+\..+/i, {
+      message: 'Enter a valid URL.',
+    });
+  });
 }

@@ -1,9 +1,13 @@
 import { Injector, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { form, type FieldTree } from '@angular/forms/signals';
-import { Application, DesignerApplication } from '../app.model';
+import {
+  Application,
+  DesignerApplication,
+  isDesignerApplication,
+} from '../app.model';
 import { applicationSchema } from '../app.schema';
-import { createApplication } from '../app.utils';
+import { createApplication, variantOf } from '../app.utils';
 import { DesignerForm } from './designer-form';
 
 const VALID_DESIGNER: DesignerApplication = {
@@ -28,7 +32,7 @@ const buildApplicationForm = (
 const portfolioOf = (
   applicationForm: FieldTree<Application>,
 ): FieldTree<string> =>
-  (applicationForm as unknown as FieldTree<DesignerApplication>).portfolio;
+  variantOf(applicationForm, isDesignerApplication, 'designer').portfolio;
 
 describe('DesignerForm (10 · Dynamic Forms)', () => {
   let fixture: ComponentFixture<DesignerForm>;

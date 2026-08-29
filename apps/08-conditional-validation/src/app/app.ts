@@ -3,8 +3,8 @@ import {
   Booking,
   Experience,
   INITIAL_BOOKING,
-  ImaxExperience,
-  VipExperience,
+  isImaxExperience,
+  isVipExperience,
 } from './app.model';
 import { bookingSchema } from './app.schema';
 import {
@@ -15,7 +15,7 @@ import {
   SEATS,
   SEAT_LEGEND,
 } from './app.data';
-import { createExperience } from './app.utils';
+import { createExperience, variantOf } from './app.utils';
 import { FieldTree, form, FormField, submit } from '@angular/forms/signals';
 import {
   NbButton,
@@ -208,15 +208,13 @@ export class App {
     });
   }
 
-  private variant<V extends Experience>(): FieldTree<V> {
-    return this.bookingForm.experience as unknown as FieldTree<V>;
-  }
-
   protected get glassesField(): FieldTree<number | null> {
-    return this.variant<ImaxExperience>().glasses;
+    return variantOf(this.bookingForm.experience, isImaxExperience, 'imax')
+      .glasses;
   }
 
   protected get mealField(): FieldTree<string> {
-    return this.variant<VipExperience>().mealChoice;
+    return variantOf(this.bookingForm.experience, isVipExperience, 'vip')
+      .mealChoice;
   }
 }

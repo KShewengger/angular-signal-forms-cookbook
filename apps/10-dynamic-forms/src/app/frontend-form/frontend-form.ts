@@ -21,11 +21,10 @@ import {
 import { ENGAGEMENTS, ROLES_BY_ID } from '../app.data';
 import {
   Application,
-  ContractEngagement,
-  Engagement,
   EngagementKind,
+  isContractEngagement,
 } from '../app.model';
-import { createEngagement } from '../app.utils';
+import { createEngagement, variantOf } from '../app.utils';
 import { SkillComposer } from '../skill-composer/skill-composer';
 import { SubmittedBanner } from '../submitted-banner/submitted-banner';
 import { ValidationErrors } from '../validation-errors';
@@ -96,11 +95,8 @@ export class FrontendForm {
     this.form().engagement().value.set(createEngagement(kind));
   }
 
-  private engagementAs<V extends Engagement>(): FieldTree<V> {
-    return this.form().engagement as unknown as FieldTree<V>;
-  }
-
   protected get dayRateField(): FieldTree<number | null> {
-    return this.engagementAs<ContractEngagement>().dayRate;
+    return variantOf(this.form().engagement, isContractEngagement, 'contract')
+      .dayRate;
   }
 }

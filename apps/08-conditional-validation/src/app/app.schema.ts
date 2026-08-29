@@ -9,7 +9,7 @@ import {
   validate,
 } from '@angular/forms/signals';
 import { PROMO_CODE } from './app.data';
-import { Booking, Experience } from './app.model';
+import { Booking, isImaxExperience, isVipExperience } from './app.model';
 
 export function bookingSchema(path: SchemaPathTree<Booking>): void {
   applyEach(path.tickets, (ticket) => {
@@ -22,21 +22,13 @@ export function bookingSchema(path: SchemaPathTree<Booking>): void {
     (path) => required(path.comboSize),
   );
 
-  applyWhenValue(
-    path.experience,
-    (experience): experience is Extract<Experience, { format: 'imax' }> =>
-      experience.format === 'imax',
-    (imax) => {
-      required(imax.glasses);
-      min(imax.glasses, 1);
-    },
-  );
+  applyWhenValue(path.experience, isImaxExperience, (imax) => {
+    required(imax.glasses);
+    min(imax.glasses, 1);
+  });
 
-  applyWhenValue(
-    path.experience,
-    (experience): experience is Extract<Experience, { format: 'vip' }> =>
-      experience.format === 'vip',
-    (vip) => required(vip.mealChoice),
+  applyWhenValue(path.experience, isVipExperience, (vip) =>
+    required(vip.mealChoice),
   );
 
   disabled(path.promoCode, {

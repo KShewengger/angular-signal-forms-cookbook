@@ -1,3 +1,4 @@
+import type { FieldTree } from '@angular/forms/signals';
 import { ROLES_BY_ID } from './app.data';
 import type {
   Application,
@@ -39,4 +40,16 @@ export function createApplication(role: RoleId): Application {
         skills: skillsForRole(role),
       };
   }
+}
+
+export function variantOf<TUnion, TVariant extends TUnion>(
+  field: FieldTree<TUnion>,
+  isVariant: (value: TUnion) => value is TVariant,
+  variantName: string,
+): FieldTree<TVariant> {
+  if (!isVariant(field().value())) {
+    throw new Error(`Read the ${variantName} variant while it was not active.`);
+  }
+
+  return field as unknown as FieldTree<TVariant>;
 }

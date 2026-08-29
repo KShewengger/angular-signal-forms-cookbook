@@ -9,11 +9,13 @@ import {
 } from '@angular/forms/signals';
 import {
   Application,
-  ContractEngagement,
   DesignerApplication,
+  isContractEngagement,
+  isDesignerApplication,
 } from '../app.model';
 import { INITIAL_APPLICATION } from '../app.data';
 import { applicationSchema, skillItemSchema } from '../app.schema';
+import { variantOf } from '../app.utils';
 import { ValidationErrors } from './validation-errors';
 
 const EMPTY_DESIGNER: DesignerApplication = {
@@ -42,12 +44,12 @@ describe('ValidationErrors (10 · Dynamic Forms)', () => {
   const portfolioOf = (
     applicationForm: FieldTree<Application>,
   ): FieldTree<string> =>
-    (applicationForm as unknown as FieldTree<DesignerApplication>).portfolio;
+    variantOf(applicationForm, isDesignerApplication, 'designer').portfolio;
 
   const dayRateOf = (
     applicationForm: FieldTree<Application>,
   ): FieldTree<number | null> =>
-    (applicationForm.engagement as unknown as FieldTree<ContractEngagement>)
+    variantOf(applicationForm.engagement, isContractEngagement, 'contract')
       .dayRate;
 
   const showErrorsFor = async (field: FieldTree<unknown>): Promise<void> => {
