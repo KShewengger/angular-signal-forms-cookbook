@@ -8,7 +8,6 @@ import {
   NbChipGroup,
   NbCluster,
   NbDisplay,
-  NbHalftone,
   NbInput,
   NbLabel,
   NbMediaItem,
@@ -19,7 +18,6 @@ import {
   NbSeparator,
   NbSplit,
   NbStack,
-  NbStatusDot,
   NbSticker,
   NbText,
   NbTextarea,
@@ -34,6 +32,8 @@ import {
   tablerPencil,
   tablerPhone,
   tablerRefresh,
+  tablerTicket,
+  tablerWand,
 } from '@ng-icons/tabler-icons';
 import {
   tablerCircleArrowLeftFill,
@@ -50,6 +50,7 @@ import {
 } from './app.data';
 import { INITIAL_TICKET, ReplyChannel, Severity, Ticket } from './app.model';
 import { ticketSchema } from './app.schema';
+import { createSampleTicket } from './app.utils';
 import { ValidationErrors } from './validation-errors';
 
 @Component({
@@ -66,7 +67,6 @@ import { ValidationErrors } from './validation-errors';
     NbChipGroup,
     NbCluster,
     NbDisplay,
-    NbHalftone,
     NbInput,
     NbLabel,
     NbMediaItem,
@@ -77,7 +77,6 @@ import { ValidationErrors } from './validation-errors';
     NbSeparator,
     NbSplit,
     NbStack,
-    NbStatusDot,
     NbSticker,
     NbText,
     NbTextarea,
@@ -95,6 +94,8 @@ import { ValidationErrors } from './validation-errors';
       tablerPencil,
       tablerPhone,
       tablerRefresh,
+      tablerTicket,
+      tablerWand,
     }),
   ],
   host: {
@@ -173,6 +174,10 @@ export class App {
     () => this.ticketForm.detail().value().trim().length,
   );
 
+  protected readonly detailRemaining = computed(() =>
+    Math.max(this.detailMinLength() - this.detailLength(), 0),
+  );
+
   protected readonly contactSettled = computed(() =>
     this.ticketForm.contact().valid(),
   );
@@ -221,6 +226,19 @@ export class App {
     if (this.submitting() || this.selectedSeverity() === severity) return;
 
     this.ticketForm.severity().value.set(severity);
+  }
+
+  protected prefill(): void {
+    if (this.submitting()) return;
+
+    const sample = createSampleTicket(
+      this.selectedChannel(),
+      this.selectedSeverity(),
+    );
+
+    this.ticketForm.contact().value.set(sample.contact);
+    this.ticketForm.subject().value.set(sample.subject);
+    this.ticketForm.detail().value.set(sample.detail);
   }
 
   protected retry(): void {

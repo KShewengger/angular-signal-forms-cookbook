@@ -64,32 +64,51 @@
     >
       <!-- LEFT: THE FORM -->
       <div nbStack class="relative p-6" gap="lg" align="stretch">
-        <div
-          nbHalftone
-          class="pointer-events-none absolute top-6 right-6 opacity-45"
-          shape="rectangle"
-          aria-hidden="true"
-          [rows]="3"
-          [columns]="7"
-        ></div>
-
-        <div
-          nbCluster
-          class="w-fit rounded-full border-2 border-black bg-nb-pink px-3 py-1"
-          gap="sm"
-          align="center"
-        >
-          <span nbStatusDot state="live" aria-hidden="true"></span>
-          <span
-            nbText
-            size="xs"
-            weight="bold"
-            transform="uppercase"
-            tracking="wide"
-            i18n="@@newTicketLabel"
+        <div nbCluster gap="md" align="center" justify="between">
+          <div
+            nbCluster
+            class="w-fit rounded-full border-2 border-black bg-nb-pink px-3 py-1"
+            gap="sm"
+            align="center"
           >
-            New ticket
-          </span>
+            <ng-icon size="14" name="tablerTicket" aria-hidden="true" />
+            <span
+              nbText
+              size="xs"
+              weight="bold"
+              transform="uppercase"
+              tracking="wide"
+              i18n="@@newTicketLabel"
+            >
+              New ticket
+            </span>
+          </div>
+
+          @if (!filed()) {
+            <button
+              nbButton
+              type="button"
+              size="sm"
+              tone="lavender"
+              radius="full"
+              aria-label="Fill the ticket with sample data"
+              i18n-aria-label="@@prefillAriaLabel"
+              [disabled]="submitting()"
+              (click)="prefill()"
+            >
+              <ng-icon size="16" name="tablerWand" aria-hidden="true" />
+              <span
+                nbText
+                size="xs"
+                weight="black"
+                transform="uppercase"
+                tracking="wide"
+                i18n="@@prefillLabel"
+              >
+                Fill sample
+              </span>
+            </button>
+          }
         </div>
 
         <div nbStack gap="xs">
@@ -278,9 +297,21 @@
                 [value]="detailLength()"
                 [max]="detailMinLength()"
               />
-              <span nbText class="tabular-nums" size="xs" tone="subtle">
-                {{ detailLength() }} / {{ detailMinLength() }}
-              </span>
+
+              @if (detailSettled()) {
+                <span nbCluster gap="xs" align="center">
+                  <ng-icon size="14" name="tablerCheck" aria-hidden="true" />
+                  <span nbText size="xs" i18n="@@detailMinimumMet">
+                    Minimum met
+                  </span>
+                </span>
+              } @else {
+                <span nbText class="tabular-nums" size="xs" tone="subtle">
+                  <ng-container i18n="@@detailRemaining"
+                    >{{ detailRemaining() }} more characters</ng-container
+                  >
+                </span>
+              }
             </div>
 
             <app-validation-errors
@@ -441,7 +472,7 @@
             } @else {
               <span
                 nbText
-                size="sm"
+                size="xl"
                 weight="black"
                 transform="uppercase"
                 tracking="wide"
