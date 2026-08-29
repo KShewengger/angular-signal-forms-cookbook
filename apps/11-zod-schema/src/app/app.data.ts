@@ -8,9 +8,9 @@ import type {
 export const SUBJECT_MIN_LENGTH = 8;
 
 export const DETAIL_MIN_LENGTH: Record<Severity, number> = {
-  low: 20,
-  normal: 40,
-  urgent: 80,
+  low: 10,
+  normal: 15,
+  urgent: 20,
 };
 
 const EMAIL_CHANNEL: ChannelOption = {
@@ -38,11 +38,32 @@ export const CHANNELS_BY_ID: Record<ReplyChannel, ChannelOption> = {
   phone: PHONE_CHANNEL,
 };
 
+const LOW_SEVERITY: SeverityOption = {
+  id: 'low',
+  label: $localize`:@@severityLowLabel:Low`,
+};
+
+const NORMAL_SEVERITY: SeverityOption = {
+  id: 'normal',
+  label: $localize`:@@severityNormalLabel:Normal`,
+};
+
+const URGENT_SEVERITY: SeverityOption = {
+  id: 'urgent',
+  label: $localize`:@@severityUrgentLabel:Urgent`,
+};
+
 export const SEVERITIES: SeverityOption[] = [
-  { id: 'low', label: $localize`:@@severityLowLabel:Low` },
-  { id: 'normal', label: $localize`:@@severityNormalLabel:Normal` },
-  { id: 'urgent', label: $localize`:@@severityUrgentLabel:Urgent` },
+  LOW_SEVERITY,
+  NORMAL_SEVERITY,
+  URGENT_SEVERITY,
 ];
+
+export const SEVERITIES_BY_ID: Record<Severity, SeverityOption> = {
+  low: LOW_SEVERITY,
+  normal: NORMAL_SEVERITY,
+  urgent: URGENT_SEVERITY,
+};
 
 export const LESSON_TOPICS = [
   {

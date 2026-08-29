@@ -1,20 +1,102 @@
 import { Component, computed, signal } from '@angular/core';
-import { form } from '@angular/forms/signals';
-import type { NbToneToken } from '@ng-brutalism/ui';
+import { form, FormField, FormRoot } from '@angular/forms/signals';
+import {
+  NbButton,
+  NbButtonTrailingIcon,
+  NbCallout,
+  NbChip,
+  NbChipGroup,
+  NbCluster,
+  NbDisplay,
+  NbHalftone,
+  NbInput,
+  NbLabel,
+  NbMediaItem,
+  NbMediaItemDescription,
+  NbMediaItemIcon,
+  NbMediaItemTitle,
+  NbProgress,
+  NbSeparator,
+  NbSplit,
+  NbStack,
+  NbStatusDot,
+  NbSticker,
+  NbText,
+  NbTextarea,
+  type NbToneToken,
+} from '@ng-brutalism/ui';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  tablerBolt,
+  tablerCheck,
+  tablerCopyright,
+  tablerMail,
+  tablerPencil,
+  tablerPhone,
+  tablerRefresh,
+} from '@ng-icons/tabler-icons';
+import {
+  tablerCircleArrowLeftFill,
+  tablerCircleArrowRightFill,
+} from '@ng-icons/tabler-icons/fill';
 import {
   CHANNELS,
   CHANNELS_BY_ID,
   DETAIL_MIN_LENGTH,
   LESSON_TOPICS,
   SEVERITIES,
+  SEVERITIES_BY_ID,
   SUBJECT_MIN_LENGTH,
 } from './app.data';
 import { INITIAL_TICKET, ReplyChannel, Severity, Ticket } from './app.model';
 import { ticketSchema } from './app.schema';
+import { ValidationErrors } from './validation-errors';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
+  styleUrl: './app.css',
+  imports: [
+    FormField,
+    FormRoot,
+    NbButton,
+    NbButtonTrailingIcon,
+    NbCallout,
+    NbChip,
+    NbChipGroup,
+    NbCluster,
+    NbDisplay,
+    NbHalftone,
+    NbInput,
+    NbLabel,
+    NbMediaItem,
+    NbMediaItemDescription,
+    NbMediaItemIcon,
+    NbMediaItemTitle,
+    NbProgress,
+    NbSeparator,
+    NbSplit,
+    NbStack,
+    NbStatusDot,
+    NbSticker,
+    NbText,
+    NbTextarea,
+    NgIcon,
+    ValidationErrors,
+  ],
+  viewProviders: [
+    provideIcons({
+      tablerBolt,
+      tablerCheck,
+      tablerCircleArrowLeftFill,
+      tablerCircleArrowRightFill,
+      tablerCopyright,
+      tablerMail,
+      tablerPencil,
+      tablerPhone,
+      tablerRefresh,
+    }),
+  ],
   host: {
     class: 'relative mx-auto flex w-full max-w-5xl shrink-0 flex-col gap-4',
   },
@@ -55,6 +137,10 @@ export class App {
 
   protected readonly activeChannel = computed(
     () => CHANNELS_BY_ID[this.selectedChannel()],
+  );
+
+  protected readonly activeSeverity = computed(
+    () => SEVERITIES_BY_ID[this.selectedSeverity()],
   );
 
   protected readonly channelTabs = computed(() => {
@@ -100,6 +186,27 @@ export class App {
   );
 
   protected readonly readyToFile = computed(() => this.ticketForm().valid());
+
+  protected readonly checks = computed(() => [
+    {
+      id: 'contact',
+      label: $localize`:@@checkContactLabel:Reply address`,
+      requirement: this.activeChannel().requirement,
+      done: this.contactSettled(),
+    },
+    {
+      id: 'subject',
+      label: $localize`:@@checkSubjectLabel:Subject`,
+      requirement: $localize`:@@checkCharactersRequirement:${this.subjectMinLength}:COUNT: characters or more`,
+      done: this.subjectSettled(),
+    },
+    {
+      id: 'detail',
+      label: $localize`:@@checkDetailLabel:What happened`,
+      requirement: $localize`:@@checkCharactersRequirement:${this.detailMinLength()}:COUNT: characters or more`,
+      done: this.detailSettled(),
+    },
+  ]);
 
   protected selectChannel(channel: ReplyChannel): void {
     if (this.submitting() || this.selectedChannel() === channel) return;
