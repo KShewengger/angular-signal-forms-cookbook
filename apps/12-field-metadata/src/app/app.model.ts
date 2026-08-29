@@ -14,6 +14,8 @@ export type Platform =
   | 'notes'
   | 'website';
 
+export type PlatformInfo = { badge: string; tone: BadgeTone };
+
 export type Severity = 'ok' | 'notice' | 'warning';
 
 export type StatusHint = { level: Severity; message: string };

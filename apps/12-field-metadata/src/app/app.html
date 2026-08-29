@@ -7,10 +7,10 @@
     <nb-sticker
       shape="burst-wide"
       tone="yellow"
-      i18n="@@saveItLabel"
+      i18n="@@testItLabel"
       [rotate]="8"
     >
-      Test<br />
+      TEST<br />
       IT!
     </nb-sticker>
   </div>
@@ -76,6 +76,8 @@
     @let preview = urlState.metadata(previewKey);
     @let titleId = 'title-' + bookmark.id;
     @let urlId = 'url-' + bookmark.id;
+    @let nearLimit = count >= limit - 8 && count < limit;
+    @let atLimit = count >= limit;
 
     <nb-card class="relative" animate.enter="card-enter">
       <nb-card-content nbStack gap="sm" class="p-4">
@@ -106,7 +108,7 @@
           </span>
         }
 
-        <!-- TITLE: the built-in maxLength metadata feeds the counter limit -->
+        <!-- TITLE -->
         <div nbStack gap="xs">
           <div class="flex items-center justify-between">
             <label nbLabel i18n="@@titleLabel" [attr.for]="titleId"
@@ -114,8 +116,8 @@
             >
             <span
               class="font-mono text-xs font-bold"
-              [class.text-nb-warning]="count >= limit - 8 && count < limit"
-              [class.text-nb-danger]="count >= limit"
+              [class.text-nb-warning]="nearLimit"
+              [class.text-nb-danger]="atLimit"
             >
               {{ count }} / {{ limit }}
             </span>
@@ -131,7 +133,7 @@
           <app-validation-errors [field]="titleField" />
         </div>
 
-        <!-- URL: the custom PLATFORM metadata feeds the preview badge -->
+        <!-- URL -->
         <div nbStack gap="xs">
           <label nbLabel i18n="@@urlLabel" [attr.for]="urlId">URL</label>
           <input
@@ -145,7 +147,7 @@
           <app-validation-errors [field]="urlField" />
         </div>
 
-        <!-- PREVIEW: the managed metadata resource (Microlink), one per url field -->
+        <!-- PREVIEW -->
         <div
           class="flex min-h-16 items-center gap-3 rounded-xl border-2 border-black bg-nb-card p-2.5"
           [class.border-nb-danger]="!!preview?.error()"

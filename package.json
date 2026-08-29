@@ -41,6 +41,8 @@
     "serve:12-field-metadata": "nx serve 12-field-metadata --port 4212",
     "test:11-zod-schema": "nx test 11-zod-schema",
     "test:watch:11-zod-schema": "nx test 11-zod-schema --watch",
+    "test:12-field-metadata": "nx test 12-field-metadata",
+    "test:watch:12-field-metadata": "nx test 12-field-metadata --watch",
     "lint": "nx run-many -t lint",
     "format": "nx format:write",
     "format:check": "nx format:check",

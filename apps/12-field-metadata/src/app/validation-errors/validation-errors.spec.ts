@@ -1,0 +1,74 @@
+import { Injector, signal } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Field, FieldTree, form } from '@angular/forms/signals';
+import { of } from 'rxjs';
+import type { Bookmark, BookmarkCollection, LinkPreview } from '../app.model';
+import { bookmarkHubSchema } from '../app.schema';
+import { UnfurlService } from '../unfurl.service';
+import { ValidationErrors } from './validation-errors';
+
+class StubUnfurlService {
+  preview() {
+    return of<LinkPreview>({
+      domain: 'example.com',
+      title: 'Example',
+      imageUrl: null,
+    });
+  }
+}
+
+describe('ValidationErrors (12 · Field Metadata)', () => {
+  let fixture: ComponentFixture<ValidationErrors>;
+  let host: HTMLElement;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ValidationErrors],
+      providers: [{ provide: UnfurlService, useClass: StubUnfurlService }],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(ValidationErrors);
+    host = fixture.nativeElement as HTMLElement;
+  });
+
+  const buildForm = (bookmarks: Bookmark[]): FieldTree<BookmarkCollection> => {
+    const model = signal<BookmarkCollection>({ bookmarks });
+    return form(model, bookmarkHubSchema, {
+      injector: TestBed.inject(Injector),
+    });
+  };
+
+  const showErrorsFor = async (field: Field<unknown>): Promise<void> => {
+    fixture.componentRef.setInput('field', field);
+    await fixture.whenStable();
+  };
+
+  describe('visibility', () => {
+    it('stays hidden until the field is touched or dirty', async () => {
+      const bookmarkForm = buildForm([{ id: 'a', title: '', url: '' }]);
+      await showErrorsFor(bookmarkForm.bookmarks[0].url);
+
+      expect(host.querySelector('[role="alert"]')).toBeNull();
+    });
+
+    it('shows the required error once the field is touched', async () => {
+      const bookmarkForm = buildForm([{ id: 'a', title: '', url: '' }]);
+      bookmarkForm.bookmarks[0].url().markAsTouched();
+      await showErrorsFor(bookmarkForm.bookmarks[0].url);
+
+      expect(host.querySelector('[role="alert"]')).not.toBeNull();
+      expect(host.textContent).toContain('Add a link before saving.');
+    });
+  });
+
+  describe('accessibility', () => {
+    it('exposes the list as a polite alert', async () => {
+      const bookmarkForm = buildForm([{ id: 'a', title: '', url: '' }]);
+      bookmarkForm.bookmarks[0].url().markAsTouched();
+      await showErrorsFor(bookmarkForm.bookmarks[0].url);
+
+      const alert = host.querySelector('ul[role="alert"]');
+      expect(alert?.getAttribute('aria-live')).toBe('polite');
+    });
+  });
+});
