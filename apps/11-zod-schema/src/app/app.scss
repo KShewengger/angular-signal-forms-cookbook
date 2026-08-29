@@ -1,6 +1,11 @@
 $ticket-border: 3px;
 $notch-radius: 14px;
 
+/* The breakpoint `collapse="lg"` on nbSplit stacks at. Both masks must switch
+   together: one without the other leaves a bite with no black ring, or a ring
+   with no bite. */
+$ticket-split: 64rem;
+
 @mixin ticket-notch($radius, $x, $top, $bottom) {
   $cut:
     radial-gradient(
@@ -28,7 +33,7 @@ $notch-radius: 14px;
   padding: $ticket-border;
   box-shadow: 8px 8px 0 0 var(--nb-shadow);
 
-  @media (width >= 64rem) {
+  @media (width >= $ticket-split) {
     @include ticket-notch(
       $notch-radius,
       calc(100% - var(--ticket-stub) - #{$ticket-border}),
@@ -42,7 +47,7 @@ $notch-radius: 14px;
     border-radius: 26px - $ticket-border;
     overflow: hidden;
 
-    @media (width >= 64rem) {
+    @media (width >= $ticket-split) {
       @include ticket-notch(
         $notch-radius + $ticket-border,
         calc(100% - var(--ticket-stub)),
