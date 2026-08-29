@@ -162,41 +162,43 @@
             <span nbText size="sm" tone="danger" i18n="@@previewError">
               Could not reach that site.
             </span>
-          } @else if (preview?.value(); as data) {
-            <span
-              class="grid size-11 flex-none place-items-center overflow-hidden rounded-lg border-2 border-black bg-white"
-            >
-              @if (data.imageUrl) {
-                <img
-                  class="size-full object-contain"
-                  [src]="data.imageUrl"
-                  [alt]="data.title"
-                />
-              } @else {
-                <span aria-hidden="true">🔗</span>
-              }
-            </span>
-            <span class="flex min-w-0 flex-1 flex-col">
-              <span nbText size="sm" weight="bold" class="truncate">
-                {{ data.title }}
-              </span>
-              <span nbText size="xs" tone="muted" class="truncate">
-                {{ data.domain }}
-              </span>
-            </span>
-            @if (platformValue) {
+          } @else {
+            @if (preview?.value(); as data) {
               <span
-                nbBadge
-                class="flex-none"
-                [tone]="platforms[platformValue].tone"
+                class="grid size-11 flex-none place-items-center overflow-hidden rounded-lg border-2 border-black bg-white"
               >
-                {{ platforms[platformValue].badge }}
+                @if (data.imageUrl) {
+                  <img
+                    class="size-full object-contain"
+                    [src]="data.imageUrl"
+                    [alt]="data.title"
+                  />
+                } @else {
+                  <span aria-hidden="true">🔗</span>
+                }
+              </span>
+              <span class="flex min-w-0 flex-1 flex-col">
+                <span nbText size="sm" weight="bold" class="truncate">
+                  {{ data.title }}
+                </span>
+                <span nbText size="xs" tone="muted" class="truncate">
+                  {{ data.domain }}
+                </span>
+              </span>
+              @if (platformValue) {
+                <span
+                  nbBadge
+                  class="flex-none"
+                  [tone]="platforms[platformValue].tone"
+                >
+                  {{ platforms[platformValue].badge }}
+                </span>
+              }
+            } @else {
+              <span nbText size="sm" tone="muted" i18n="@@previewIdle">
+                Link preview appears here.
               </span>
             }
-          } @else {
-            <span nbText size="sm" tone="muted" i18n="@@previewIdle">
-              Link preview appears here.
-            </span>
           }
         </div>
       </nb-card-content>
