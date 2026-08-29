@@ -211,7 +211,10 @@ export class App {
   protected selectChannel(channel: ReplyChannel): void {
     if (this.submitting() || this.selectedChannel() === channel) return;
 
-    this.ticketForm.channel().value.set(channel);
+    this.ticketForm().reset({
+      ...INITIAL_TICKET,
+      channel,
+    });
   }
 
   protected selectSeverity(severity: Severity): void {
