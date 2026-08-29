@@ -140,6 +140,17 @@ export const SIGNAL_EXAMPLES: {
     link: '11-zod-schema/',
     tone: 'warning',
   },
+  {
+    title: $localize`:@@recipe.12.title:Field Metadata`,
+    category: 'Metadata',
+    app: $localize`:@@app.fieldMetadata:Field Metadata`,
+    description: $localize`:@@recipe.12.desc:Attach reactive data to a field with metadata(), and read the constraint keys the built-in validators publish.`,
+    api: 'metadata()',
+    level: 'Pro',
+    tags: ['metadata', 'createMetadataKey', 'MetadataReducer'],
+    link: '12-field-metadata/',
+    tone: 'lavender',
+  },
 ];
 
 export const TONE_RAIL: Record<Tone, string> = {

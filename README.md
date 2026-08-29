@@ -45,6 +45,7 @@ Each recipe is a small, runnable example that solves one problem, with a folder-
 | 09  | [Form Submission](./apps/09-form-submission)               | Submit to a server with `[formRoot]` and a submission `action`, then route the server's errors back onto the fields   |
 | 10  | [Dynamic Forms](./apps/10-dynamic-forms)                   | Swap the form shape with the role using `applyWhenValue`, then submit with `[formRoot]`                               |
 | 11  | [Zod Schema Validation](./apps/11-zod-schema)              | Drive validation from a Zod schema with `validateStandardSchema`, and swap that schema at runtime                     |
+| 12  | [Field Metadata](./apps/12-field-metadata)                 | Attach reactive data to a field with `metadata()`, and read the constraint keys `required`/`min`/`pattern` publish    |
 
 ---
 
