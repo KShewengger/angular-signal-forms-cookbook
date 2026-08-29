@@ -56,7 +56,7 @@ import { ValidationErrors } from './validation-errors';
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
-  styleUrl: './app.css',
+  styleUrl: './app.scss',
   imports: [
     FormField,
     FormRoot,
