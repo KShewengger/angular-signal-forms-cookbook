@@ -57,8 +57,6 @@ import { bookmarkHubSchema } from './app.schema';
   ],
 })
 export class App {
-  private sequence = 0;
-
   protected readonly collection = signal<BookmarkCollection>({
     bookmarks: INITIAL_COLLECTION.bookmarks.map((bookmark) => ({
       ...bookmark,
@@ -72,12 +70,12 @@ export class App {
   );
 
   protected addBookmark(): void {
-    this.sequence += 1;
-    const id = `bm-${this.sequence}`;
-
     this.bookmarkForm
       .bookmarks()
-      .value.update((list) => [...list, { id, title: '', url: '' }]);
+      .value.update((list) => [
+        ...list,
+        { id: crypto.randomUUID(), title: '', url: '' },
+      ]);
   }
 
   protected removeBookmark(index: number): void {
