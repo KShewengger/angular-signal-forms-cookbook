@@ -21,6 +21,7 @@ Practical Angular Signal Forms recipes: every flavor of validation, custom `Form
 ## 🧭 Contents
 
 - [Recipes](#-recipes)
+- [Signal Forms skill](#-signal-forms-skill)
 - [Getting started](#-getting-started)
 - [Scripts](#-scripts)
 - [Nx commands reference](./docs/nx-commands.md)
@@ -46,6 +47,18 @@ Each recipe is a small, runnable example that solves one problem, with a folder-
 | 10  | [Dynamic Forms](./apps/10-dynamic-forms)                   | Swap the form shape with the role using `applyWhenValue`, then submit with `[formRoot]`                                                                                                                   |
 | 11  | [Zod Schema Validation](./apps/11-zod-schema)              | Drive validation from a Zod schema with `validateStandardSchema`, and swap that schema at runtime                                                                                                         |
 | 12  | [Field Metadata](./apps/12-field-metadata)                 | Attach reactive metadata with `metadata()` / `createMetadataKey` / `applyWhen`, read the keys built-in validators publish (`maxLength`, `min`/`max`, `pattern`), and run a managed `httpResource` preview |
+
+---
+
+## 🧠 Signal Forms skill
+
+This repo ships a **custom Claude Code / Agent skill** - [`signal-forms`](./.claude/skills/signal-forms/) - **hand-built from the recipes above**, not paraphrased from the docs. It turns everything the cookbook demonstrates into a production-grade, reusable reference an AI agent (or a developer) can load on demand.
+
+- **[`SKILL.md`](./.claude/skills/signal-forms/SKILL.md)** carries the mental model and routes to **13 topic references** under [`references/`](./.claude/skills/signal-forms/references/): getting started, schemas, validation, async, arrays, conditional logic, custom controls, debounce, submission, **field metadata**, Zod / Standard Schema, testing, and production patterns.
+- Every pattern is **grounded in a real, tested recipe** in `apps/` - each reference cites the app it was distilled from, so the guidance ships code that actually compiles and passes.
+- **Portable and shareable:** drop `.claude/skills/signal-forms/` into any Angular v21+ project and the skill travels with it; any Claude Code session in a repo that has it auto-surfaces it for signal-forms work.
+
+> The apps are the runnable examples; the skill is the distilled, shippable know-how extracted from them.
 
 ---
 
@@ -80,15 +93,17 @@ The app serves at `http://localhost:4200`.
 
 ## ⚡ Scripts
 
-| Command             | What it does                                    |
-| ------------------- | ----------------------------------------------- |
-| `pnpm start`        | Serves the app in development mode with HMR     |
-| `pnpm build`        | Production build                                |
-| `pnpm test`         | Runs the full unit test suite                   |
-| `pnpm lint`         | Lints the workspace                             |
-| `pnpm format`       | Formats with Prettier                           |
-| `pnpm format:check` | Checks formatting without writing (CI-friendly) |
-| `pnpm graph`        | Opens the Nx project dependency graph           |
+| Command             | What it does                                               |
+| ------------------- | ---------------------------------------------------------- |
+| `pnpm start`        | Serves the app in development mode with HMR                |
+| `pnpm serve:all`    | Serves every app at once, each on its own port (4200-4212) |
+| `pnpm build`        | Production build                                           |
+| `pnpm test`         | Runs the full unit test suite                              |
+| `pnpm test:all`     | Runs the test suite across all apps                        |
+| `pnpm lint`         | Lints the workspace                                        |
+| `pnpm format`       | Formats with Prettier                                      |
+| `pnpm format:check` | Checks formatting without writing (CI-friendly)            |
+| `pnpm graph`        | Opens the Nx project dependency graph                      |
 
 ---
 

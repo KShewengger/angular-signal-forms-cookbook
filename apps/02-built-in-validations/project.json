@@ -50,6 +50,7 @@
       "continuous": true,
       "executor": "@angular/build:dev-server",
       "defaultConfiguration": "development",
+      "options": { "port": 4202 },
       "configurations": {
         "production": {
           "buildTarget": "02-built-in-validations:build:production"

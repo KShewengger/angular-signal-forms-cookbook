@@ -1,9 +1,11 @@
 # CLAUDE.md
 
 Guidance for Claude Code (and any AI agent) working in this repository. Read this
-before making changes. When a task involves Angular idioms not covered here, defer
-to the local `angular-developer` skill (`.claude/skills/angular-developer/`, sourced
-from [angular/skills](https://github.com/angular/skills)) and to https://angular.dev.
+before making changes. For anything **signal-forms**, the local **`signal-forms`** skill
+(`.claude/skills/signal-forms/`, distilled from these very recipes) is the primary,
+production-grade reference. For other Angular idioms, defer to the local
+`angular-developer` skill (`.claude/skills/angular-developer/`, sourced from
+[angular/skills](https://github.com/angular/skills)) and to https://angular.dev.
 
 ---
 
@@ -181,7 +183,11 @@ When unsure, read the matching file under `.claude/skills/angular-developer/refe
 - Inputs/outputs use the **signal APIs**: `input()`, `input.required()`, `output()`,
   and `model()` for two-way - **not** the `@Input()` / `@Output()` decorators.
 - Inject dependencies with the **`inject()`** function, not constructor parameters.
-- Use `NgOptimizedImage` (`ngSrc`) for raster images (already used on the landing hero).
+- Use `NgOptimizedImage` (`ngSrc` + `width`/`height`, or `fill`) for **raster** images
+  (jpg/png/webp) only - **not** SVG (the toppings in 05/06 stay plain `src`), and not a
+  tiny dynamic remote logo of unknown size (a fixed-size container already prevents layout
+  shift, e.g. 12's Microlink preview). Give non-LCP images no `priority` so they lazy-load;
+  03's passport and 04's user photo follow the hero's `ngSrc … class="h-full w-full object-cover"` pattern.
 
 **Reactivity**
 
@@ -199,6 +205,14 @@ When unsure, read the matching file under `.claude/skills/angular-developer/refe
   discriminated unions, and `as const`. Type public APIs explicitly.
 - Favor immutable data and pure helpers; keep component classes thin.
 - Use `readonly` for injected services and signals that aren't reassigned.
+
+**Configuration**
+
+- Values that **vary per build target** (a swappable endpoint, mock vs real API, a flag)
+  live in `src/environments/environment.ts` + `environment.development.ts` with a
+  `fileReplacements` block in the `development` build configuration - recipe 12's Microlink
+  endpoint is the model. A value that is the **same everywhere** stays a plain constant in
+  `app.data.ts`; do **not** reach for `environments/` for a static value.
 
 ---
 
@@ -265,8 +279,18 @@ Recipes use Angular's **signal forms** API (`@angular/forms/signals`), not the l
   checks the guard first and throws when the variant is not active. Never spread that
   cast across components and specs.
 
-When writing or reviewing a recipe, read
-`.claude/skills/angular-developer/references/signal-forms.md` first, and keep each
+- **Field metadata** (recipe 12): attach reactive data to a field with
+  `metadata(path, KEY, fn)`, where `KEY` is a `createMetadataKey` (default `override`, a
+  custom `{ getInitial, reduce }`, or a built-in `MetadataReducer` like `list()`) or a
+  `createManagedMetadataKey` (a per-field `httpResource`). Validators publish built-in keys
+  for free (`maxLength`→`MAX_LENGTH`, `min`/`max`→`MIN_NUMBER`/`MAX_NUMBER`, `pattern`→
+  `PATTERN`). Read with `field().metadata(KEY)?.()` (unwrap the signal); `hasMetadata(KEY)`
+  for presence. A rule is dynamic iff it reads a signal; `applyWhen` contributes metadata
+  conditionally. Keep the domain mapping (regex→words) in a pure util or the schema, not in
+  a shared display component. Full playbook in the `signal-forms` skill.
+
+When writing or reviewing a recipe, read the local **`signal-forms`** skill
+(`.claude/skills/signal-forms/`) first, and keep each
 recipe focused on **one** concept with a clear `README.md`. Finish or refresh a recipe
 with the local **`finalize-recipe`** skill (gap-based: fix drift, don't rewrite already-
 green suites).

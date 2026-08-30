@@ -6,6 +6,8 @@
     "start": "nx serve cookbook",
     "build": "nx build cookbook",
     "test": "nx run-many -t test",
+    "serve:all": "nx run-many -t serve --parallel=20",
+    "test:all": "nx run-many -t test",
     "serve:cookbook": "nx serve cookbook --port 4200",
     "serve:01-basic-form": "nx serve 01-basic-form --port 4201",
     "test:01-basic-form": "nx test 01-basic-form",

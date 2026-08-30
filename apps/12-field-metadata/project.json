@@ -56,6 +56,7 @@
       "continuous": true,
       "executor": "@angular/build:dev-server",
       "defaultConfiguration": "development",
+      "options": { "port": 4212 },
       "configurations": {
         "production": {
           "buildTarget": "12-field-metadata:build:production"
