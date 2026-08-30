@@ -1,20 +1,24 @@
+import {
+  HttpHandlerFn,
+  HttpRequest,
+  HttpResponse,
+  provideHttpClient,
+  withInterceptors,
+} from '@angular/common/http';
 import { Injector, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Field, FieldTree, form } from '@angular/forms/signals';
 import { of } from 'rxjs';
-import type { Bookmark, BookmarkCollection, LinkPreview } from '../app.model';
+import type { Bookmark, BookmarkCollection } from '../app.model';
 import { bookmarkHubSchema } from '../app.schema';
-import { UnfurlService } from '../unfurl.service';
 import { ValidationErrors } from './validation-errors';
 
-class StubUnfurlService {
-  preview() {
-    return of<LinkPreview>({
-      domain: 'example.com',
-      title: 'Example',
-      imageUrl: null,
-    });
+function mockMicrolink(request: HttpRequest<unknown>, next: HttpHandlerFn) {
+  if (request.url.startsWith('https://api.microlink.io/')) {
+    return of(new HttpResponse({ status: 200, body: { status: 'fail' } }));
   }
+
+  return next(request);
 }
 
 describe('ValidationErrors (12 · Field Metadata)', () => {
@@ -24,7 +28,7 @@ describe('ValidationErrors (12 · Field Metadata)', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ValidationErrors],
-      providers: [{ provide: UnfurlService, useClass: StubUnfurlService }],
+      providers: [provideHttpClient(withInterceptors([mockMicrolink]))],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ValidationErrors);

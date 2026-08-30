@@ -26,6 +26,17 @@ export type LinkPreview = {
   imageUrl: string | null;
 };
 
+export type MicrolinkResponse = {
+  status: string;
+  data?: {
+    title?: string | null;
+    publisher?: string | null;
+    url?: string | null;
+    image?: { url?: string } | null;
+    logo?: { url?: string } | null;
+  };
+};
+
 export type Bookmark = { id: string; title: string; url: string };
 
 export type BookmarkCollection = { bookmarks: Bookmark[] };

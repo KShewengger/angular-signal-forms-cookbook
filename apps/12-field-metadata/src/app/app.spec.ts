@@ -1,28 +1,42 @@
-import { provideHttpClient } from '@angular/common/http';
 import {
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
+  HttpHandlerFn,
+  HttpRequest,
+  HttpResponse,
+  provideHttpClient,
+  withInterceptors,
+} from '@angular/common/http';
 import { Injector, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FieldTree, form, MAX_LENGTH } from '@angular/forms/signals';
 import { of } from 'rxjs';
 import { TITLE_MAX_LENGTH } from './app.data';
 import { App } from './app';
-import type { Bookmark, BookmarkCollection, LinkPreview } from './app.model';
+import type { Bookmark, BookmarkCollection } from './app.model';
 import { PLATFORM, STATUS } from './app.metadata';
 import { bookmarkHubSchema } from './app.schema';
-import { UnfurlService } from './unfurl.service';
+import { toLinkPreview } from './app.utils';
 
-class StubUnfurlService {
-  preview() {
-    return of<LinkPreview>({
-      domain: 'example.com',
-      title: 'Example',
-      imageUrl: null,
-    });
+function mockMicrolink(request: HttpRequest<unknown>, next: HttpHandlerFn) {
+  if (request.url.startsWith('https://api.microlink.io/')) {
+    return of(
+      new HttpResponse({
+        status: 200,
+        body: {
+          status: 'success',
+          data: {
+            title: 'Repo Preview',
+            publisher: 'github.com',
+            logo: { url: 'https://logo.png' },
+          },
+        },
+      }),
+    );
   }
+
+  return next(request);
 }
+
+const HTTP = [provideHttpClient(withInterceptors([mockMicrolink]))];
 
 const messagesOf = (field: FieldTree<string>) =>
   field()
@@ -36,11 +50,7 @@ const kindsOf = (field: FieldTree<string>) =>
 
 describe('App (12 · Field Metadata)', () => {
   describe('validation schema (isolated)', () => {
-    beforeEach(() =>
-      TestBed.configureTestingModule({
-        providers: [{ provide: UnfurlService, useClass: StubUnfurlService }],
-      }),
-    );
+    beforeEach(() => TestBed.configureTestingModule({ providers: HTTP }));
 
     const buildForm = (
       bookmarks: Bookmark[],
@@ -147,66 +157,28 @@ describe('App (12 · Field Metadata)', () => {
     });
   });
 
-  describe('unfurl service (Microlink)', () => {
-    let service: UnfurlService;
-    let httpMock: HttpTestingController;
-
-    beforeEach(() => {
-      TestBed.configureTestingModule({
-        providers: [provideHttpClient(), provideHttpClientTesting()],
-      });
-      service = TestBed.inject(UnfurlService);
-      httpMock = TestBed.inject(HttpTestingController);
-    });
-
-    afterEach(() => httpMock.verify());
-
-    it('maps a Microlink response into a link preview', () => {
-      let result: LinkPreview | undefined;
-      service.preview('github.com/a/b').subscribe((value) => (result = value));
-
-      const request = httpMock.expectOne((req) =>
-        req.url.startsWith('https://api.microlink.io/'),
-      );
-
-      expect(decodeURIComponent(request.request.url)).toContain(
-        'github.com/a/b',
-      );
-      request.flush({
+  describe('url preview mapping (toLinkPreview)', () => {
+    it('maps a successful Microlink response into a link preview', () => {
+      const preview = toLinkPreview({
         status: 'success',
         data: {
-          title: 'GitHub',
+          title: 'GitHub Repository',
+          publisher: 'github.com',
+          url: 'https://github.com',
           logo: { url: 'https://logo.png' },
           image: null,
         },
       });
 
-      expect(result).toEqual({
+      expect(preview).toEqual({
         domain: 'github.com',
-        title: 'GitHub',
+        title: 'GitHub Repository',
         imageUrl: 'https://logo.png',
       });
     });
 
-    it('errors for an unreachable value without calling the network', () => {
-      let errored = false;
-      service.preview('not a url').subscribe({ error: () => (errored = true) });
-
-      httpMock.expectNone(() => true);
-      expect(errored).toBe(true);
-    });
-
-    it('errors when Microlink reports a failure', () => {
-      let errored = false;
-      service
-        .preview('github.com/a')
-        .subscribe({ error: () => (errored = true) });
-
-      httpMock
-        .expectOne((req) => req.url.startsWith('https://api.microlink.io/'))
-        .flush({ status: 'fail' });
-
-      expect(errored).toBe(true);
+    it('throws when Microlink reports a failure', () => {
+      expect(() => toLinkPreview({ status: 'fail' })).toThrow();
     });
   });
 
@@ -222,7 +194,7 @@ describe('App (12 · Field Metadata)', () => {
     beforeEach(async () => {
       await TestBed.configureTestingModule({
         imports: [App],
-        providers: [{ provide: UnfurlService, useClass: StubUnfurlService }],
+        providers: HTTP,
       }).compileComponents();
 
       fixture = TestBed.createComponent(App);
@@ -234,10 +206,8 @@ describe('App (12 · Field Metadata)', () => {
       expect(host.querySelectorAll('nb-card').length).toBe(1);
     });
 
-    it('resolves the managed preview into the card', async () => {
-      await fixture.whenStable();
-
-      expect(host.textContent).toContain('Example');
+    it('resolves the managed Microlink preview into the card', () => {
+      expect(host.textContent).toContain('Repo Preview');
     });
 
     it('adds a bookmark', async () => {

@@ -1,13 +1,19 @@
-import { inject, ResourceRef } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
+import { httpResource } from '@angular/common/http';
+import { Signal } from '@angular/core';
 import {
   createManagedMetadataKey,
   createMetadataKey,
   MetadataReducer,
 } from '@angular/forms/signals';
 import { STATUS_HINTS } from './app.data';
-import type { LinkPreview, Platform, Severity, StatusHint } from './app.model';
-import { UnfurlService } from './unfurl.service';
+import type {
+  LinkPreview,
+  MicrolinkResponse,
+  Platform,
+  Severity,
+  StatusHint,
+} from './app.model';
+import { domainOf, toLinkPreview, withProtocol } from './app.utils';
 
 const SEVERITY_RANK: Record<Severity, number> = {
   ok: 0,
@@ -27,17 +33,20 @@ export const STATUS = createMetadataKey<StatusHint, StatusHint>(
   severityReducer,
 );
 
-export const URL_PREVIEW = createManagedMetadataKey<
-  ResourceRef<LinkPreview | undefined>,
-  string
->((_state, url) => {
-  const unfurl = inject(UnfurlService);
+export const URL_PREVIEW = createManagedMetadataKey(
+  (_state, url: Signal<string | undefined>) =>
+    httpResource<LinkPreview>(
+      () => {
+        const value = (url() ?? '').trim();
+        const domain = domainOf(value);
 
-  return rxResource({
-    params: () => {
-      const value = (url() ?? '').trim();
-      return value ? value : undefined;
-    },
-    stream: ({ params }) => unfurl.preview(params),
-  });
-});
+        return domain
+          ? {
+              url: 'https://api.microlink.io/',
+              params: { url: withProtocol(value) },
+            }
+          : undefined;
+      },
+      { parse: (raw) => toLinkPreview(raw as MicrolinkResponse) },
+    ),
+);
