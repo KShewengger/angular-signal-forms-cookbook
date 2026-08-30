@@ -1,0 +1,124 @@
+<nb-card class="relative">
+  <nb-card-content nbStack gap="sm" class="p-4">
+    <button
+      nbIconButton
+      type="button"
+      tone="danger"
+      class="absolute! -top-3 -right-3 z-10 size-8!"
+      aria-label="Remove bookmark"
+      i18n-aria-label="@@removeBookmark"
+      (click)="remove.emit()"
+    >
+      <ng-icon size="16" name="tablerX" aria-hidden="true" />
+    </button>
+
+    <!-- STATUS (reducer metadata) -->
+    @if (status(); as statusHint) {
+      <span
+        nbBadge
+        class="mb-2 inline-flex w-fit items-center gap-1.5"
+        [tone]="severityTone[statusHint.level]"
+      >
+        <span
+          nbStatusDot
+          size="sm"
+          [state]="severityState[statusHint.level]"
+        ></span>
+        {{ statusHint.message }}
+      </span>
+    }
+
+    <!-- TITLE -->
+    <div nbStack gap="xs">
+      <div class="flex items-center justify-between">
+        <label nbLabel i18n="@@titleLabel" [attr.for]="titleId()">Title</label>
+        <span
+          class="font-mono text-xs font-bold"
+          [class.text-nb-warning]="nearLimit()"
+          [class.text-nb-danger]="atLimit()"
+        >
+          {{ count() }} / {{ limit() }}
+        </span>
+      </div>
+      <input
+        nbInput
+        type="text"
+        placeholder="Name this link"
+        i18n-placeholder="@@titlePlaceholder"
+        [id]="titleId()"
+        [formField]="titleField()"
+      />
+      <app-validation-errors [field]="titleField()" />
+    </div>
+
+    <!-- URL -->
+    <div nbStack gap="xs">
+      <label nbLabel i18n="@@urlLabel" [attr.for]="urlId()">URL</label>
+      <input
+        nbInput
+        type="text"
+        placeholder="github.com/you/project"
+        i18n-placeholder="@@urlPlaceholder"
+        [id]="urlId()"
+        [formField]="urlField()"
+      />
+      <app-validation-errors [field]="urlField()" />
+    </div>
+
+    <!-- PREVIEW (managed metadata) -->
+    @let previewRef = preview();
+    <div
+      class="flex min-h-16 items-center gap-3 rounded-xl border-2 border-black bg-nb-card p-2.5"
+      [class.border-nb-danger]="!!previewRef?.error()"
+    >
+      @if (previewRef?.isLoading()) {
+        <span class="spinner" aria-hidden="true"></span>
+        <span nbText size="sm" tone="muted" i18n="@@previewLoading">
+          Fetching preview…
+        </span>
+      } @else if (previewRef?.error()) {
+        <span aria-hidden="true">⚠️</span>
+        <span nbText size="sm" tone="danger" i18n="@@previewError">
+          Could not reach that site.
+        </span>
+      } @else {
+        @if (previewRef?.value(); as data) {
+          <span
+            class="grid size-11 flex-none place-items-center overflow-hidden rounded-lg border-2 border-black bg-white"
+          >
+            @if (data.imageUrl) {
+              <img
+                class="size-full object-contain"
+                [src]="data.imageUrl"
+                [alt]="data.title"
+              />
+            } @else {
+              <span aria-hidden="true">🔗</span>
+            }
+          </span>
+          <span class="flex min-w-0 flex-1 flex-col">
+            <span nbText size="sm" weight="bold" class="truncate">
+              {{ data.title }}
+            </span>
+            <span nbText size="xs" tone="muted" class="truncate">
+              {{ data.domain }}
+            </span>
+          </span>
+          @if (platform(); as platformValue) {
+            <span
+              nbBadge
+              class="flex-none"
+              [tone]="platforms[platformValue].tone"
+            >
+              {{ platforms[platformValue].badge }}
+            </span>
+          }
+        } @else {
+          <span nbText size="sm" tone="muted" i18n="@@previewIdle">
+            Link preview appears here.
+          </span>
+        }
+      }
+    </div>
+  </nb-card-content>
+</nb-card>

@@ -1,41 +1,28 @@
 import { Component, computed, signal } from '@angular/core';
-import { form, FormField, MAX_LENGTH } from '@angular/forms/signals';
+import { form } from '@angular/forms/signals';
 import {
   NbBadge,
   NbButton,
   NbButtonTrailingIcon,
   NbCallout,
-  NbCard,
-  NbCardContent,
   NbChip,
   NbChipGroup,
   NbCluster,
   NbDisplay,
-  NbIconButton,
-  NbInput,
-  NbLabel,
   NbSeparator,
   NbStack,
-  NbStatusDot,
   NbSticker,
   NbText,
 } from '@ng-brutalism/ui';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { tablerCopyright, tablerPlus, tablerX } from '@ng-icons/tabler-icons';
+import { tablerCopyright, tablerPlus } from '@ng-icons/tabler-icons';
 import {
   tablerCircleArrowLeftFill,
   tablerCircleArrowRightFill,
 } from '@ng-icons/tabler-icons/fill';
-import {
-  PLATFORMS,
-  SEVERITY_STATE,
-  SEVERITY_TONE,
-  TITLE_MAX_LENGTH,
-} from './app.data';
+import { BookmarkCard } from './bookmark-card';
 import { BookmarkCollection, INITIAL_COLLECTION } from './app.model';
-import { PLATFORM, STATUS, URL_PREVIEW } from './app.metadata';
 import { bookmarkHubSchema } from './app.schema';
-import { ValidationErrors } from './validation-errors';
 
 @Component({
   selector: 'app-root',
@@ -45,27 +32,20 @@ import { ValidationErrors } from './validation-errors';
     class: 'relative mx-auto flex w-4xl max-w-full shrink-0 flex-col gap-6',
   },
   imports: [
-    FormField,
+    BookmarkCard,
     NbBadge,
     NbButton,
     NbButtonTrailingIcon,
     NbCallout,
-    NbCard,
-    NbCardContent,
     NbChip,
     NbChipGroup,
     NbCluster,
     NbDisplay,
-    NbIconButton,
-    NbInput,
-    NbLabel,
     NbSeparator,
     NbStack,
-    NbStatusDot,
     NbSticker,
     NbText,
     NgIcon,
-    ValidationErrors,
   ],
   viewProviders: [
     provideIcons({
@@ -73,20 +53,10 @@ import { ValidationErrors } from './validation-errors';
       tablerCircleArrowRightFill,
       tablerCopyright,
       tablerPlus,
-      tablerX,
     }),
   ],
 })
 export class App {
-  protected readonly platforms = PLATFORMS;
-  protected readonly severityTone = SEVERITY_TONE;
-  protected readonly severityState = SEVERITY_STATE;
-  protected readonly titleMax = TITLE_MAX_LENGTH;
-  protected readonly maxLengthKey = MAX_LENGTH;
-  protected readonly platformKey = PLATFORM;
-  protected readonly statusKey = STATUS;
-  protected readonly previewKey = URL_PREVIEW;
-
   private sequence = 0;
 
   protected readonly collection = signal<BookmarkCollection>({
