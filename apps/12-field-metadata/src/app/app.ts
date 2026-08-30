@@ -21,7 +21,8 @@ import {
   tablerCircleArrowRightFill,
 } from '@ng-icons/tabler-icons/fill';
 import { BookmarkCard } from './bookmark-card';
-import { BookmarkCollection, INITIAL_COLLECTION } from './app.model';
+import { INITIAL_COLLECTION } from './app.data';
+import { BookmarkCollection } from './app.model';
 import { bookmarkHubSchema } from './app.schema';
 
 @Component({

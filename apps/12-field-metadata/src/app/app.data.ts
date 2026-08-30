@@ -1,5 +1,6 @@
 import type {
   BadgeTone,
+  BookmarkCollection,
   Platform,
   PlatformInfo,
   Severity,
@@ -7,6 +8,16 @@ import type {
 } from './app.model';
 
 export const TITLE_MAX_LENGTH = 40;
+
+export const INITIAL_COLLECTION: BookmarkCollection = {
+  bookmarks: [
+    {
+      id: 'seed-1',
+      title: 'Angular on GitHub',
+      url: 'github.com/angular/angular',
+    },
+  ],
+};
 
 export const PLATFORMS: Record<Platform, PlatformInfo> = {
   repo: { badge: $localize`:@@platformRepo:Repo`, tone: 'lavender' },

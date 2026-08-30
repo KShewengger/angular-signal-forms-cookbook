@@ -40,13 +40,3 @@ export type MicrolinkResponse = {
 export type Bookmark = { id: string; title: string; url: string };
 
 export type BookmarkCollection = { bookmarks: Bookmark[] };
-
-export const INITIAL_COLLECTION: BookmarkCollection = {
-  bookmarks: [
-    {
-      id: 'seed-1',
-      title: 'Angular on GitHub',
-      url: 'github.com/angular/angular',
-    },
-  ],
-};

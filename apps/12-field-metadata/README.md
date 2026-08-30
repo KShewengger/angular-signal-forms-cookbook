@@ -201,7 +201,7 @@ title and url fields, which reads `errorSummary()` and gates visibility on
 
 ## How it works
 
-**1. Model the bookmark and seed the collection** (`app.model.ts`)
+**1. Seed the collection** (`app.data.ts`)
 
 ```ts
 export const INITIAL_COLLECTION: BookmarkCollection = {
