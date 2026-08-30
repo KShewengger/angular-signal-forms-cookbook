@@ -1,5 +1,6 @@
 import {
   HttpHandlerFn,
+  HttpInterceptorFn,
   HttpRequest,
   HttpResponse,
   provideHttpClient,
@@ -13,36 +14,33 @@ import type { Bookmark, BookmarkCollection } from '../app.model';
 import { bookmarkHubSchema } from '../app.schema';
 import { BookmarkCard } from './bookmark-card';
 
-function mockMicrolink(request: HttpRequest<unknown>, next: HttpHandlerFn) {
-  if (request.url.startsWith('https://api.microlink.io/')) {
-    return of(
-      new HttpResponse({
-        status: 200,
-        body: {
-          status: 'success',
-          data: {
-            title: 'Fetched Title',
-            publisher: 'github.com',
-            logo: { url: 'https://logo.png' },
-          },
-        },
-      }),
-    );
-  }
+function microlinkInterceptor(
+  outcome: 'success' | 'fail' = 'success',
+): HttpInterceptorFn {
+  return (request: HttpRequest<unknown>, next: HttpHandlerFn) => {
+    if (!request.url.startsWith('https://api.microlink.io/')) {
+      return next(request);
+    }
 
-  return next(request);
+    const body =
+      outcome === 'success'
+        ? {
+            status: 'success',
+            data: {
+              title: 'Repo Preview',
+              publisher: 'github.com',
+              logo: { url: 'https://logo.png' },
+            },
+          }
+        : { status: 'fail' };
+
+    return of(new HttpResponse({ status: 200, body }));
+  };
 }
 
 describe('BookmarkCard (12 · Field Metadata)', () => {
   let fixture: ComponentFixture<BookmarkCard>;
   let host: HTMLElement;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [BookmarkCard],
-      providers: [provideHttpClient(withInterceptors([mockMicrolink]))],
-    }).compileComponents();
-  });
 
   const buildField = (bookmark: Bookmark): FieldTree<Bookmark> => {
     const model = signal<BookmarkCollection>({ bookmarks: [bookmark] });
@@ -61,6 +59,15 @@ describe('BookmarkCard (12 · Field Metadata)', () => {
   };
 
   describe('component (DOM)', () => {
+    beforeEach(async () => {
+      await TestBed.configureTestingModule({
+        imports: [BookmarkCard],
+        providers: [
+          provideHttpClient(withInterceptors([microlinkInterceptor()])),
+        ],
+      }).compileComponents();
+    });
+
     it('shows the title counter from built-in maxLength metadata', async () => {
       await render({ id: 'a', title: 'Angular', url: 'github.com/a' });
 
@@ -82,21 +89,21 @@ describe('BookmarkCard (12 · Field Metadata)', () => {
     it('resolves the managed preview and tags the platform', async () => {
       await render({ id: 'a', title: '', url: 'github.com/a' });
 
-      expect(host.textContent).toContain('Fetched Title');
+      expect(host.textContent).toContain('Repo Preview');
       expect(host.textContent).toContain('Repo');
     });
 
     it('emits remove when the remove button is clicked', async () => {
       await render({ id: 'a', title: 'Angular', url: 'github.com/a' });
 
-      let removed = false;
-      fixture.componentInstance.remove.subscribe(() => (removed = true));
+      const removed = vi.fn();
+      fixture.componentInstance.remove.subscribe(removed);
       const button = host.querySelector(
         'button[aria-label="Remove bookmark"]',
       ) as HTMLButtonElement;
       button.click();
 
-      expect(removed).toBe(true);
+      expect(removed).toHaveBeenCalledOnce();
     });
 
     it('aggregates derived url help hints with the list() reducer', async () => {
@@ -113,6 +120,23 @@ describe('BookmarkCard (12 · Field Metadata)', () => {
 
       expect(host.textContent).toContain('Links to a specific page.');
       expect(host.textContent).not.toContain('Unrecognized site');
+    });
+  });
+
+  describe('unreachable preview', () => {
+    beforeEach(async () => {
+      await TestBed.configureTestingModule({
+        imports: [BookmarkCard],
+        providers: [
+          provideHttpClient(withInterceptors([microlinkInterceptor('fail')])),
+        ],
+      }).compileComponents();
+    });
+
+    it('shows the error state when the managed preview cannot be fetched', async () => {
+      await render({ id: 'a', title: 'Angular', url: 'github.com/a' });
+
+      expect(host.textContent).toContain('Could not reach that site.');
     });
   });
 });

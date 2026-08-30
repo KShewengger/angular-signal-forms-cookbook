@@ -86,6 +86,23 @@ describe('App (12 · Field Metadata)', () => {
       });
     });
 
+    describe('form as a whole', () => {
+      it('is invalid while a bookmark is missing its url', () => {
+        const bookmarkForm = buildForm([{ id: 'a', title: 'Repo', url: '' }]);
+
+        expect(bookmarkForm().valid()).toBe(false);
+        expect(bookmarkForm().invalid()).toBe(true);
+      });
+
+      it('is valid once every bookmark has a url', () => {
+        const bookmarkForm = buildForm([
+          { id: 'a', title: 'Repo', url: 'github.com/a' },
+        ]);
+
+        expect(bookmarkForm().valid()).toBe(true);
+      });
+    });
+
     describe('built-in metadata (MAX_LENGTH)', () => {
       it('publishes the title max length', () => {
         const bookmarkForm = buildForm([{ id: 'a', title: '', url: 'x.com' }]);
