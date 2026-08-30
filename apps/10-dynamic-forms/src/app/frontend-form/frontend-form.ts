@@ -32,6 +32,7 @@ import { ValidationErrors } from '../validation-errors';
 @Component({
   selector: 'app-frontend-form',
   templateUrl: './frontend-form.html',
+  styleUrl: './frontend-form.css',
   imports: [
     FormRoot,
     FormField,

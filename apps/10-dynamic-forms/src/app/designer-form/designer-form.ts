@@ -33,6 +33,7 @@ import { ValidationErrors } from '../validation-errors';
 @Component({
   selector: 'app-designer-form',
   templateUrl: './designer-form.html',
+  styleUrl: './designer-form.css',
   imports: [
     FormRoot,
     FormField,

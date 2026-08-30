@@ -21,7 +21,13 @@
       i18n-aria-label="@@selectedSkillsLabel"
     >
       @for (chip of skillChips(); track chip.name) {
-        <span nbChip class="gap-1.5! pr-1!" tone="background">
+        <span
+          nbChip
+          class="gap-1.5! pr-1!"
+          tone="background"
+          animate.enter="chip-enter"
+          animate.leave="chip-leave"
+        >
           {{ chip.name }}
           <button
             type="button"

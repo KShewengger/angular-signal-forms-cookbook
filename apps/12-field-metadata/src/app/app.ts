@@ -30,7 +30,7 @@ import { bookmarkHubSchema } from './app.schema';
   templateUrl: './app.html',
   styleUrl: './app.css',
   host: {
-    class: 'relative mx-auto flex w-4xl max-w-full shrink-0 flex-col gap-6',
+    class: 'relative mx-auto flex w-3xl max-w-full shrink-0 flex-col gap-6',
   },
   imports: [
     BookmarkCard,

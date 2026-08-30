@@ -25,6 +25,7 @@ import { ValidationErrors } from '../validation-errors';
 @Component({
   selector: 'app-skill-composer',
   templateUrl: './skill-composer.html',
+  styleUrl: './skill-composer.css',
   imports: [
     FormField,
     NbButton,

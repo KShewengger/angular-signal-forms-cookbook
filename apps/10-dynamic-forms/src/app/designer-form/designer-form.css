@@ -1,22 +1,12 @@
-.seat--taken {
-  background-color: color-mix(
-    in srgb,
-    var(--nb-foreground) 18%,
-    var(--nb-surface)
-  ) !important;
-  background-image: repeating-linear-gradient(
-    45deg,
-    transparent 0 4px,
-    rgba(0, 0, 0, 0.13) 4px 7px
-  );
-}
-
 @media (prefers-reduced-motion: no-preference) {
   .field-reveal {
     animation: field-reveal 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .field-hide {
     animation: field-hide 0.2s cubic-bezier(0.4, 0, 1, 1) both;
+  }
+  .banner-enter {
+    animation: banner-enter 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   @keyframes field-reveal {
     from {
@@ -36,6 +26,16 @@
     to {
       opacity: 0;
       transform: translateY(-6px);
+    }
+  }
+  @keyframes banner-enter {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 }
