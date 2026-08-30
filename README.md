@@ -21,7 +21,8 @@ Practical Angular Signal Forms recipes: every flavor of validation, custom `Form
 ## 🧭 Contents
 
 - [Recipes](#-recipes)
-- [Signal Forms skill](#-signal-forms-skill)
+- [Signal Forms health-check skill](#-signal-forms-health-check-skill)
+- [Tech stack](#-tech-stack)
 - [Getting started](#-getting-started)
 - [Scripts](#-scripts)
 - [Nx commands reference](./docs/nx-commands.md)
@@ -50,15 +51,39 @@ Each recipe is a small, runnable example that solves one problem, with a folder-
 
 ---
 
-## 🧠 Signal Forms skill
+## 🧠 Signal Forms health-check skill
 
-This repo ships a **custom Claude Code / Agent skill** - [`signal-forms`](./.claude/skills/signal-forms/) - **hand-built from the recipes above**, not paraphrased from the docs. It turns everything the cookbook demonstrates into a production-grade, reusable reference an AI agent (or a developer) can load on demand.
+This repo ships a **custom Claude Code / Agent skill** - [`signal-forms-health-check`](./.claude/skills/signal-forms-health-check/) - hand-built from the recipes above and cross-checked against the official `angular.dev` docs. It is both a **reviewer** and a **playbook**. Run it from a Claude Code (or Agent) session:
 
-- **[`SKILL.md`](./.claude/skills/signal-forms/SKILL.md)** carries the mental model and routes to **13 topic references** under [`references/`](./.claude/skills/signal-forms/references/): getting started, schemas, validation, async, arrays, conditional logic, custom controls, debounce, submission, **field metadata**, Zod / Standard Schema, testing, and production patterns.
-- Every pattern is **grounded in a real, tested recipe** in `apps/` - each reference cites the app it was distilled from, so the guidance ships code that actually compiles and passes.
-- **Portable and shareable:** drop `.claude/skills/signal-forms/` into any Angular v21+ project and the skill travels with it; any Claude Code session in a repo that has it auto-surfaces it for signal-forms work.
+| Use it as        | Invoke                                                                       | What you get                                                                                               |
+| ---------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Audit (branch)   | `/signal-forms-health-check`                                                 | Reviews the branch's changed signal-forms files vs `main`, ranked P0/P1/P2, each citing the rule it breaks |
+| Audit (isolated) | `/signal-forms-health-check apps/12-field-metadata`                          | Audits just that file or folder, ignoring everything else                                                  |
+| Reference        | Read [`references/`](./.claude/skills/signal-forms-health-check/references/) | 13 topic docs: the how-to for building signal forms                                                        |
 
-> The apps are the runnable examples; the skill is the distilled, shippable know-how extracted from them.
+- The **13 references** cover getting started, schemas, validation, async, arrays, conditional logic, custom controls, debounce, submission, **field metadata**, Zod / Standard Schema, testing, and production patterns.
+- Every rule is **grounded in a real, tested recipe** in `apps/` (each reference cites its source), so the guidance ships code that compiles and passes.
+- **Portable:** drop `.claude/skills/signal-forms-health-check/` into any Angular v21+ project and it travels with the code.
+
+> A custom skill distilled from this cookbook, **not an official Angular skill**. Signal forms are Angular's forward-looking API; reactive forms remain the pick when you need framework-level stability guarantees.
+
+---
+
+## 🧰 Tech stack
+
+Built on the latest Angular idioms and a signals-first toolchain. Versions are pinned exactly in [`package.json`](./package.json) (Angular is patch-pinned with `~` so majors don't drift):
+
+| Layer      | Package              | Version |
+| ---------- | -------------------- | ------- |
+| Framework  | Angular              | ~22.0   |
+| Monorepo   | Nx                   | 23.1    |
+| Language   | TypeScript           | ~6.0    |
+| Styling    | Tailwind CSS         | v4      |
+| UI kit     | `@ng-brutalism/ui`   | 0.2     |
+| Icons      | `@ng-icons` (tabler) | 34      |
+| Validation | Zod                  | v4      |
+| i18n       | `@angular/localize`  | 22      |
+| Testing    | Vitest               | 4       |
 
 ---
 

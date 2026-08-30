@@ -1,113 +1,125 @@
 ---
-name: signal-forms
-description: Build, validate, and test Angular Signal Forms (@angular/forms/signals, Angular v21+). Trigger for any signal-forms work - form()/schema(), built-in and custom validators, cross-field and async (validateHttp) validation, Zod / Standard Schema, array fields (applyEach), conditional logic (applyWhen/applyWhenValue, disabled/hidden/readonly), custom controls (FormValueControl), submission ([formRoot]/submit), field metadata (createMetadataKey/MetadataReducer/managed httpResource keys), and zoneless testing. Distilled from a production Nx cookbook, not the docs.
+name: signal-forms-health-check
+description: Audit Angular Signal Forms code (@angular/forms/signals, Angular v21+) against a curated production playbook, and use as the reference for building it. Invoke with NO argument to review the current branch's changed signal-forms files; pass a file or folder PATH to audit only that, in isolation. Covers form()/schema(), validators, cross-field and async validation, Zod, arrays, conditional logic, custom controls, submission, field metadata, and zoneless testing. A custom skill distilled from a production Nx cookbook and cross-checked against angular.dev - NOT an official Angular skill.
 license: MIT
 metadata:
   author: Kristy Mae Almuete
-  version: '1.0'
+  version: '2.0'
 ---
 
-# Angular Signal Forms
+# Signal Forms Health Check
 
-Signal Forms (`@angular/forms/signals`, Angular v21+) is the signal-native forms API:
-you model the data as a `signal()`, describe the rules once in a **schema function**, and
-bind fields in the template with the `FormField` directive. There is no
-`ReactiveFormsModule`, no `FormBuilder`, no `FormControl`, and no `*ngIf` - this is
-standalone, `inject()`, new control flow, and signals throughout.
+A **custom, cookbook-grown reviewer** for Angular Signal Forms (`@angular/forms/signals`,
+Angular v21+). This is not an official Angular skill: the rules are distilled from 13
+runnable, tested recipes and cross-checked against `angular.dev/guide/forms/signals`.
 
-This skill is **distilled from a real production cookbook** (13 runnable apps), so every
-pattern here is one that actually ships and is tested, not a doc snippet. Read the topic
-reference before writing that kind of code; the references carry the copy-pasteable code
-and the traps.
+It works two ways off **one rubric** (the playbook in `references/`):
+
+- **Audit** - review signal-forms code against the playbook, scoped by an optional path.
+  This is what to do when the skill is invoked.
+- **Reference** - the same `references/*` are the how-to for writing signal forms in the
+  first place. When building, read the topic file before writing that kind of code.
+
+## Scope - what gets audited
+
+- **No argument** -> the **current branch's changed files** (vs `main`) that touch signal
+  forms.
+- **A path argument** (a file or a folder) -> **only that path**, in isolation. Ignore
+  everything else.
+
+Resolve scope first:
+
+```bash
+# with an argument: audit exactly that file/folder (recurse into a folder)
+# with no argument: the branch's changed, signal-forms-touching files
+git fetch origin main --quiet 2>/dev/null
+BASE="$(git merge-base HEAD origin/main 2>/dev/null || git merge-base HEAD main)"
+git diff --name-only "$BASE"...HEAD; git status --porcelain
+```
+
+A file is **in scope for signal-forms review** if it imports from `@angular/forms/signals`,
+is an `app.schema.ts` / `app.model.ts` / metadata / custom-control file, is a template with
+`[formField]` / `[formRoot]`, or is a `*.spec.ts` that builds a `form()`. Skip anything
+unrelated even if it changed.
+
+## How to audit
+
+1. **Resolve scope** (above). If nothing is in scope, say so and stop.
+2. **Read every in-scope file end to end.** No sampling.
+3. For each file, **map it to the rubric**: which references apply (a schema? a validator?
+   a custom control? metadata? a test?), and read those as the checklist.
+4. **Verify, do not inherit.** Check each candidate finding against the real code and the
+   reference rule; quote the evidence. The docs are the API authority - if code contradicts
+   a reference, confirm against `angular.dev` before flagging.
+5. **Report** findings ranked **P0** (broken / wrong API / build-red), **P1** (convention
+   violation), **P2** (polish), each citing the reference rule it breaks and the exact fix.
+   State a clean "nothing found" line per dimension with no findings.
+6. **Apply** P0 + P1 (ask before P2), then verify with `nx affected -t lint test build`.
+
+## The rubric (reference index)
+
+Each reference is both an audit dimension and a build guide:
+
+| Dimension                                                                                                    | Read                                                            |
+| ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------- |
+| Modeling, `form()`, `[formField]`, field/state duality, full field-state surface                             | [getting-started.md](references/getting-started.md)             |
+| Schema shapes (inline / `SchemaFn` / `schema<T>()`), `apply`/`applyEach`, model design                       | [schemas.md](references/schemas.md)                             |
+| Built-in + custom + cross-field validation, `validateTree`, error `kind`/`message`                           | [validation.md](references/validation.md)                       |
+| Async `validateHttp` / `validateAsync`, pending, latest-wins                                                 | [async-validation.md](references/async-validation.md)           |
+| Zod / Standard Schema (`validateStandardSchema`)                                                             | [standard-schema-zod.md](references/standard-schema-zod.md)     |
+| Array fields, `applyEach`, `errorSummary()`                                                                  | [arrays.md](references/arrays.md)                               |
+| Conditional logic: `applyWhen`/`applyWhenValue`, `disabled`/`hidden`/`readonly`, variants, JSON-driven forms | [conditional-logic.md](references/conditional-logic.md)         |
+| Field metadata: `createMetadataKey`/`MetadataReducer`/managed keys, dynamic + `applyWhen`                    | [field-metadata.md](references/field-metadata.md)               |
+| Custom controls: `FormValueControl` / `FormCheckboxControl`                                                  | [custom-controls.md](references/custom-controls.md)             |
+| `debounce` (View->model) + live-search resource                                                              | [debounce-and-async-ui.md](references/debounce-and-async-ui.md) |
+| Submission: `[formRoot]`, `submit()` -> `Promise<boolean>`, server errors back to fields                     | [submission.md](references/submission.md)                       |
+| Zoneless testing: isolated schema + component DOM, `whenStable()`, injection context                         | [testing.md](references/testing.md)                             |
+| Cross-cutting production checklist                                                                           | [production-patterns.md](references/production-patterns.md)     |
+
+## Core rules the audit enforces
+
+- **Fields are functions.** `form.name` (FieldTree) is for binding; `form.name()` (FieldState)
+  is for reading. Never treat a field like a plain object.
+- **`valid()` is not `!invalid()`.** A pending async validator leaves both `false`; gate a
+  submit on `valid()` (or `!invalid() && !pending()`), never `!invalid()` alone.
+- **Standalone + signals only.** `input()`/`output()`/`model()`, `inject()`, `computed()`,
+  `@if`/`@for (track)`/`@switch`. No `NgModule`, no IO decorators, no legacy control flow.
+- **The schema is the single source of rules** (validators, cross-field, async, conditional
+  logic, metadata) - not the template.
+- **Show-invalid gate:** `@let` on field state inline in a form template; a named
+  `showErrors` computed inside a `ValidationErrors` component. Never an impure
+  `| isFieldInvalid` pipe.
+- **Test isolated + DOM.** Build the schema with `form(model, schemaFn, { injector })`
+  (it throws without an injection context) and assert `errors()`; render the component only
+  for what the template shows. Zoneless: Act -> `await fixture.whenStable()` -> Assert. Never
+  `detectChanges()`.
+- **Config that varies per build -> `environments/`; static -> a constant.** No `any`. No
+  em dashes in copy. i18n every visible string.
 
 ## The one mental model
 
-A field is a **function with two faces**, and there are **three parallel channels** on it:
+A field is a function with two faces, and there are three parallel channels on it:
 
 ```ts
-userForm.name; // FieldTree  - bind this: [formField]="userForm.name"
-userForm.name(); // FieldState - read this: .value() .valid() .errors() .touched()
+userForm.name; // FieldTree  - bind: [formField]="userForm.name"
+userForm.name(); // FieldState - read: .value() .valid() .errors() .touched() .pending()
 ```
 
-| Channel        | Question it answers         | Read with                              |
+| Channel        | Question                    | Read with                              |
 | -------------- | --------------------------- | -------------------------------------- |
 | **value**      | what did the user enter?    | `field().value()`                      |
 | **validation** | is it wrong?                | `field().errors()` / `field().valid()` |
 | **metadata**   | what else is true about it? | `field().metadata(key)?.()`            |
 
-Everything else is: which validators you put in the schema, how you compose schemas, and
-how you read those three channels in the template.
+## Honest scope note
 
-## Non-negotiables (apply to all Signal Forms code)
-
-- **Fields are functions.** Never treat a field like a plain object; call it for state.
-- **Standalone + signals only.** `input()`/`output()`/`model()`, `inject()`, `computed()`,
-  `@if`/`@for (track)`/`@switch`. No `NgModule`, no decorators-for-IO, no legacy control flow.
-- **The schema is the single source of rules.** Validators, cross-field rules, async checks,
-  conditional logic, and metadata all live in the schema function passed to `form()`.
-- **Show-invalid gate:** `@let` on field state inline in a form template; a named
-  `showErrors` computed inside a `ValidationErrors` component. **Never** an impure
-  `| isFieldInvalid` pipe (a `Field` reference is identity-stable, so the pipe needs
-  `pure: false` and fights change detection). See `references/production-patterns.md`.
-- **Test the schema in isolation** (`form(model, schemaFn, { injector })`, assert `errors()`)
-  **and** the component (DOM). Zoneless: Act → `await fixture.whenStable()` → Assert. Never
-  `detectChanges()`. See `references/testing.md`.
-
-## Building forms
-
-- **Start here** - modeling, `form()`, `[formField]`, the field/state duality, reading
-  state, the show-invalid gate. Read [getting-started.md](references/getting-started.md).
-- **Schemas** - the three shapes (inline callback / exported `SchemaFn` / a `schema<T>()`
-  object for genuine reuse via `apply`/`applyEach`), composition, and where each file lives.
-  Read [schemas.md](references/schemas.md).
-
-## Validation
-
-- **Built-in, custom, and cross-field** - `required`/`email`/`min`/`max`/`minLength`/
-  `maxLength`/`pattern` with `{ message }`, custom `validate()` returning `{ kind, message }`,
-  cross-field via `valueOf()`, and `errors()` vs `errorSummary()`. Read
-  [validation.md](references/validation.md).
-- **Async** - `validateHttp` with a pending state, verified against a mock interceptor.
-  Read [async-validation.md](references/async-validation.md).
-- **Zod / Standard Schema** - drive validation from a Zod v4 schema with
-  `validateStandardSchema`, and swap it at runtime. Read
-  [standard-schema-zod.md](references/standard-schema-zod.md).
-
-## Structure and dynamics
-
-- **Array fields** - `applyEach`, reusable item schemas, per-item rules, `errorSummary()`.
-  Read [arrays.md](references/arrays.md).
-- **Conditional logic** - `applyWhen`/`applyWhenValue`, `disabled`/`hidden`/`readonly`, and
-  discriminated-union variants with contained type guards. Read
-  [conditional-logic.md](references/conditional-logic.md).
-- **Field metadata** - attach reactive data to fields with `createMetadataKey` /
-  `createManagedMetadataKey` / `MetadataReducer`, read the keys validators publish, and go
-  dynamic with function-form rules and `applyWhen`. Read
-  [field-metadata.md](references/field-metadata.md).
-
-## UI and interaction
-
-- **Custom controls** - implement `FormValueControl` (value + state + own validation), and
-  when to reach for the field-subtree container pattern instead. Read
-  [custom-controls.md](references/custom-controls.md).
-- **Debounce and live search** - `debounce(path, ms)` (View→model only), feeding a resource.
-  Read [debounce-and-async-ui.md](references/debounce-and-async-ui.md).
-- **Submission** - `[formRoot]`, `submit()` / submission actions, and routing server errors
-  back onto the fields. Read [submission.md](references/submission.md).
-
-## Quality
-
-- **Testing** - the isolated-schema + component-DOM split, zoneless patterns, interceptors,
-  fake timers for debounce, and the sharp edges (`NG0950`, pending `httpResource`). Read
-  [testing.md](references/testing.md).
-- **Production patterns** - the cross-cutting checklist: file homes, the `showErrors`
-  computed, config-in-`environments`, `NgOptimizedImage` scope, i18n, and formatting. Read
-  [production-patterns.md](references/production-patterns.md).
+Signal forms are Angular's forward-looking, signal-native forms API (v21+, still evolving).
+Angular's own overview says **reactive forms remain the choice when you need
+production-stability guarantees**. This skill targets new signal-forms code and does not
+cover reactive or template-driven forms; treat "production-grade" as "the best current
+signal-forms practice," not a stability guarantee from the framework.
 
 ## Grounding - which app teaches what
-
-Each topic is lifted from a specific, runnable recipe. When a reference cites a recipe, that
-is the app to read for the full, working example:
 
 | API / concept                               | Recipe                    |
 | ------------------------------------------- | ------------------------- |
