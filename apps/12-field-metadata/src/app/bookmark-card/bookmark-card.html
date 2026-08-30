@@ -12,7 +12,7 @@
       <ng-icon size="16" name="tablerX" aria-hidden="true" />
     </button>
 
-    <!-- STATUS (reducer metadata) -->
+    <!-- STATUS -->
     @if (status(); as statusHint) {
       <span
         nbBadge
@@ -74,7 +74,7 @@
       <app-validation-errors [field]="urlField()" />
     </div>
 
-    <!-- PREVIEW (managed metadata) -->
+    <!-- PREVIEW -->
     @let previewRef = preview();
     <div
       class="flex min-h-16 items-center gap-3 rounded-xl border-2 border-black bg-nb-card p-2.5"
