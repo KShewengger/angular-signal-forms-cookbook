@@ -19,7 +19,8 @@ export class MetadataHints {
   readonly key = input.required<HintKey>();
 
   protected readonly hints = computed(() => {
-    const state = this.field();
-    return state().metadata(this.key())?.() ?? [];
+    const field = this.field();
+
+    return field().metadata(this.key())?.() ?? [];
   });
 }
