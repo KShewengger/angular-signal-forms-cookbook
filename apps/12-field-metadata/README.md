@@ -38,7 +38,7 @@ all projects share a single root `package.json`.
 
 | API                                   | What it does                                                                   | Where in this recipe                     |
 | ------------------------------------- | ------------------------------------------------------------------------------ | ---------------------------------------- |
-| `metadata(path, key, logic)`          | Registers a reactive value for a key on a field, re-runs as its signals change | six rules in `bookmarkItemSchema`        |
+| `metadata(path, key, logic)`          | Registers a reactive value for a key on a field, re-runs as its signals change | several rules in `bookmarkItemSchema`    |
 | `createMetadataKey<T>()`              | A custom key, last write wins (the default `override` reducer)                 | `PLATFORM` (the category badge)          |
 | `createMetadataKey<T, TAcc>(reducer)` | A custom key whose contributions merge through a reducer                       | `STATUS` (custom severity reducer)       |
 | `MetadataReducer.list<T>()`           | A built-in reducer that collects contributions into a `T[]`                    | `HELP` (the url guidance hints)          |
@@ -46,6 +46,9 @@ all projects share a single root `package.json`.
 | `httpResource(request, { parse })`    | A reactive HTTP request exposed as a resource, with a response mapper          | inside `URL_PREVIEW`, calls Microlink    |
 | `maxLength(path, n)`                  | Validates **and** publishes `MAX_LENGTH` metadata                              | title counter reads the limit back       |
 | `required(path)`                      | Validates **and** publishes `REQUIRED` metadata                                | the url field                            |
+| `min(path, n)` / `max(path, n)`       | Validate **and** publish `MIN_NUMBER` / `MAX_NUMBER` metadata                  | priority reads the `1 to 5` bound back   |
+| `pattern(path, re)`                   | Validates **and** publishes `PATTERN` metadata (a `RegExp[]`)                  | tag reads its format hint back           |
+| `applyWhen(path, cond, schema)`       | Applies a sub-schema (validators **and** `metadata()`) only while `cond` holds | `PIN_NOTE` published only when pinned    |
 | `field().metadata(key)`               | Reads a key's current (reduced) value in the component                         | every `BookmarkCard` computed            |
 | `FormField` / `[formField]`           | Binds a native control to a field                                              | the title and url inputs                 |
 
@@ -55,19 +58,30 @@ all projects share a single root `package.json`.
 
 One tiny reusable model, applied to every bookmark in the collection.
 
-| Field   | Control        | Type     | Validation      |
-| ------- | -------------- | -------- | --------------- |
-| `title` | `nbInput` text | `string` | `maxLength(40)` |
-| `url`   | `nbInput` text | `string` | `required`      |
+| Field      | Control          | Type      | Validation                   |
+| ---------- | ---------------- | --------- | ---------------------------- |
+| `title`    | `nbInput` text   | `string`  | `maxLength(40)`              |
+| `url`      | `nbInput` text   | `string`  | `required`                   |
+| `priority` | `nbInput` number | `number`  | `min(1)` / `max(5 or 10)`    |
+| `tag`      | `nbInput` text   | `string`  | `pattern(kebab)`             |
+| `pinned`   | `nbCheckbox`     | `boolean` | raises the ceiling (dynamic) |
 
 ```ts
-export type Bookmark = { id: string; title: string; url: string };
+export type Bookmark = {
+  id: string;
+  title: string;
+  url: string;
+  priority: number;
+  tag: string;
+  pinned: boolean;
+};
 
 export type BookmarkCollection = { bookmarks: Bookmark[] };
 ```
 
-The two validators do double duty: they gate the field **and** publish metadata
-(`MAX_LENGTH`, `REQUIRED`) that the UI reads back. That is the recipe's first lesson,
+Every constraint validator does double duty: it gates the field **and** publishes metadata
+(`maxLength` → `MAX_LENGTH`, `required` → `REQUIRED`, `min`/`max` → `MIN_NUMBER`/`MAX_NUMBER`,
+`pattern` → `PATTERN`) that the UI reads back. That is the recipe's first lesson,
 constraint validators are the built-in metadata producers.
 
 ---
@@ -105,13 +119,16 @@ export const URL_PREVIEW = createManagedMetadataKey((_state, url: Signal<string 
 );
 ```
 
-| Key           | Reducer                             | Reads as                       | Drives                          |
-| ------------- | ----------------------------------- | ------------------------------ | ------------------------------- |
-| `MAX_LENGTH`  | built-in (published by `maxLength`) | `Signal<number>`               | the title `12 / 40` counter     |
-| `PLATFORM`    | `override` (default)                | `Signal<Platform>`             | the category badge (Repo, Docs) |
-| `STATUS`      | **custom** (keep-highest)           | `Signal<StatusHint>`           | the status pill (one action)    |
-| `HELP`        | **built-in `list()`**               | `Signal<string[]>`             | the url guidance hints          |
-| `URL_PREVIEW` | managed                             | `HttpResourceRef<LinkPreview>` | the live link preview           |
+| Key                         | Reducer                             | Reads as                       | Drives                            |
+| --------------------------- | ----------------------------------- | ------------------------------ | --------------------------------- |
+| `MAX_LENGTH`                | built-in (published by `maxLength`) | `Signal<number>`               | the title `12 / 40` counter       |
+| `MIN_NUMBER` / `MAX_NUMBER` | built-in (published by `min`/`max`) | `Signal<number>`               | priority `1 to 5` / `1 to 10`     |
+| `PATTERN`                   | built-in `list<RegExp>()`           | `Signal<RegExp[]>`             | the tag hint (regex → words)      |
+| `PLATFORM`                  | `override` (default)                | `Signal<Platform>`             | the category badge (Repo, Docs)   |
+| `PIN_NOTE`                  | `override` (default)                | `Signal<string>`               | the pinned note (via `applyWhen`) |
+| `STATUS`                    | **custom** (keep-highest)           | `Signal<StatusHint>`           | the status pill (one action)      |
+| `HELP`                      | **built-in `list()`**               | `Signal<string[]>`             | the url guidance hints            |
+| `URL_PREVIEW`               | managed                             | `HttpResourceRef<LinkPreview>` | the live link preview             |
 
 Two of these are reducers, on purpose:
 
@@ -122,6 +139,24 @@ Two of these are reducers, on purpose:
   the guidance lines aggregate. Both hints are fully derived from the field (homepage vs
   specific page, recognized vs unknown site), which is the whole point of routing them
   through metadata instead of hardcoding text: the set recomputes as you type.
+
+The **Pin this bookmark** checkbox demonstrates the two ways metadata reacts:
+
+- **Dynamic (function form)** — the priority ceiling is
+  `max(item.priority, ({ valueOf }) => (valueOf(item.pinned) ? 10 : 5))`, so `MAX_NUMBER`
+  re-publishes and the `1 to 5` hint flips to `1 to 10` the instant you pin. A metadata value
+  is reactive whenever its rule reads a signal; the other bounds only look fixed because
+  their rules return constants.
+- **Conditional (`applyWhen`)** — `PIN_NOTE` is contributed inside
+  `applyWhen(item, ({ value }) => value().pinned, …)`, so the note is published **only while
+  pinned** and disappears when unchecked. Any rule works inside `applyWhen`, `metadata()`
+  included.
+
+The list honours that "shown first": `App` renders an `orderedBookmarks` **display-only**
+`computed` (pinned first, then priority high to low) and binds each card back to its real
+index, so the form array's order is never mutated. Toggling pin re-sorts the view; because
+it keys off the `pinned` boolean, not the priority keystrokes, the cards only move on the
+deliberate toggle. No `@angular/cdk` drag-drop needed.
 
 ---
 

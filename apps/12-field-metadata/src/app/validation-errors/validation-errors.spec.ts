@@ -35,8 +35,21 @@ describe('ValidationErrors (12 · Field Metadata)', () => {
     host = fixture.nativeElement as HTMLElement;
   });
 
-  const buildForm = (bookmarks: Bookmark[]): FieldTree<BookmarkCollection> => {
-    const model = signal<BookmarkCollection>({ bookmarks });
+  const buildForm = (
+    bookmarks: Partial<Bookmark>[],
+  ): FieldTree<BookmarkCollection> => {
+    const model = signal<BookmarkCollection>({
+      bookmarks: bookmarks.map((over) => ({
+        id: 'a',
+        title: '',
+        url: '',
+        priority: 3,
+        tag: 'framework',
+        pinned: false,
+        ...over,
+      })),
+    });
+
     return form(model, bookmarkHubSchema, {
       injector: TestBed.inject(Injector),
     });

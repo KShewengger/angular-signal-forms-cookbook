@@ -29,6 +29,8 @@ const severityReducer: MetadataReducer<StatusHint, StatusHint> = {
 
 export const PLATFORM = createMetadataKey<Platform | undefined>();
 
+export const PIN_NOTE = createMetadataKey<string | undefined>();
+
 export const STATUS = createMetadataKey<StatusHint, StatusHint>(
   severityReducer,
 );

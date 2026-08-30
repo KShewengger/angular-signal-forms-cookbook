@@ -21,7 +21,7 @@ import {
   tablerCircleArrowRightFill,
 } from '@ng-icons/tabler-icons/fill';
 import { BookmarkCard } from './bookmark-card';
-import { INITIAL_COLLECTION } from './app.data';
+import { INITIAL_COLLECTION, PRIORITY_MIN } from './app.data';
 import { BookmarkCollection } from './app.model';
 import { bookmarkHubSchema } from './app.schema';
 
@@ -70,13 +70,28 @@ export class App {
     this.bookmarkForm.bookmarks().value(),
   );
 
+  protected readonly orderedBookmarks = computed(() =>
+    this.bookmarks()
+      .map((bookmark, index) => ({ bookmark, index }))
+      .sort(
+        (a, b) =>
+          Number(b.bookmark.pinned) - Number(a.bookmark.pinned) ||
+          b.bookmark.priority - a.bookmark.priority,
+      ),
+  );
+
   protected addBookmark(): void {
-    this.bookmarkForm
-      .bookmarks()
-      .value.update((list) => [
-        ...list,
-        { id: crypto.randomUUID(), title: '', url: '' },
-      ]);
+    this.bookmarkForm.bookmarks().value.update((list) => [
+      ...list,
+      {
+        id: crypto.randomUUID(),
+        title: '',
+        url: '',
+        priority: PRIORITY_MIN,
+        tag: '',
+        pinned: false,
+      },
+    ]);
   }
 
   protected removeBookmark(index: number): void {

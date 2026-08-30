@@ -7,12 +7,25 @@ import {
 } from '@angular/common/http';
 import { Injector, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FieldTree, form, MAX_LENGTH } from '@angular/forms/signals';
+import {
+  FieldTree,
+  form,
+  MAX_LENGTH,
+  MAX_NUMBER,
+  MIN_NUMBER,
+  PATTERN,
+} from '@angular/forms/signals';
 import { of } from 'rxjs';
-import { TITLE_MAX_LENGTH } from './app.data';
+import {
+  PRIORITY_MAX,
+  PRIORITY_MIN,
+  PRIORITY_PINNED_MAX,
+  TAG_PATTERN,
+  TITLE_MAX_LENGTH,
+} from './app.data';
 import { App } from './app';
 import type { Bookmark, BookmarkCollection } from './app.model';
-import { PLATFORM, STATUS } from './app.metadata';
+import { PIN_NOTE, PLATFORM, STATUS } from './app.metadata';
 import { bookmarkHubSchema } from './app.schema';
 import { toLinkPreview } from './app.utils';
 
@@ -53,9 +66,20 @@ describe('App (12 · Field Metadata)', () => {
     beforeEach(() => TestBed.configureTestingModule({ providers: HTTP }));
 
     const buildForm = (
-      bookmarks: Bookmark[],
+      bookmarks: Partial<Bookmark>[],
     ): FieldTree<BookmarkCollection> => {
-      const model = signal<BookmarkCollection>({ bookmarks });
+      const model = signal<BookmarkCollection>({
+        bookmarks: bookmarks.map((over) => ({
+          id: 'a',
+          title: '',
+          url: '',
+          priority: 3,
+          tag: 'framework',
+          pinned: false,
+          ...over,
+        })),
+      });
+
       return form(model, bookmarkHubSchema, {
         injector: TestBed.inject(Injector),
       });
@@ -84,6 +108,33 @@ describe('App (12 · Field Metadata)', () => {
 
         expect(bookmarkForm.bookmarks[0].url().valid()).toBe(true);
       });
+
+      it('rejects a priority below the minimum', () => {
+        const bookmarkForm = buildForm([{ priority: PRIORITY_MIN - 1 }]);
+        const priority = bookmarkForm.bookmarks[0].priority();
+
+        expect(priority.invalid()).toBe(true);
+        expect(priority.errors().map((error) => error.kind)).toContain('min');
+      });
+
+      it('rejects a priority above the maximum', () => {
+        const bookmarkForm = buildForm([{ priority: PRIORITY_MAX + 1 }]);
+        const priority = bookmarkForm.bookmarks[0].priority();
+
+        expect(priority.errors().map((error) => error.kind)).toContain('max');
+      });
+
+      it('rejects a tag with invalid characters', () => {
+        const bookmarkForm = buildForm([{ tag: 'Bad Tag!' }]);
+
+        expect(kindsOf(bookmarkForm.bookmarks[0].tag)).toContain('pattern');
+      });
+
+      it('accepts an empty tag', () => {
+        const bookmarkForm = buildForm([{ tag: '' }]);
+
+        expect(bookmarkForm.bookmarks[0].tag().valid()).toBe(true);
+      });
     });
 
     describe('form as a whole', () => {
@@ -109,6 +160,51 @@ describe('App (12 · Field Metadata)', () => {
         const title = bookmarkForm.bookmarks[0].title();
 
         expect(title.metadata(MAX_LENGTH)?.()).toBe(TITLE_MAX_LENGTH);
+      });
+    });
+
+    describe('built-in metadata (MIN_NUMBER / MAX_NUMBER)', () => {
+      it('publishes the priority bounds from the min/max validators', () => {
+        const bookmarkForm = buildForm([{ priority: 3 }]);
+        const priority = bookmarkForm.bookmarks[0].priority();
+
+        expect(priority.metadata(MIN_NUMBER)?.()).toBe(PRIORITY_MIN);
+        expect(priority.metadata(MAX_NUMBER)?.()).toBe(PRIORITY_MAX);
+      });
+    });
+
+    describe('built-in metadata (PATTERN)', () => {
+      it('publishes the tag pattern as a list of regexes', () => {
+        const bookmarkForm = buildForm([{ tag: 'framework' }]);
+        const tag = bookmarkForm.bookmarks[0].tag();
+
+        expect(
+          tag
+            .metadata(PATTERN)?.()
+            .map((expression) => expression.source),
+        ).toContain(TAG_PATTERN.source);
+      });
+    });
+
+    describe('dynamic + conditional metadata (pinned)', () => {
+      it('raises the priority ceiling (MAX_NUMBER) when pinned', () => {
+        const normal = buildForm([{ pinned: false }]);
+        const pinned = buildForm([{ pinned: true }]);
+
+        expect(normal.bookmarks[0].priority().metadata(MAX_NUMBER)?.()).toBe(
+          PRIORITY_MAX,
+        );
+        expect(pinned.bookmarks[0].priority().metadata(MAX_NUMBER)?.()).toBe(
+          PRIORITY_PINNED_MAX,
+        );
+      });
+
+      it('contributes PIN_NOTE metadata only while pinned (applyWhen)', () => {
+        const normal = buildForm([{ pinned: false }]);
+        const pinned = buildForm([{ pinned: true }]);
+
+        expect(normal.bookmarks[0]().metadata(PIN_NOTE)?.()).toBeUndefined();
+        expect(pinned.bookmarks[0]().metadata(PIN_NOTE)?.()).toBeTruthy();
       });
     });
 
@@ -232,6 +328,25 @@ describe('App (12 · Field Metadata)', () => {
       await fixture.whenStable();
 
       expect(host.querySelectorAll('nb-card').length).toBe(2);
+    });
+
+    it('floats a pinned bookmark above the others', async () => {
+      addButton().click();
+      await fixture.whenStable();
+
+      const form = (
+        fixture.componentInstance as unknown as {
+          bookmarkForm: FieldTree<BookmarkCollection>;
+        }
+      ).bookmarkForm;
+
+      form.bookmarks[1].pinned().value.set(true);
+      await fixture.whenStable();
+
+      const cards = host.querySelectorAll('nb-card');
+
+      expect(cards[0].textContent).toContain('0 / 40');
+      expect(cards[1].textContent).toContain('17 / 40');
     });
 
     it('removes a bookmark and shows the empty state', async () => {

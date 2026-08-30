@@ -42,7 +42,16 @@ describe('BookmarkCard (12 · Field Metadata)', () => {
   let fixture: ComponentFixture<BookmarkCard>;
   let host: HTMLElement;
 
-  const buildField = (bookmark: Bookmark): FieldTree<Bookmark> => {
+  const buildField = (over: Partial<Bookmark>): FieldTree<Bookmark> => {
+    const bookmark: Bookmark = {
+      id: 'a',
+      title: '',
+      url: '',
+      priority: 3,
+      tag: 'framework',
+      pinned: false,
+      ...over,
+    };
     const model = signal<BookmarkCollection>({ bookmarks: [bookmark] });
     const bookmarkForm = form(model, bookmarkHubSchema, {
       injector: TestBed.inject(Injector),
@@ -51,10 +60,10 @@ describe('BookmarkCard (12 · Field Metadata)', () => {
     return bookmarkForm.bookmarks[0];
   };
 
-  const render = async (bookmark: Bookmark): Promise<void> => {
+  const render = async (over: Partial<Bookmark>): Promise<void> => {
     fixture = TestBed.createComponent(BookmarkCard);
     host = fixture.nativeElement as HTMLElement;
-    fixture.componentRef.setInput('field', buildField(bookmark));
+    fixture.componentRef.setInput('field', buildField(over));
     await fixture.whenStable();
   };
 
@@ -120,6 +129,32 @@ describe('BookmarkCard (12 · Field Metadata)', () => {
 
       expect(host.textContent).toContain('Links to a specific page.');
       expect(host.textContent).not.toContain('Unrecognized site');
+    });
+
+    it('reads the priority bounds from MIN_NUMBER / MAX_NUMBER metadata', async () => {
+      await render({ url: 'github.com/a' });
+
+      expect(host.textContent).toContain('1 to 5');
+    });
+
+    it('reads the tag pattern from PATTERN metadata as a readable hint', async () => {
+      await render({ url: 'github.com/a' });
+
+      expect(host.textContent).toContain('lowercase, numbers, hyphens');
+    });
+
+    it('shows the 1 to 5 ceiling and no pin note when unpinned', async () => {
+      await render({ url: 'github.com/a', pinned: false });
+
+      expect(host.textContent).toContain('1 to 5');
+      expect(host.textContent).not.toContain('priority ceiling raised');
+    });
+
+    it('raises the ceiling to 1 to 10 and shows the applyWhen note when pinned', async () => {
+      await render({ url: 'github.com/a', pinned: true });
+
+      expect(host.textContent).toContain('1 to 10');
+      expect(host.textContent).toContain('priority ceiling raised to 10');
     });
   });
 

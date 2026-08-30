@@ -74,6 +74,64 @@
       <app-validation-errors [field]="field().url" />
     </div>
 
+    <!-- PRIORITY -->
+    <div nbStack gap="xs">
+      <div class="flex items-center justify-between gap-3">
+        <label nbLabel i18n="@@priorityLabel" [attr.for]="priorityId()">
+          Priority
+        </label>
+        @if (hasPriorityBounds()) {
+          <span class="font-mono text-xs font-bold" i18n="@@priorityRange">
+            {{ priorityMin() }} to {{ priorityMax() }}
+          </span>
+        }
+      </div>
+      <input
+        nbInput
+        type="number"
+        [id]="priorityId()"
+        [formField]="field().priority"
+      />
+      <small nbText tone="muted" size="xs" i18n="@@priorityHint">
+        Higher priority sorts to the top (pinned links always lead).
+      </small>
+      <app-validation-errors [field]="field().priority" />
+    </div>
+
+    <!-- TAG -->
+    <div nbStack gap="xs">
+      <div class="flex items-center justify-between gap-3">
+        <label nbLabel i18n="@@tagLabel" [attr.for]="tagId()">Tag</label>
+        @if (tagHints().length) {
+          <span class="flex flex-wrap justify-end gap-x-3 text-right">
+            @for (hint of tagHints(); track hint) {
+              <small nbText tone="muted" size="xs">{{ hint }}</small>
+            }
+          </span>
+        }
+      </div>
+      <input
+        nbInput
+        type="text"
+        placeholder="lowercase-kebab"
+        i18n-placeholder="@@tagPlaceholder"
+        [id]="tagId()"
+        [formField]="field().tag"
+      />
+      <app-validation-errors [field]="field().tag" />
+    </div>
+
+    <!-- PINNED -->
+    <div nbStack gap="xs">
+      <label class="flex w-fit cursor-pointer items-center gap-2">
+        <input nbCheckbox type="checkbox" [formField]="field().pinned" />
+        <span nbText weight="bold" i18n="@@pinnedLabel">Pin this bookmark</span>
+      </label>
+      @if (pinNote(); as note) {
+        <small nbText tone="muted" size="xs">{{ note }}</small>
+      }
+    </div>
+
     <!-- PREVIEW -->
     @let previewRef = preview();
     <div

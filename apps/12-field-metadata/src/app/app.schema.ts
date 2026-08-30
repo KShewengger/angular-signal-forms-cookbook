@@ -1,15 +1,26 @@
 import {
   applyEach,
+  applyWhen,
   debounce,
+  max,
   maxLength,
   metadata,
+  min,
+  pattern,
   required,
   schema,
   SchemaPathTree,
 } from '@angular/forms/signals';
-import { STATUS_HINTS, TITLE_MAX_LENGTH } from './app.data';
+import {
+  PRIORITY_MAX,
+  PRIORITY_MIN,
+  PRIORITY_PINNED_MAX,
+  STATUS_HINTS,
+  TAG_PATTERN,
+  TITLE_MAX_LENGTH,
+} from './app.data';
 import { type Bookmark, type BookmarkCollection } from './app.model';
-import { HELP, PLATFORM, STATUS, URL_PREVIEW } from './app.metadata';
+import { HELP, PIN_NOTE, PLATFORM, STATUS, URL_PREVIEW } from './app.metadata';
 import { domainOf, parseUrl, platformOf } from './app.utils';
 
 export const bookmarkItemSchema = schema<Bookmark>((item) => {
@@ -20,6 +31,36 @@ export const bookmarkItemSchema = schema<Bookmark>((item) => {
   maxLength(item.title, TITLE_MAX_LENGTH, {
     message: $localize`:@@titleTooLong:Titles stay under ${TITLE_MAX_LENGTH}:max: characters.`,
   });
+
+  min(item.priority, PRIORITY_MIN, {
+    message: $localize`:@@priorityMin:Priority starts at ${PRIORITY_MIN}:min:.`,
+  });
+
+  max(
+    item.priority,
+    ({ valueOf }) =>
+      valueOf(item.pinned) ? PRIORITY_PINNED_MAX : PRIORITY_MAX,
+    {
+      message: $localize`:@@priorityMax:Priority is above the allowed maximum.`,
+    },
+  );
+
+  pattern(item.tag, TAG_PATTERN, {
+    message: $localize`:@@tagPattern:Use lowercase letters, numbers, and hyphens.`,
+  });
+
+  applyWhen(
+    item,
+    ({ value }) => value().pinned,
+    (pinnedItem) => {
+      metadata(
+        pinnedItem,
+        PIN_NOTE,
+        () =>
+          $localize`:@@pinNote:Pinned: shown first, priority ceiling raised to ${PRIORITY_PINNED_MAX}:max:.`,
+      );
+    },
+  );
 
   debounce(item.url, 500);
 

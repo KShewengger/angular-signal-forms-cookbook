@@ -1,9 +1,17 @@
 import { Component, computed, input, output } from '@angular/core';
-import { FieldTree, FormField, MAX_LENGTH } from '@angular/forms/signals';
+import {
+  FieldTree,
+  FormField,
+  MAX_LENGTH,
+  MAX_NUMBER,
+  MIN_NUMBER,
+  PATTERN,
+} from '@angular/forms/signals';
 import {
   NbBadge,
   NbCard,
   NbCardContent,
+  NbCheckbox,
   NbIconButton,
   NbInput,
   NbLabel,
@@ -14,13 +22,14 @@ import {
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { tablerX } from '@ng-icons/tabler-icons';
 import {
+  PATTERN_HINTS,
   PLATFORMS,
   SEVERITY_STATE,
   SEVERITY_TONE,
   TITLE_MAX_LENGTH,
 } from '../app.data';
 import type { Bookmark } from '../app.model';
-import { HELP, PLATFORM, STATUS, URL_PREVIEW } from '../app.metadata';
+import { HELP, PIN_NOTE, PLATFORM, STATUS, URL_PREVIEW } from '../app.metadata';
 import { ValidationErrors } from '../validation-errors';
 
 @Component({
@@ -32,6 +41,7 @@ import { ValidationErrors } from '../validation-errors';
     NbBadge,
     NbCard,
     NbCardContent,
+    NbCheckbox,
     NbIconButton,
     NbInput,
     NbLabel,
@@ -54,6 +64,8 @@ export class BookmarkCard {
   protected readonly fieldState = computed(() => this.field()());
   protected readonly titleState = computed(() => this.field().title());
   protected readonly urlState = computed(() => this.field().url());
+  protected readonly priorityState = computed(() => this.field().priority());
+  protected readonly tagState = computed(() => this.field().tag());
 
   protected readonly count = computed(() => this.titleState().value().length);
   protected readonly limit = computed(
@@ -67,6 +79,9 @@ export class BookmarkCard {
   protected readonly status = computed(() =>
     this.fieldState().metadata(STATUS)?.(),
   );
+  protected readonly pinNote = computed(() =>
+    this.fieldState().metadata(PIN_NOTE)?.(),
+  );
   protected readonly platform = computed(() =>
     this.urlState().metadata(PLATFORM)?.(),
   );
@@ -77,7 +92,26 @@ export class BookmarkCard {
     () => this.urlState().metadata(HELP)?.() ?? [],
   );
 
+  protected readonly priorityMin = computed(() =>
+    this.priorityState().metadata(MIN_NUMBER)?.(),
+  );
+  protected readonly priorityMax = computed(() =>
+    this.priorityState().metadata(MAX_NUMBER)?.(),
+  );
+  protected readonly hasPriorityBounds = computed(
+    () => this.priorityMin() !== undefined && this.priorityMax() !== undefined,
+  );
+  protected readonly tagHints = computed(() =>
+    (this.tagState().metadata(PATTERN)?.() ?? []).map(
+      (expression) => PATTERN_HINTS[expression.source] ?? expression.source,
+    ),
+  );
+
   protected readonly bookmarkId = computed(() => this.fieldState().value().id);
   protected readonly titleId = computed(() => `title-${this.bookmarkId()}`);
   protected readonly urlId = computed(() => `url-${this.bookmarkId()}`);
+  protected readonly priorityId = computed(
+    () => `priority-${this.bookmarkId()}`,
+  );
+  protected readonly tagId = computed(() => `tag-${this.bookmarkId()}`);
 }

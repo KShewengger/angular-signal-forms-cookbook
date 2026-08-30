@@ -63,12 +63,12 @@
     <span nbBadge tone="mint">{{ bookmarks().length }}</span>
   </div>
 
-  @for (bookmark of bookmarks(); track bookmark.id) {
+  @for (entry of orderedBookmarks(); track entry.bookmark.id) {
     <app-bookmark-card
       animate.enter="card-enter"
       animate.leave="card-leave"
-      [field]="bookmarkForm.bookmarks[$index]"
-      (remove)="removeBookmark($index)"
+      [field]="bookmarkForm.bookmarks[entry.index]"
+      (remove)="removeBookmark(entry.index)"
     />
   } @empty {
     <div

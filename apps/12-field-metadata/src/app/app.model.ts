@@ -37,6 +37,13 @@ export type MicrolinkResponse = {
   };
 };
 
-export type Bookmark = { id: string; title: string; url: string };
+export type Bookmark = {
+  id: string;
+  title: string;
+  url: string;
+  priority: number;
+  tag: string;
+  pinned: boolean;
+};
 
 export type BookmarkCollection = { bookmarks: Bookmark[] };

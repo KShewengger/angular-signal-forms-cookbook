@@ -9,12 +9,25 @@ import type {
 
 export const TITLE_MAX_LENGTH = 40;
 
+export const PRIORITY_MIN = 1;
+export const PRIORITY_MAX = 5;
+export const PRIORITY_PINNED_MAX = 10;
+
+export const TAG_PATTERN = /^[a-z0-9-]+$/;
+
+export const PATTERN_HINTS: Record<string, string> = {
+  [TAG_PATTERN.source]: $localize`:@@tagFormatHint:lowercase, numbers, hyphens`,
+};
+
 export const INITIAL_COLLECTION: BookmarkCollection = {
   bookmarks: [
     {
       id: 'seed-1',
       title: 'Angular on GitHub',
       url: 'github.com/angular/angular',
+      priority: 3,
+      tag: 'framework',
+      pinned: false,
     },
   ],
 };
