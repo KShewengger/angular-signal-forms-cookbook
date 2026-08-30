@@ -83,10 +83,11 @@
 
   <button
     nbButton
+    fullWidth
     type="button"
     size="md"
     tone="yellow"
-    class="w-full border-dashed!"
+    class="border-dashed!"
     i18n="@@addBookmark"
     (click)="addBookmark()"
   >
@@ -96,9 +97,10 @@
 </section>
 
 <!-- LESSON NAVIGATION -->
-<nav class="mt-4 flex justify-between gap-6" aria-label="Lesson navigation">
+<nav class="mt-4 grid grid-cols-2 gap-6" aria-label="Lesson navigation">
   <a
     nbButton
+    fullWidth
     tone="warning"
     size="sm"
     radius="md"
@@ -124,6 +126,7 @@
 
   <a
     nbButton
+    fullWidth
     tone="success"
     size="sm"
     radius="md"
