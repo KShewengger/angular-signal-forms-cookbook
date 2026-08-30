@@ -12,6 +12,18 @@
       <ng-icon size="16" name="tablerX" aria-hidden="true" />
     </button>
 
+    <!-- PINNED FLAG -->
+    @if (isPinned()) {
+      <div
+        class="pointer-events-none absolute -top-7 right-6 z-20 origin-top-right scale-50"
+        aria-hidden="true"
+      >
+        <nb-sticker shape="star" tone="yellow" decorative [rotate]="-12">
+          PIN
+        </nb-sticker>
+      </div>
+    }
+
     <!-- STATUS -->
     @if (status(); as statusHint) {
       <span

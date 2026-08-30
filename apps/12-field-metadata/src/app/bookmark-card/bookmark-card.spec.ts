@@ -148,13 +148,15 @@ describe('BookmarkCard (12 · Field Metadata)', () => {
 
       expect(host.textContent).toContain('1 to 5');
       expect(host.textContent).not.toContain('priority ceiling raised');
+      expect(host.querySelector('nb-sticker')).toBeNull();
     });
 
-    it('raises the ceiling to 1 to 10 and shows the applyWhen note when pinned', async () => {
+    it('raises the ceiling to 1 to 10, shows the applyWhen note, and flags the pin when pinned', async () => {
       await render({ url: 'github.com/a', pinned: true });
 
       expect(host.textContent).toContain('1 to 10');
       expect(host.textContent).toContain('priority ceiling raised to 10');
+      expect(host.querySelector('nb-sticker')).not.toBeNull();
     });
   });
 

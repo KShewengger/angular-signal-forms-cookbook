@@ -17,6 +17,7 @@ import {
   NbLabel,
   NbStack,
   NbStatusDot,
+  NbSticker,
   NbText,
 } from '@ng-brutalism/ui';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -47,6 +48,7 @@ import { ValidationErrors } from '../validation-errors';
     NbLabel,
     NbStack,
     NbStatusDot,
+    NbSticker,
     NbText,
     NgIcon,
     ValidationErrors,
@@ -81,6 +83,9 @@ export class BookmarkCard {
   );
   protected readonly pinNote = computed(() =>
     this.fieldState().metadata(PIN_NOTE)?.(),
+  );
+  protected readonly isPinned = computed(
+    () => this.fieldState().value().pinned,
   );
   protected readonly platform = computed(() =>
     this.urlState().metadata(PLATFORM)?.(),
