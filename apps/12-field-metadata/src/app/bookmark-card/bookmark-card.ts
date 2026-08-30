@@ -5,7 +5,6 @@ import {
   MAX_LENGTH,
   MAX_NUMBER,
   MIN_NUMBER,
-  PATTERN,
 } from '@angular/forms/signals';
 import {
   NbBadge,
@@ -23,14 +22,21 @@ import {
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { tablerX } from '@ng-icons/tabler-icons';
 import {
-  PATTERN_HINTS,
   PLATFORMS,
   SEVERITY_STATE,
   SEVERITY_TONE,
   TITLE_MAX_LENGTH,
 } from '../app.data';
 import type { Bookmark } from '../app.model';
-import { HELP, PIN_NOTE, PLATFORM, STATUS, URL_PREVIEW } from '../app.metadata';
+import {
+  HELP,
+  PIN_NOTE,
+  PLATFORM,
+  STATUS,
+  TAG_HINT,
+  URL_PREVIEW,
+} from '../app.metadata';
+import { MetadataHints } from '../metadata-hints';
 import { ValidationErrors } from '../validation-errors';
 
 @Component({
@@ -51,6 +57,7 @@ import { ValidationErrors } from '../validation-errors';
     NbSticker,
     NbText,
     NgIcon,
+    MetadataHints,
     ValidationErrors,
   ],
   viewProviders: [provideIcons({ tablerX })],
@@ -62,12 +69,13 @@ export class BookmarkCard {
   protected readonly platforms = PLATFORMS;
   protected readonly severityTone = SEVERITY_TONE;
   protected readonly severityState = SEVERITY_STATE;
+  protected readonly helpKey = HELP;
+  protected readonly tagHintKey = TAG_HINT;
 
   protected readonly fieldState = computed(() => this.field()());
   protected readonly titleState = computed(() => this.field().title());
   protected readonly urlState = computed(() => this.field().url());
   protected readonly priorityState = computed(() => this.field().priority());
-  protected readonly tagState = computed(() => this.field().tag());
 
   protected readonly count = computed(() => this.titleState().value().length);
   protected readonly limit = computed(
@@ -93,9 +101,6 @@ export class BookmarkCard {
   protected readonly preview = computed(() =>
     this.urlState().metadata(URL_PREVIEW),
   );
-  protected readonly help = computed(
-    () => this.urlState().metadata(HELP)?.() ?? [],
-  );
 
   protected readonly priorityMin = computed(() =>
     this.priorityState().metadata(MIN_NUMBER)?.(),
@@ -105,11 +110,6 @@ export class BookmarkCard {
   );
   protected readonly hasPriorityBounds = computed(
     () => this.priorityMin() !== undefined && this.priorityMax() !== undefined,
-  );
-  protected readonly tagHints = computed(() =>
-    (this.tagState().metadata(PATTERN)?.() ?? []).map(
-      (expression) => PATTERN_HINTS[expression.source] ?? expression.source,
-    ),
   );
 
   protected readonly bookmarkId = computed(() => this.fieldState().value().id);

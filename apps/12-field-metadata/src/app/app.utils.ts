@@ -1,4 +1,4 @@
-import { DOMAIN_PLATFORMS } from './app.data';
+import { DOMAIN_PLATFORMS, PATTERN_HINTS } from './app.data';
 import type { LinkPreview, MicrolinkResponse, Platform } from './app.model';
 
 export function withProtocol(url: string): string {
@@ -20,6 +20,10 @@ export function parseUrl(raw: string): { domain: string; path: string } | null {
 
 export function domainOf(raw: string): string | null {
   return parseUrl(raw)?.domain ?? null;
+}
+
+export function patternHint(expression: RegExp): string {
+  return PATTERN_HINTS[expression.source] ?? expression.source;
 }
 
 export function platformOf(domain: string): Platform {

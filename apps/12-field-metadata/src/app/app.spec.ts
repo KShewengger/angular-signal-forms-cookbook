@@ -27,7 +27,7 @@ import { App } from './app';
 import type { Bookmark, BookmarkCollection } from './app.model';
 import { PIN_NOTE, PLATFORM, STATUS } from './app.metadata';
 import { bookmarkHubSchema } from './app.schema';
-import { toLinkPreview } from './app.utils';
+import { patternHint, toLinkPreview } from './app.utils';
 
 function mockMicrolink(request: HttpRequest<unknown>, next: HttpHandlerFn) {
   if (request.url.startsWith('https://api.microlink.io/')) {
@@ -292,6 +292,16 @@ describe('App (12 · Field Metadata)', () => {
 
     it('throws when Microlink reports a failure', () => {
       expect(() => toLinkPreview({ status: 'fail' })).toThrow();
+    });
+  });
+
+  describe('pattern hint mapping (patternHint)', () => {
+    it('maps a known pattern to its readable label', () => {
+      expect(patternHint(TAG_PATTERN)).toBe('lowercase, numbers, hyphens');
+    });
+
+    it('falls back to the raw source for an unknown pattern', () => {
+      expect(patternHint(/^\d{4}$/)).toBe('^\\d{4}$');
     });
   });
 

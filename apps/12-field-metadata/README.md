@@ -119,16 +119,17 @@ export const URL_PREVIEW = createManagedMetadataKey((_state, url: Signal<string 
 );
 ```
 
-| Key                         | Reducer                             | Reads as                       | Drives                            |
-| --------------------------- | ----------------------------------- | ------------------------------ | --------------------------------- |
-| `MAX_LENGTH`                | built-in (published by `maxLength`) | `Signal<number>`               | the title `12 / 40` counter       |
-| `MIN_NUMBER` / `MAX_NUMBER` | built-in (published by `min`/`max`) | `Signal<number>`               | priority `1 to 5` / `1 to 10`     |
-| `PATTERN`                   | built-in `list<RegExp>()`           | `Signal<RegExp[]>`             | the tag hint (regex → words)      |
-| `PLATFORM`                  | `override` (default)                | `Signal<Platform>`             | the category badge (Repo, Docs)   |
-| `PIN_NOTE`                  | `override` (default)                | `Signal<string>`               | the pinned note (via `applyWhen`) |
-| `STATUS`                    | **custom** (keep-highest)           | `Signal<StatusHint>`           | the status pill (one action)      |
-| `HELP`                      | **built-in `list()`**               | `Signal<string[]>`             | the url guidance hints            |
-| `URL_PREVIEW`               | managed                             | `HttpResourceRef<LinkPreview>` | the live link preview             |
+| Key                         | Reducer                             | Reads as                       | Drives                               |
+| --------------------------- | ----------------------------------- | ------------------------------ | ------------------------------------ |
+| `MAX_LENGTH`                | built-in (published by `maxLength`) | `Signal<number>`               | the title `12 / 40` counter          |
+| `MIN_NUMBER` / `MAX_NUMBER` | built-in (published by `min`/`max`) | `Signal<number>`               | priority `1 to 5` / `1 to 10`        |
+| `PATTERN`                   | built-in `list<RegExp>()`           | `Signal<RegExp[]>`             | source for `TAG_HINT`                |
+| `PLATFORM`                  | `override` (default)                | `Signal<Platform>`             | the category badge (Repo, Docs)      |
+| `PIN_NOTE`                  | `override` (default)                | `Signal<string>`               | the pinned note (via `applyWhen`)    |
+| `STATUS`                    | **custom** (keep-highest)           | `Signal<StatusHint>`           | the status pill (one action)         |
+| `HELP`                      | **built-in `list()`**               | `Signal<string[]>`             | the url guidance hints               |
+| `TAG_HINT`                  | **built-in `list()`**               | `Signal<string[]>`             | the tag format hint (from `PATTERN`) |
+| `URL_PREVIEW`               | managed                             | `HttpResourceRef<LinkPreview>` | the live link preview                |
 
 Two of these are reducers, on purpose:
 
@@ -293,14 +294,20 @@ readonly field = input.required<FieldTree<Bookmark>>();
 protected readonly urlState = computed(() => this.field().url());
 protected readonly platform = computed(() => this.urlState().metadata(PLATFORM)?.());
 protected readonly status = computed(() => this.field()().metadata(STATUS)?.());
-protected readonly help = computed(() => this.urlState().metadata(HELP)?.() ?? []);
 protected readonly preview = computed(() => this.urlState().metadata(URL_PREVIEW));
 ```
 
 **6. Render it** (`bookmark-card.html`)
 
 The `FieldTree` is bound to `[formField]` inline (`field().title`), while the derived
-computeds drive the counter, badge, pill, hints, and preview.
+computeds drive the counter, badge, pill, and preview. Repeated UI is factored into small
+children: **`ValidationErrors`** (leaf-field errors) and **`MetadataHints`** (the muted hint
+list). `MetadataHints` is **field-aware**: it takes a `[field]` and a
+`MetadataKey<string[]>` and reads the hints straight off the field, so the url passes `HELP`
+and the tag passes `TAG_HINT` (a `list()` key the schema derives from `PATTERN`). It owns the
+presence gate too (an empty array renders nothing), so no `@if (hints.length)` repeats per
+field, and the parent keeps no hint computeds. (`FieldState` also exposes a native
+`hasMetadata(key)` for a pure presence check.)
 
 ---
 
@@ -322,6 +329,8 @@ tests are split by concern:
 - **`ValidationErrors`** is tested against the real fields, so its visibility gating, the
   required message, and `role="alert"` / `aria-live="polite"` are verified against the
   actual recipe.
+- **`MetadataHints`** is tested against real fields: it reads `HELP` off the url field and the
+  derived `TAG_HINT` off the tag field, and renders nothing when a field carries no hints.
 
 ---
 

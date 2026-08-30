@@ -7,6 +7,7 @@ import {
   metadata,
   min,
   pattern,
+  PATTERN,
   required,
   schema,
   SchemaPathTree,
@@ -20,8 +21,15 @@ import {
   TITLE_MAX_LENGTH,
 } from './app.data';
 import { type Bookmark, type BookmarkCollection } from './app.model';
-import { HELP, PIN_NOTE, PLATFORM, STATUS, URL_PREVIEW } from './app.metadata';
-import { domainOf, parseUrl, platformOf } from './app.utils';
+import {
+  HELP,
+  PIN_NOTE,
+  PLATFORM,
+  STATUS,
+  TAG_HINT,
+  URL_PREVIEW,
+} from './app.metadata';
+import { domainOf, parseUrl, patternHint, platformOf } from './app.utils';
 
 export const bookmarkItemSchema = schema<Bookmark>((item) => {
   required(item.url, {
@@ -94,6 +102,12 @@ export const bookmarkItemSchema = schema<Bookmark>((item) => {
     return domain && platformOf(domain) === 'website'
       ? $localize`:@@urlHelpUnknownSite:Unrecognized site, tagged as Website.`
       : undefined;
+  });
+
+  metadata(item.tag, TAG_HINT, ({ state }) => {
+    const [expression] = state.metadata(PATTERN)?.() ?? [];
+
+    return expression ? patternHint(expression) : undefined;
   });
 });
 
