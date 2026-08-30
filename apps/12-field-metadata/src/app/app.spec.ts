@@ -17,13 +17,13 @@ import {
 } from '@angular/forms/signals';
 import { of } from 'rxjs';
 import {
-  MICROLINK_ENDPOINT,
   PRIORITY_MAX,
   PRIORITY_MIN,
   PRIORITY_PINNED_MAX,
   TAG_PATTERN,
   TITLE_MAX_LENGTH,
 } from './app.data';
+import { environment } from '../environments/environment';
 import { App } from './app';
 import type { Bookmark, BookmarkCollection } from './app.model';
 import { PIN_NOTE, PLATFORM, STATUS } from './app.metadata';
@@ -31,7 +31,7 @@ import { bookmarkHubSchema } from './app.schema';
 import { patternHint, toLinkPreview } from './app.utils';
 
 function mockMicrolink(request: HttpRequest<unknown>, next: HttpHandlerFn) {
-  if (request.url.startsWith(MICROLINK_ENDPOINT)) {
+  if (request.url.startsWith(environment.microlinkEndpoint)) {
     return of(
       new HttpResponse({
         status: 200,

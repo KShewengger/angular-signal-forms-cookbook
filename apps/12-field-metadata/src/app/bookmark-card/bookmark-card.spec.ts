@@ -10,7 +10,7 @@ import { Injector, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FieldTree, form } from '@angular/forms/signals';
 import { of } from 'rxjs';
-import { MICROLINK_ENDPOINT } from '../app.data';
+import { environment } from '../../environments/environment';
 import type { Bookmark, BookmarkCollection } from '../app.model';
 import { bookmarkHubSchema } from '../app.schema';
 import { BookmarkCard } from './bookmark-card';
@@ -19,7 +19,7 @@ function microlinkInterceptor(
   outcome: 'success' | 'fail' = 'success',
 ): HttpInterceptorFn {
   return (request: HttpRequest<unknown>, next: HttpHandlerFn) => {
-    if (!request.url.startsWith(MICROLINK_ENDPOINT)) {
+    if (!request.url.startsWith(environment.microlinkEndpoint)) {
       return next(request);
     }
 
