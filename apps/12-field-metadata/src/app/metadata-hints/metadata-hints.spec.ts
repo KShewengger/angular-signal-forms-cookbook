@@ -9,13 +9,14 @@ import { Injector, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FieldTree, form } from '@angular/forms/signals';
 import { of } from 'rxjs';
+import { MICROLINK_ENDPOINT } from '../app.data';
 import type { Bookmark, BookmarkCollection } from '../app.model';
 import { HELP, TAG_HINT } from '../app.metadata';
 import { bookmarkHubSchema } from '../app.schema';
 import { MetadataHints } from './metadata-hints';
 
 function mockMicrolink(request: HttpRequest<unknown>, next: HttpHandlerFn) {
-  if (request.url.startsWith('https://api.microlink.io/')) {
+  if (request.url.startsWith(MICROLINK_ENDPOINT)) {
     return of(new HttpResponse({ status: 200, body: { status: 'fail' } }));
   }
 

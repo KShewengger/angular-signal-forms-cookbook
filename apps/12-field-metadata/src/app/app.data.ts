@@ -9,6 +9,8 @@ import type {
 
 export const TITLE_MAX_LENGTH = 40;
 
+export const MICROLINK_ENDPOINT = 'https://api.microlink.io/';
+
 export const PRIORITY_MIN = 1;
 export const PRIORITY_MAX = 5;
 export const PRIORITY_PINNED_MAX = 10;

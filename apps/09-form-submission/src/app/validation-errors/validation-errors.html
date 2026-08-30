@@ -1,5 +1,4 @@
-@let state = field()();
-@if ((state.dirty() || state.touched()) && state.invalid()) {
+@if (showErrors()) {
   <ul
     class="space-y-1 text-sm text-red-600"
     role="alert"

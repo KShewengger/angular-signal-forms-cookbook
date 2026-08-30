@@ -17,6 +17,7 @@ import {
 } from '@angular/forms/signals';
 import { of } from 'rxjs';
 import {
+  MICROLINK_ENDPOINT,
   PRIORITY_MAX,
   PRIORITY_MIN,
   PRIORITY_PINNED_MAX,
@@ -30,7 +31,7 @@ import { bookmarkHubSchema } from './app.schema';
 import { patternHint, toLinkPreview } from './app.utils';
 
 function mockMicrolink(request: HttpRequest<unknown>, next: HttpHandlerFn) {
-  if (request.url.startsWith('https://api.microlink.io/')) {
+  if (request.url.startsWith(MICROLINK_ENDPOINT)) {
     return of(
       new HttpResponse({
         status: 200,

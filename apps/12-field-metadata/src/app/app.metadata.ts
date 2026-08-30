@@ -5,7 +5,7 @@ import {
   createMetadataKey,
   MetadataReducer,
 } from '@angular/forms/signals';
-import { STATUS_HINTS } from './app.data';
+import { MICROLINK_ENDPOINT, STATUS_HINTS } from './app.data';
 import type {
   LinkPreview,
   MicrolinkResponse,
@@ -48,7 +48,7 @@ export const URL_PREVIEW = createManagedMetadataKey(
 
         return domain
           ? {
-              url: 'https://api.microlink.io/',
+              url: MICROLINK_ENDPOINT,
               params: { url: withProtocol(value) },
             }
           : undefined;
