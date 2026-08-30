@@ -5,27 +5,21 @@ export function withProtocol(url: string): string {
   return /^https?:\/\//i.test(url) ? url : `https://${url}`;
 }
 
-export function domainOf(raw: string): string | null {
+export function parseUrl(raw: string): { domain: string; path: string } | null {
   const value = raw.trim();
   if (!value) return null;
 
   try {
-    const host = new URL(withProtocol(value)).hostname.replace(/^www\./, '');
-    return host.includes('.') ? host : null;
+    const { hostname, pathname } = new URL(withProtocol(value));
+    const domain = hostname.replace(/^www\./, '');
+    return domain.includes('.') ? { domain, path: pathname } : null;
   } catch {
     return null;
   }
 }
 
-export function isBareDomain(url: string): boolean {
-  const value = url.trim();
-  if (!value) return false;
-
-  try {
-    return new URL(withProtocol(value)).pathname === '/';
-  } catch {
-    return false;
-  }
+export function domainOf(raw: string): string | null {
+  return parseUrl(raw)?.domain ?? null;
 }
 
 export function platformOf(domain: string): Platform {

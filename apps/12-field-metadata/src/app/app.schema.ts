@@ -10,7 +10,7 @@ import {
 import { STATUS_HINTS, TITLE_MAX_LENGTH } from './app.data';
 import { type Bookmark, type BookmarkCollection } from './app.model';
 import { HELP, PLATFORM, STATUS, URL_PREVIEW } from './app.metadata';
-import { domainOf, isBareDomain, platformOf } from './app.utils';
+import { domainOf, parseUrl, platformOf } from './app.utils';
 
 export const bookmarkItemSchema = schema<Bookmark>((item) => {
   required(item.url, {
@@ -39,10 +39,10 @@ export const bookmarkItemSchema = schema<Bookmark>((item) => {
   );
 
   metadata(item.url, HELP, ({ valueOf }) => {
-    const url = valueOf(item.url).trim();
-    if (!domainOf(url)) return undefined;
+    const parsed = parseUrl(valueOf(item.url));
+    if (!parsed) return undefined;
 
-    return isBareDomain(url)
+    return parsed.path === '/'
       ? $localize`:@@urlHelpHomepage:Points to the site homepage.`
       : $localize`:@@urlHelpDeepLink:Links to a specific page.`;
   });
