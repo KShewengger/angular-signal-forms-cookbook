@@ -158,4 +158,24 @@ describe('DesignerForm (10 · Dynamic Forms)', () => {
     expect(formEl?.getAttribute('aria-busy')).toBe('true');
     expect(fieldset?.disabled).toBe(true);
   });
+
+  it('disables submit while the application is invalid', async () => {
+    await bindForm();
+
+    const submit = host.querySelector<HTMLButtonElement>(
+      'button[type="submit"]',
+    );
+
+    expect(submit?.disabled).toBe(true);
+  });
+
+  it('enables submit once the application is valid', async () => {
+    await bindForm(VALID_DESIGNER);
+
+    const submit = host.querySelector<HTMLButtonElement>(
+      'button[type="submit"]',
+    );
+
+    expect(submit?.disabled).toBe(false);
+  });
 });

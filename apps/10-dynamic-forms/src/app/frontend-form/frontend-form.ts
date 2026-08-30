@@ -65,6 +65,10 @@ export class FrontendForm {
   readonly submitted = input(false);
   readonly retry = output();
 
+  protected readonly canSubmit = computed(
+    () => this.form()().valid() && !this.submitting(),
+  );
+
   protected readonly engagements = ENGAGEMENTS;
 
   protected readonly skillPlaceholder = ROLES_BY_ID.frontend.placeholder;

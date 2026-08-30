@@ -285,7 +285,7 @@
             type="submit"
             size="lg"
             tone="yellow"
-            [disabled]="submitting()"
+            [disabled]="!canSubmit()"
           >
             @if (submitting()) {
               <span
