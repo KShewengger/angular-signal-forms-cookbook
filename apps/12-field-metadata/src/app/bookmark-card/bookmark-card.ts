@@ -20,7 +20,7 @@ import {
   TITLE_MAX_LENGTH,
 } from '../app.data';
 import type { Bookmark } from '../app.model';
-import { PLATFORM, STATUS, URL_PREVIEW } from '../app.metadata';
+import { HELP, PLATFORM, STATUS, URL_PREVIEW } from '../app.metadata';
 import { ValidationErrors } from '../validation-errors';
 
 @Component({
@@ -71,6 +71,9 @@ export class BookmarkCard {
   );
   protected readonly preview = computed(() =>
     this.urlField()().metadata(URL_PREVIEW),
+  );
+  protected readonly help = computed(
+    () => this.urlField()().metadata(HELP)?.() ?? [],
   );
 
   protected readonly titleId = computed(

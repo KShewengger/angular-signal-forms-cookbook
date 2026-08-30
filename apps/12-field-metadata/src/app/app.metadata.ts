@@ -33,6 +33,8 @@ export const STATUS = createMetadataKey<StatusHint, StatusHint>(
   severityReducer,
 );
 
+export const HELP = createMetadataKey(MetadataReducer.list<string>());
+
 export const URL_PREVIEW = createManagedMetadataKey(
   (_state, url: Signal<string | undefined>) =>
     httpResource<LinkPreview>(

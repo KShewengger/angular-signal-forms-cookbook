@@ -9,8 +9,8 @@ import {
 } from '@angular/forms/signals';
 import { STATUS_HINTS, TITLE_MAX_LENGTH } from './app.data';
 import { type Bookmark, type BookmarkCollection } from './app.model';
-import { PLATFORM, STATUS, URL_PREVIEW } from './app.metadata';
-import { domainOf, platformOf } from './app.utils';
+import { HELP, PLATFORM, STATUS, URL_PREVIEW } from './app.metadata';
+import { domainOf, isBareDomain, platformOf } from './app.utils';
 
 export const bookmarkItemSchema = schema<Bookmark>((item) => {
   required(item.url, {
@@ -37,6 +37,23 @@ export const bookmarkItemSchema = schema<Bookmark>((item) => {
   metadata(item, STATUS, ({ valueOf }) =>
     valueOf(item.title).trim() ? STATUS_HINTS.ready : STATUS_HINTS.needsTitle,
   );
+
+  metadata(item.url, HELP, ({ valueOf }) => {
+    const url = valueOf(item.url).trim();
+    if (!domainOf(url)) return undefined;
+
+    return isBareDomain(url)
+      ? $localize`:@@urlHelpHomepage:Points to the site homepage.`
+      : $localize`:@@urlHelpDeepLink:Links to a specific page.`;
+  });
+
+  metadata(item.url, HELP, ({ valueOf }) => {
+    const domain = domainOf(valueOf(item.url));
+
+    return domain && platformOf(domain) === 'website'
+      ? $localize`:@@urlHelpUnknownSite:Unrecognized site, tagged as Website.`
+      : undefined;
+  });
 });
 
 export function bookmarkHubSchema(

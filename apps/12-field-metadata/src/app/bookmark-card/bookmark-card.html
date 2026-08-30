@@ -53,7 +53,16 @@
 
     <!-- URL -->
     <div nbStack gap="xs">
-      <label nbLabel i18n="@@urlLabel" [attr.for]="urlId()">URL</label>
+      <div class="flex items-center justify-between gap-3">
+        <label nbLabel i18n="@@urlLabel" [attr.for]="urlId()">URL</label>
+        @if (help().length) {
+          <span class="flex min-w-0 flex-wrap justify-end gap-x-3 text-right">
+            @for (hint of help(); track hint) {
+              <small nbText tone="muted" size="xs">{{ hint }}</small>
+            }
+          </span>
+        }
+      </div>
       <input
         nbInput
         type="text"

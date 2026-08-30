@@ -98,5 +98,21 @@ describe('BookmarkCard (12 · Field Metadata)', () => {
 
       expect(removed).toBe(true);
     });
+
+    it('aggregates derived url help hints with the list() reducer', async () => {
+      await render({ id: 'a', title: '', url: 'example.org' });
+
+      expect(host.textContent).toContain(
+        'Unrecognized site, tagged as Website.',
+      );
+      expect(host.textContent).toContain('Points to the site homepage.');
+    });
+
+    it('flips the path hint for a recognized deep link', async () => {
+      await render({ id: 'a', title: '', url: 'github.com/a/b' });
+
+      expect(host.textContent).toContain('Links to a specific page.');
+      expect(host.textContent).not.toContain('Unrecognized site');
+    });
   });
 });

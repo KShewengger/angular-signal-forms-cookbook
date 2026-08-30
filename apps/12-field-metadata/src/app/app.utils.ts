@@ -17,6 +17,17 @@ export function domainOf(raw: string): string | null {
   }
 }
 
+export function isBareDomain(url: string): boolean {
+  const value = url.trim();
+  if (!value) return false;
+
+  try {
+    return new URL(withProtocol(value)).pathname === '/';
+  } catch {
+    return false;
+  }
+}
+
 export function platformOf(domain: string): Platform {
   const hit = DOMAIN_PLATFORMS.find(
     (entry) => domain === entry.match || domain.endsWith(`.${entry.match}`),
