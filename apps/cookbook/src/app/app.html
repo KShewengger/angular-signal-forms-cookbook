@@ -8,7 +8,7 @@
           tone="warning"
           class="self-center lg:self-start"
           i18n="@@hero.recipeIndex"
-          >📖 Recipe Index · 11 apps</span
+          >📖 Recipe Index · 12 apps</span
         >
         <div nbStack gap="xs">
           <h2
@@ -65,7 +65,7 @@
         tone="subtle"
         i18n="@@hero.description"
       >
-        11 runnable recipes for Angular 22 signal-based forms e.g from a basic
+        12 runnable recipes for Angular 22 signal-based forms e.g from a basic
         form() to validations, custom controls, and zod. Each recipe is curated
         in a fun and interactive examples!
       </p>
@@ -108,13 +108,13 @@
 <!-- RECIPE GRID -->
 <ul
   role="list"
-  class="recipe-grid grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-7xl"
+  class="recipe-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-7xl"
 >
   <!-- RECIPE CARD -->
   @for (example of examples; track example.link) {
-    <li class="recipe-grid__card relative">
+    <li class="recipe-grid__card relative h-full">
       <nb-card
-        class="relative overflow-hidden !py-0 !gap-0 transition-transform duration-200 motion-safe:hover:-translate-x-1 motion-safe:hover:-translate-y-1"
+        class="relative !h-full overflow-hidden !py-0 !gap-0 transition-transform duration-200 motion-safe:hover:-translate-x-1 motion-safe:hover:-translate-y-1"
       >
         <div
           class="absolute left-0 top-0 bottom-0 w-3 border-r-2 border-black"
@@ -130,7 +130,7 @@
           [color]="'var(--nb-' + example.tone + ')'"
         ></div>
 
-        <div nbStack gap="md" class="py-6 pr-6 pl-8">
+        <div nbStack gap="md" class="h-full py-6 pr-6 pl-8">
           <nb-avatar class="self-start" [tone]="example.tone">
             {{ $index + 1 | number: '2.0-0' }}
           </nb-avatar>
@@ -162,7 +162,7 @@
             nbCluster
             justify="between"
             align="center"
-            class="mt-1 border-t-2 border-dashed border-black/25 pt-3"
+            class="mt-auto border-t-2 border-dashed border-black/25 pt-3"
           >
             <span
               class="font-mono text-xs uppercase tracking-widest text-black/55"
