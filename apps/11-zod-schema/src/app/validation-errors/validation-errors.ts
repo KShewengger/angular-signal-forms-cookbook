@@ -17,6 +17,12 @@ export class ValidationErrors {
 
   protected readonly errors = computed(() => this.field()().errors());
 
+  protected readonly showErrors = computed(() => {
+    const state = this.field()();
+
+    return (state.dirty() || state.touched()) && state.invalid();
+  });
+
   protected readonly hasMultipleErrors = computed(
     () => this.errors().length > 1,
   );

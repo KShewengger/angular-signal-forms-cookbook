@@ -290,7 +290,11 @@
       </label>
 
       @if (bookingForm.addSnacks().value()) {
-        <div class="grid w-full gap-2 px-1">
+        <div
+          class="grid w-full gap-2 px-1"
+          animate.enter="field-reveal"
+          animate.leave="field-hide"
+        >
           @let combo = bookingForm.comboSize();
           @let comboInvalid =
             (combo.dirty() || combo.touched()) && combo.invalid();

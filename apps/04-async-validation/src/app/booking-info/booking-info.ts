@@ -1,4 +1,5 @@
 import { Component, input, output } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
 import {
   NbButton,
   NbCluster,
@@ -24,6 +25,7 @@ import { UserBooking } from '../app.model';
   selector: 'app-booking-info',
   templateUrl: 'booking-info.html',
   imports: [
+    NgOptimizedImage,
     NgIcon,
     NbTitle,
     NbStatusDot,

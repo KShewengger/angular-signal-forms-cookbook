@@ -1,0 +1,193 @@
+<nb-card class="relative">
+  <nb-card-content nbStack gap="md" class="p-4">
+    <button
+      nbIconButton
+      type="button"
+      tone="danger"
+      class="absolute! -top-3 -right-3 z-10 size-8!"
+      aria-label="Remove bookmark"
+      i18n-aria-label="@@removeBookmark"
+      (click)="remove.emit()"
+    >
+      <ng-icon size="16" name="tablerX" aria-hidden="true" />
+    </button>
+
+    <!-- PINNED FLAG -->
+    @if (isPinned()) {
+      <div
+        class="pointer-events-none absolute -top-7 right-6 z-20 origin-top-right scale-50"
+        aria-hidden="true"
+      >
+        <nb-sticker decorative shape="star" tone="yellow" [rotate]="-12">
+          PIN
+        </nb-sticker>
+      </div>
+    }
+
+    <!-- STATUS -->
+    @if (status(); as statusHint) {
+      <span
+        nbBadge
+        class="mb-2 inline-flex w-fit items-center gap-1.5"
+        [tone]="severityTone[statusHint.level]"
+      >
+        <span
+          nbStatusDot
+          size="sm"
+          [state]="severityState[statusHint.level]"
+        ></span>
+        {{ statusHint.message }}
+      </span>
+    }
+
+    <!-- TITLE -->
+    <div nbStack gap="xs">
+      <div class="flex items-center justify-between">
+        <label nbLabel i18n="@@titleLabel" [attr.for]="titleId()">Title</label>
+        <span
+          class="font-mono text-xs font-bold"
+          [class.text-nb-warning]="nearLimit()"
+          [class.text-nb-danger]="atLimit()"
+        >
+          {{ count() }} / {{ limit() }}
+        </span>
+      </div>
+      <input
+        nbInput
+        type="text"
+        placeholder="Enter a title"
+        i18n-placeholder="@@titlePlaceholder"
+        [id]="titleId()"
+        [formField]="field().title"
+      />
+      <app-validation-errors [field]="field().title" />
+    </div>
+
+    <!-- URL -->
+    <div nbStack gap="xs">
+      <div class="flex items-center justify-between gap-3">
+        <label nbLabel i18n="@@urlLabel" [attr.for]="urlId()">URL</label>
+        <app-metadata-hints [field]="field().url" [key]="helpKey" />
+      </div>
+      <input
+        nbInput
+        type="text"
+        placeholder="Enter or paste a link"
+        i18n-placeholder="@@urlPlaceholder"
+        [id]="urlId()"
+        [formField]="field().url"
+      />
+      <app-validation-errors [field]="field().url" />
+    </div>
+
+    <!-- PRIORITY -->
+    <div nbStack gap="xs">
+      <div class="flex items-center justify-between gap-3">
+        <label nbLabel i18n="@@priorityLabel" [attr.for]="priorityId()">
+          Priority
+        </label>
+        @if (hasPriorityBounds()) {
+          <span class="font-mono text-xs font-bold" i18n="@@priorityRange">
+            {{ priorityMin() }} to {{ priorityMax() }}
+          </span>
+        }
+      </div>
+      <input
+        nbInput
+        type="number"
+        placeholder="Set priority"
+        i18n-placeholder="@@priorityPlaceholder"
+        [id]="priorityId()"
+        [formField]="field().priority"
+      />
+      <small nbText tone="muted" size="xs" i18n="@@priorityHint">
+        Higher priority sorts to the top (pinned links always lead).
+      </small>
+      <app-validation-errors [field]="field().priority" />
+    </div>
+
+    <!-- TAG -->
+    <div nbStack gap="xs">
+      <div class="flex items-center justify-between gap-3">
+        <label nbLabel i18n="@@tagLabel" [attr.for]="tagId()">Tag</label>
+        <app-metadata-hints [field]="field().tag" [key]="tagHintKey" />
+      </div>
+      <input
+        nbInput
+        type="text"
+        placeholder="Set one unique tag"
+        i18n-placeholder="@@tagPlaceholder"
+        [id]="tagId()"
+        [formField]="field().tag"
+      />
+      <app-validation-errors [field]="field().tag" />
+    </div>
+
+    <!-- PINNED -->
+    <div nbStack gap="xs">
+      <label class="flex w-fit cursor-pointer items-center gap-2">
+        <input nbCheckbox type="checkbox" [formField]="field().pinned" />
+        <span nbText weight="bold" i18n="@@pinnedLabel">Pin this bookmark</span>
+      </label>
+      @if (pinNote(); as note) {
+        <small nbText tone="muted" size="xs">{{ note }}</small>
+      }
+    </div>
+
+    <!-- PREVIEW -->
+    @let previewRef = preview();
+    <div
+      class="flex min-h-16 items-center gap-3 rounded-xl border-2 border-black bg-nb-card p-2.5"
+      [class.border-nb-danger]="!!previewRef?.error()"
+    >
+      @if (previewRef?.isLoading()) {
+        <span class="spinner" aria-hidden="true"></span>
+        <span nbText size="sm" tone="muted" i18n="@@previewLoading">
+          Fetching preview…
+        </span>
+      } @else if (previewRef?.error()) {
+        <span aria-hidden="true">⚠️</span>
+        <span nbText size="sm" tone="danger" i18n="@@previewError">
+          Could not reach that site.
+        </span>
+      } @else {
+        @if (previewRef?.value(); as data) {
+          <span
+            class="grid size-11 flex-none place-items-center overflow-hidden rounded-lg border-2 border-black bg-white"
+          >
+            @if (data.imageUrl) {
+              <img
+                class="size-full object-contain"
+                [src]="data.imageUrl"
+                [alt]="data.title"
+              />
+            } @else {
+              <span aria-hidden="true">🔗</span>
+            }
+          </span>
+          <span class="flex min-w-0 flex-1 flex-col">
+            <span nbText size="sm" weight="bold" class="truncate">
+              {{ data.title }}
+            </span>
+            <span nbText size="xs" tone="muted" class="truncate">
+              {{ data.domain }}
+            </span>
+          </span>
+          @if (platform(); as platformValue) {
+            <span
+              nbBadge
+              class="flex-none"
+              [tone]="platforms[platformValue].tone"
+            >
+              {{ platforms[platformValue].badge }}
+            </span>
+          }
+        } @else {
+          <span nbText size="sm" tone="muted" i18n="@@previewIdle">
+            Link preview appears here.
+          </span>
+        }
+      }
+    </div>
+  </nb-card-content>
+</nb-card>

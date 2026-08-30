@@ -220,7 +220,13 @@
 
           <!-- DAY RATE -->
           @if (isContract()) {
-            <div nbStack gap="sm" align="stretch">
+            <div
+              nbStack
+              gap="sm"
+              align="stretch"
+              animate.enter="field-reveal"
+              animate.leave="field-hide"
+            >
               @let dayRate = dayRateField();
               @let dayRateInvalid =
                 (dayRate.dirty() || dayRate.touched()) && dayRate.invalid();
@@ -293,7 +299,10 @@
           </button>
 
           @if (submitted()) {
-            <app-submitted-banner (retry)="retry.emit()" />
+            <app-submitted-banner
+              animate.enter="banner-enter"
+              (retry)="retry.emit()"
+            />
           }
         </div>
       </form>

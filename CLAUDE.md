@@ -235,9 +235,14 @@ Recipes use Angular's **signal forms** API (`@angular/forms/signals`), not the l
   @let name = form().name(); @let nameInvalid = (name.dirty() || name.touched()) && name.invalid();
   ```
 
-  Same formula inside ValidationErrors (`@let state = field()(); @if (…)`) or a tiny
-  plain helper used from a `computed` when TS needs the gate (format-gated fields in 08).
-  Do **not** introduce a shared impure `IsFieldInvalidPipe` across recipes.
+  Inside the `ValidationErrors` component (it takes a whole `field` input), lift that
+  formula into a named `showErrors` computed and let the template read `@if (showErrors())`
+  — a multi-signal gate reads clearer named than inlined, is testable in isolation, and
+  matches the presentational VE in 06/07 (which already gate with a `showErrors` computed).
+  The `@let` form above stays for gating a single field **inline in a form template**,
+  where no component owns the field; a tiny plain helper from a `computed` also works when
+  TS needs the gate (format-gated fields in 08). Do **not** introduce a shared impure
+  `IsFieldInvalidPipe` across recipes.
 
 - **`debounce(path, ms)` only delays View→model** (typed/`input` events). Direct
   `value.set()` and isolated schema tests skip it. DOM tests that assert debounce must

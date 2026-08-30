@@ -143,8 +143,8 @@ export const SIGNAL_EXAMPLES: {
   {
     title: $localize`:@@recipe.12.title:Field Metadata`,
     category: 'Metadata',
-    app: $localize`:@@app.fieldMetadata:Field Metadata`,
-    description: $localize`:@@recipe.12.desc:Attach reactive data to a field with metadata(), and read the constraint keys the built-in validators publish.`,
+    app: $localize`:@@app.bookmarkHub:Bookmark Hub`,
+    description: $localize`:@@recipe.12.desc:Attach reactive metadata to fields: custom keys, a reducer, built-in limits, and a managed link preview.`,
     api: 'metadata()',
     level: 'Pro',
     tags: ['metadata', 'createMetadataKey', 'MetadataReducer'],

@@ -1,0 +1,41 @@
+@media (prefers-reduced-motion: no-preference) {
+  .field-reveal {
+    animation: field-reveal 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .field-hide {
+    animation: field-hide 0.2s cubic-bezier(0.4, 0, 1, 1) both;
+  }
+  .banner-enter {
+    animation: banner-enter 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes field-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes field-hide {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+  @keyframes banner-enter {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
