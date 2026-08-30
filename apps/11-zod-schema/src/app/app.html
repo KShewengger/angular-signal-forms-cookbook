@@ -525,7 +525,7 @@
             size="lg"
             tone="warning"
             radius="full"
-            [disabled]="submitting()"
+            [disabled]="!canFile()"
           >
             @if (submitting()) {
               <span
