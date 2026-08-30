@@ -55,7 +55,7 @@
       <input
         nbInput
         type="text"
-        placeholder="Name this link"
+        placeholder="Enter a title"
         i18n-placeholder="@@titlePlaceholder"
         [id]="titleId()"
         [formField]="field().title"
@@ -72,7 +72,7 @@
       <input
         nbInput
         type="text"
-        placeholder="github.com/you/project"
+        placeholder="Enter or paste a link"
         i18n-placeholder="@@urlPlaceholder"
         [id]="urlId()"
         [formField]="field().url"
@@ -95,6 +95,8 @@
       <input
         nbInput
         type="number"
+        placeholder="Set priority"
+        i18n-placeholder="@@priorityPlaceholder"
         [id]="priorityId()"
         [formField]="field().priority"
       />
@@ -113,7 +115,7 @@
       <input
         nbInput
         type="text"
-        placeholder="lowercase-kebab"
+        placeholder="Set one unique tag"
         i18n-placeholder="@@tagPlaceholder"
         [id]="tagId()"
         [formField]="field().tag"
