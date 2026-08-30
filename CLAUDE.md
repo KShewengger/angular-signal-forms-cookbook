@@ -28,9 +28,9 @@ deployable app. This is deliberate: a cookbook is small, self-contained, individ
 examples, and it lets `nx affected` rebuild only the recipe you touched.
 
 - **Landing** (`apps/cookbook`) - a "table of contents" grid linking out to each recipe app.
-  Data-driven from `apps/cookbook/src/app/app.data.ts` (`SIGNAL_EXAMPLES` + the tone class
-  maps): edit the data, not the template, to add or change cards. Each entry's `link` is the
-  deployed path of its recipe app.
+  Data-driven from `apps/cookbook/src/app/app.data.ts` (`SIGNAL_EXAMPLES`): edit the data,
+  not the template, to add or change cards. Each entry's `link` is the deployed path of its
+  recipe app, and `preview` points at its screenshot under `public/previews/`.
 - **Recipes** (`apps/01-basic-form` … `apps/12-field-metadata`) - each a standalone Nx app
   with its own `project.json`, `public/` assets, and folder-level `README.md`. A recipe may
   be listed on the landing as planned before its `apps/NN-*` folder exists.
@@ -114,8 +114,9 @@ apps/cookbook/src/
   app/
     app.ts / app.html      # standalone component; template is Tailwind classes only
     app.scss               # component-scoped animations (keyframes + reduced-motion)
-    app.data.ts            # SIGNAL_EXAMPLES + TONE_RAIL / TONE_TINT / TONE_WAVE maps
+    app.data.ts            # SIGNAL_EXAMPLES (recipe cards: title, link, preview screenshot)
     app.config.ts          # app providers
+  public/previews/         # per-recipe screenshots shown in the landing grid
   styles.css               # GLOBAL styles only: Tailwind import, @theme, body base
   test-setup.ts            # loads @angular/localize/init for tests
 ```
@@ -232,8 +233,8 @@ read it before writing or reviewing a recipe. The always-on rules:
 - No inline `style` in templates (one exception: a runtime-computed value Tailwind can't
   express, like recipe 05's `[style.left.%]`). For values Tailwind lacks, use arbitrary values
   (`text-[clamp(...)]`, `max-lg:hidden!`).
-- Tone/color class maps live in `app.data.ts` (`TONE_RAIL`, `TONE_TINT`, `TONE_WAVE`), applied
-  via `[ngClass]` - don't scatter per-card color logic in the template.
+- Keep per-item color logic out of templates: a data-driven class map (a tone → utility-class
+  `Record` in `app.data.ts`) applied via `[ngClass]` beats scattering conditional classes inline.
 - Component-scoped animations go in the component's `.scss`; keyframes auto-scope under
   emulated encapsulation. Wrap motion in `@media (prefers-reduced-motion: no-preference)` with
   a reduced fallback.

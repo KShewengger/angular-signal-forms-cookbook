@@ -1,11 +1,3 @@
-type Tone =
-  | 'yellow'
-  | 'pink'
-  | 'mint'
-  | 'lavender'
-  | 'blue'
-  | 'warning'
-  | 'danger';
 type Level = 'Core' | 'Pro';
 
 export const SIGNAL_EXAMPLES: {
@@ -17,7 +9,8 @@ export const SIGNAL_EXAMPLES: {
   level: Level;
   tags: string[];
   link: string;
-  tone: Tone;
+  preview: string;
+  wide?: boolean;
 }[] = [
   {
     title: $localize`:@@recipe.01.title:Basic Form`,
@@ -28,7 +21,7 @@ export const SIGNAL_EXAMPLES: {
     level: 'Core',
     tags: ['form()', '[formField]', 'form state'],
     link: '01-basic-form/',
-    tone: 'yellow',
+    preview: 'previews/01-basic-form.png',
   },
   {
     title: $localize`:@@recipe.02.title:Built-in Validations`,
@@ -39,7 +32,7 @@ export const SIGNAL_EXAMPLES: {
     level: 'Core',
     tags: ['required', 'email', 'pattern'],
     link: '02-built-in-validations/',
-    tone: 'pink',
+    preview: 'previews/02-built-in-validations.png',
   },
   {
     title: $localize`:@@recipe.03.title:Cross-field Validation`,
@@ -50,7 +43,7 @@ export const SIGNAL_EXAMPLES: {
     level: 'Core',
     tags: ['validate()', 'apply()', 'schema()'],
     link: '03-cross-field-validation/',
-    tone: 'blue',
+    preview: 'previews/03-cross-field-validation.png',
   },
   {
     title: $localize`:@@recipe.04.title:Async Validation`,
@@ -61,7 +54,7 @@ export const SIGNAL_EXAMPLES: {
     level: 'Pro',
     tags: ['validateHttp', 'debounce', 'pending'],
     link: '04-async-validation/',
-    tone: 'warning',
+    preview: 'previews/04-async-validation.png',
   },
   {
     title: $localize`:@@recipe.05.title:Array Validation`,
@@ -72,7 +65,7 @@ export const SIGNAL_EXAMPLES: {
     level: 'Pro',
     tags: ['applyEach', 'arrays', 'per-item'],
     link: '05-array-validation/',
-    tone: 'mint',
+    preview: 'previews/05-array-validation.png',
   },
   {
     title: $localize`:@@recipe.06.title:Custom Control`,
@@ -83,7 +76,7 @@ export const SIGNAL_EXAMPLES: {
     level: 'Pro',
     tags: ['FormValueControl', 'stepper'],
     link: '06-custom-control/',
-    tone: 'danger',
+    preview: 'previews/06-custom-control.png',
   },
   {
     title: $localize`:@@recipe.07.title:Debounced Input`,
@@ -94,7 +87,7 @@ export const SIGNAL_EXAMPLES: {
     level: 'Pro',
     tags: ['debounce', 'rxResource', 'live search'],
     link: '07-debounce-input/',
-    tone: 'lavender',
+    preview: 'previews/07-debounce-input.png',
   },
   {
     title: $localize`:@@recipe.08.title:Conditional Validation`,
@@ -105,7 +98,7 @@ export const SIGNAL_EXAMPLES: {
     level: 'Core',
     tags: ['applyWhen', 'applyWhenValue', 'when'],
     link: '08-conditional-validation/',
-    tone: 'yellow',
+    preview: 'previews/08-conditional-validation.png',
   },
   {
     title: $localize`:@@recipe.09.title:Form Submission`,
@@ -116,7 +109,7 @@ export const SIGNAL_EXAMPLES: {
     level: 'Core',
     tags: ['[formRoot]', 'submitting()', 'server errors'],
     link: '09-form-submission/',
-    tone: 'mint',
+    preview: 'previews/09-form-submission.png',
   },
   {
     title: $localize`:@@recipe.10.title:Dynamic Forms`,
@@ -127,7 +120,7 @@ export const SIGNAL_EXAMPLES: {
     level: 'Pro',
     tags: ['applyWhenValue', 'discriminated union', '[formRoot]'],
     link: '10-dynamic-forms/',
-    tone: 'blue',
+    preview: 'previews/10-dynamic-forms.png',
   },
   {
     title: $localize`:@@recipe.11.title:Zod Schema Validation`,
@@ -138,7 +131,8 @@ export const SIGNAL_EXAMPLES: {
     level: 'Pro',
     tags: ['zod', 'standardSchema', 'reactive rules'],
     link: '11-zod-schema/',
-    tone: 'warning',
+    preview: 'previews/11-zod-schema.png',
+    wide: true,
   },
   {
     title: $localize`:@@recipe.12.title:Field Metadata`,
@@ -149,36 +143,6 @@ export const SIGNAL_EXAMPLES: {
     level: 'Pro',
     tags: ['metadata', 'createMetadataKey', 'MetadataReducer'],
     link: '12-field-metadata/',
-    tone: 'lavender',
+    preview: 'previews/12-field-metadata.png',
   },
 ];
-
-export const TONE_RAIL: Record<Tone, string> = {
-  yellow: 'bg-nb-yellow',
-  pink: 'bg-nb-pink',
-  mint: 'bg-nb-mint',
-  lavender: 'bg-nb-lavender',
-  blue: 'bg-nb-blue',
-  warning: 'bg-nb-warning',
-  danger: 'bg-nb-danger',
-};
-
-export const TONE_TINT: Record<Tone, string> = {
-  yellow: 'bg-nb-yellow/30',
-  pink: 'bg-nb-pink/30',
-  mint: 'bg-nb-mint/30',
-  lavender: 'bg-nb-lavender/30',
-  blue: 'bg-nb-blue/30',
-  warning: 'bg-nb-warning/30',
-  danger: 'bg-nb-danger/30',
-};
-
-export const TONE_WAVE: Record<Tone, string> = {
-  yellow: '[--nb-title-wave-color:var(--nb-yellow)]',
-  pink: '[--nb-title-wave-color:var(--nb-pink)]',
-  mint: '[--nb-title-wave-color:var(--nb-mint)]',
-  lavender: '[--nb-title-wave-color:var(--nb-lavender)]',
-  blue: '[--nb-title-wave-color:var(--nb-blue)]',
-  warning: '[--nb-title-wave-color:var(--nb-warning)]',
-  danger: '[--nb-title-wave-color:var(--nb-danger)]',
-};

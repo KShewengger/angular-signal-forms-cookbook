@@ -1,4 +1,4 @@
-import { SIGNAL_EXAMPLES, TONE_RAIL, TONE_TINT, TONE_WAVE } from './app.data';
+import { SIGNAL_EXAMPLES } from './app.data';
 
 describe('SIGNAL_EXAMPLES', () => {
   it('defines all 12 recipes', () => {
@@ -15,17 +15,17 @@ describe('SIGNAL_EXAMPLES', () => {
     }
   });
 
+  it('derives each preview path from its recipe link', () => {
+    for (const recipe of SIGNAL_EXAMPLES) {
+      expect(recipe.preview).toBe(
+        `previews/${recipe.link.replace(/\/$/, '')}.png`,
+      );
+    }
+  });
+
   it('has a unique link per recipe', () => {
     const links = SIGNAL_EXAMPLES.map((r) => r.link);
 
     expect(new Set(links).size).toBe(links.length);
-  });
-
-  it('every recipe tone resolves to a class in each tone map', () => {
-    for (const recipe of SIGNAL_EXAMPLES) {
-      expect(TONE_RAIL[recipe.tone]).toBeTruthy();
-      expect(TONE_TINT[recipe.tone]).toBeTruthy();
-      expect(TONE_WAVE[recipe.tone]).toBeTruthy();
-    }
   });
 });
