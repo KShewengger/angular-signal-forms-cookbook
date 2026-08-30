@@ -8,6 +8,31 @@ All of these are **schema-side** APIs: call them inside the SchemaFn you pass to
 `form(model, schemaFn)`, not in the component. The component only reads field state
 (`.disabled()`, `.value()`, `.valid()`).
 
+## The logic-function family and their shared context
+
+Every schema-side logic function takes `(path, fn)` (or `(path, { when })`) and its
+`fn` receives the **same field context** that validators get (see `validation.md`):
+
+| Member              | Reads                        | Cookbook  |
+| ------------------- | ---------------------------- | --------- |
+| `value()`           | this field's value           | yes       |
+| `valueOf(path)`     | any other field's raw value  | yes       |
+| `state`             | this field's `FieldState`    | yes (12)  |
+| `stateOf(path)`     | another field's `FieldState` | docs-only |
+| `fieldTreeOf(path)` | another field's `FieldTree`  | docs-only |
+
+The family the docs cover: `validate` / `validateTree` (errors, see `validation.md`),
+`disabled`, `hidden`, `readonly` (interaction state, below), `metadata` (attach
+reactive data, see `field-metadata.md`), and `debounce` (delay View->model, see
+`debounce-and-async-ui.md`). `applyWhen` / `applyWhenValue` / `applyEach` compose those
+onto conditional or repeated subtrees. Because the context is uniform, the same
+`({ valueOf }) => valueOf(path.other) ...` predicate reads a sibling in any of them.
+
+**Disabled and hidden fields skip validation.** A field turned off by `disabled` or
+`hidden` does not run its validators and does not count against the form's validity -
+so gating a rule with `hidden`/`disabled` also silences that field's errors, which is
+usually what you want for a field the user cannot currently reach.
+
 ---
 
 ## `applyWhen` - gate rules on an arbitrary condition
@@ -100,6 +125,21 @@ hidden(topping.count, {
 inputs (`disabled`, `readonly`, `hidden` in `06`'s `Topping`) and styles itself from
 them; the framework wires the state through automatically when the field is bound.
 
+**Disabled with a reason (docs-only).** Beyond a boolean, `disabled`'s callback may
+return a **string** to explain _why_, which the field exposes via `disabledReasons()`;
+multiple `disabled` calls on one field accumulate their reasons. The cookbook uses the
+plain `{ when }` boolean form only:
+
+```ts
+// docs-only variant - return a reason instead of `true`
+disabled(path.promoCode, ({ valueOf }) => (valueOf(path.tickets).length < 4 ? 'Add 4+ tickets to unlock the promo code.' : false));
+```
+
+`hidden` has **no** native DOM counterpart, so a hidden field is purely a schema flag -
+the template must still gate its own markup with `@if (field().hidden())` to actually
+remove it from the DOM. `disabled` and `readonly` do map onto native element
+properties.
+
 ---
 
 ## Discriminated-union variants: guard next to the type, cast in one place
@@ -160,6 +200,54 @@ its type stays sound.
 
 ---
 
+## JSON-driven dynamic forms: build the schema from data (docs-only)
+
+The docs' "dynamic forms" chapter derives model **and** schema from one
+`FieldConfig[]`, so they cannot drift. Note this is a _different_ recipe from the
+cookbook's `10-dynamic-forms`, which is a **discriminated-union** application form
+(fixed shape, variant rules via `applyWhenValue`) - not a config-driven builder. The
+docs pattern, for reference:
+
+```ts
+type FieldConfig = { kind: 'text'; name: string; required?: boolean; when?: { field: string; equals: string | number } } | { kind: 'number'; name: string; required?: boolean; min?: number; max?: number; when?: { field: string; equals: string | number } } | { kind: 'array'; name: string; itemRequired?: boolean };
+
+function buildSchema(configs: FieldConfig[]): SchemaFn<Record<string, unknown>> {
+  return (root) => {
+    for (const config of configs) {
+      const applyRules = (path: typeof root) => {
+        const fieldPath = path[config.name];
+        if (config.kind === 'array') {
+          if (config.itemRequired) applyEach(fieldPath as SchemaPath<string[]>, (item) => required(item));
+          return;
+        }
+        if (config.required) required(fieldPath);
+        if (config.kind === 'number') {
+          const n = fieldPath as SchemaPath<number | null>;
+          if (config.min !== undefined) min(n, config.min);
+          if (config.max !== undefined) max(n, config.max);
+        }
+      };
+      if (config.when) {
+        const { field, equals } = config.when;
+        applyWhen(root, ({ valueOf }) => valueOf(root[field]) === equals, applyRules);
+      } else {
+        applyRules(root);
+      }
+    }
+  };
+}
+
+const model = signal(buildModel(configs));
+const dynamicForm = form(model, buildSchema(configs));
+```
+
+Key moves: a discriminated `FieldConfig` union so each `kind` narrows its own options;
+numbers seed to `null` (not `0`) so `required`/`min` don't false-positive on empty;
+`applyWhen` for `when` conditions; `applyEach` for array items; and a boundary
+`validateConfigs()` that throws on duplicate names, unknown `when` references, and
+type mismatches before the form is built. The per-`kind` cast (`fieldPath as
+SchemaPath<...>`) is unavoidable because the record model is not statically typed.
+
 ## Do / Don't
 
 - **Do** put conditional rules in the SchemaFn; keep the component reading state only.
@@ -173,3 +261,7 @@ its type stays sound.
   what `variantOf` exists to prevent.
 - **Don't** set state (`disabled`/`hidden`/`readonly`) imperatively in the component
   when the schema can derive it from the model.
+- **Don't** expect `hidden` to touch the DOM - it is a schema flag; gate the markup
+  with `@if (field().hidden())` yourself.
+- **Don't** confuse the docs' config-driven "dynamic form" builder with recipe `10`,
+  which is a fixed discriminated-union form narrowed by `applyWhenValue`.

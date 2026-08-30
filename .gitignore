@@ -47,7 +47,7 @@ Thumbs.db
 .claude/worktrees
 .claude/settings.local.json
 .claude/skills/*
-!.claude/skills/signal-forms
+!.claude/skills/signal-forms-health-check
 
 .angular
 

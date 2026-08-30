@@ -63,9 +63,20 @@ choice - there is nothing to merge.
 
 ### `createMetadataKey(reducer)` - custom merge
 
-Pass a `MetadataReducer<TWrite, TAcc>` object - `{ getInitial, reduce }` - when
-contributions must combine with domain logic. Recipe 12's `STATUS` keeps the
-**highest-severity** hint across all contributions:
+Pass a `MetadataReducer<TAcc, TWrite>` object - `{ reduce, getInitial }` - when
+contributions must combine with domain logic. The interface is exactly two members:
+
+```ts
+interface MetadataReducer<TAcc, TWrite> {
+  reduce: (acc: TAcc, item: TWrite) => TAcc;
+  getInitial: () => TAcc;
+}
+```
+
+Note the arg order: the **reducer** is `<TAcc, TWrite>` (accumulator first, then the
+per-rule contribution), while **`createMetadataKey<TWrite, TAcc>()`** takes the write
+type first. Recipe 12's `STATUS` keeps the **highest-severity** hint across all
+contributions:
 
 ```ts
 // app.metadata.ts
@@ -81,7 +92,8 @@ export const STATUS = createMetadataKey<StatusHint, StatusHint>(severityReducer)
 
 Two rules contribute to `STATUS` (needs-link, needs-title); the reducer surfaces the
 more severe of the two so the card shows the most pressing hint. `getInitial` is the
-accumulator seed used when no rule contributes.
+accumulator seed used when no rule contributes (and the value read back when a field
+has the key but every rule returned nothing).
 
 ### `createMetadataKey(MetadataReducer.list<T>())` - collect into an array
 
@@ -178,15 +190,36 @@ const hints = field().metadata(this.key())?.() ?? [];
 
 Validators publish metadata **and** errors. The error tells you the field is
 invalid; the metadata hands you the constraint's operand so the UI can show the
-rule before it is broken. Recipe 12 reads four:
+rule before it is broken. The full set the framework publishes:
 
-| Validator         | Metadata key | Reads as                | Drives                         |
-| ----------------- | ------------ | ----------------------- | ------------------------------ |
-| `maxLength(f, n)` | `MAX_LENGTH` | the limit `n`           | the `17 / 40` title counter    |
-| `min(f, n)`       | `MIN_NUMBER` | the minimum             | the `1 to 5` priority bound    |
-| `max(f, n)`       | `MAX_NUMBER` | the maximum             | the priority bound's upper end |
-| `pattern(f, re)`  | `PATTERN`    | the `RegExp` operand(s) | the tag format hint            |
-| `required(f)`     | `REQUIRED`   | presence                | required affordances           |
+| Validator         | Metadata key | Reads as              | Backing reducer  |
+| ----------------- | ------------ | --------------------- | ---------------- |
+| `required(f)`     | `REQUIRED`   | `boolean`             | `or()`           |
+| `min(f, n)`       | `MIN_NUMBER` | `number \| undefined` | `max()` (strict) |
+| `max(f, n)`       | `MAX_NUMBER` | `number \| undefined` | `min()` (strict) |
+| `minLength(f, n)` | `MIN_LENGTH` | `number \| undefined` | `max()` (strict) |
+| `maxLength(f, n)` | `MAX_LENGTH` | `number \| undefined` | `min()` (strict) |
+| `minDate(f, d)`   | `MIN_DATE`   | `Date \| undefined`   | `max()` (strict) |
+| `maxDate(f, d)`   | `MAX_DATE`   | `Date \| undefined`   | `min()` (strict) |
+| `pattern(f, re)`  | `PATTERN`    | `RegExp[]`            | `list<RegExp>()` |
+
+Recipe 12 reads `MAX_LENGTH` (title counter), `MIN_NUMBER` + `MAX_NUMBER` (priority
+bounds), `PATTERN` (feeds `TAG_HINT`), and gates on `REQUIRED`. The generic `MIN` /
+`MAX` selection keys resolve to the concrete key matching the field's value type
+(number vs date). Non-constraint validators (`email()`, `validate()`) publish **no**
+metadata - only errors.
+
+**Strictest wins.** A minimum constraint is tightest when it is largest, so
+`MIN_NUMBER` / `MIN_LENGTH` are backed by the `max()` reducer, and `MAX_NUMBER` /
+`MAX_LENGTH` by `min()`. Two `min(f, 5)` and `min(f, 10)` calls collapse to an
+effective minimum of `10`, never fight.
+
+Angular also exposes **convenience getters** on field state that read these keys
+directly, so you can skip `metadata(KEY)?.()` for the built-ins:
+`field().required()`, `field().min()`, `field().max()`, `field().minLength()`,
+`field().maxLength()`, `field().pattern()`. Recipe 12 reads the explicit keys
+(`metadata(MAX_LENGTH)?.()`) to keep the metadata channel visible while teaching, but
+the getters are the terser production form and return the same reduced values.
 
 ```ts
 // bookmark-card.ts - the character counter
@@ -226,19 +259,23 @@ from validator metadata so the constraint and the label can never drift.
 
 ## The built-in reducers on `MetadataReducer`
 
-| Reducer      | Accumulator starts at | Merge of a contribution `x`     | Reads as  |
-| ------------ | --------------------- | ------------------------------- | --------- | --- | --------- |
-| `list<T>()`  | `[]`                  | append `x` if `x !== undefined` | `T[]`     |
-| `min()`      | `+Infinity`           | `Math.min(acc, x)`              | `number`  |
-| `max()`      | `-Infinity`           | `Math.max(acc, x)`              | `number`  |
-| `or()`       | `false`               | `acc                            |           | x`  | `boolean` |
-| `and()`      | `true`                | `acc && x`                      | `boolean` |
-| `override()` | `undefined`           | `x` (last write wins)           | `T`       |
+| Reducer        | Accumulator starts at | Merge of a contribution `x`            | Reads as              |
+| -------------- | --------------------- | -------------------------------------- | --------------------- |
+| `list<T>()`    | `[]`                  | append `x` if `x !== undefined`        | `T[]`                 |
+| `min()`        | `undefined`           | smallest so far (seed `undefined`→`x`) | `number \| undefined` |
+| `max()`        | `undefined`           | largest so far (seed `undefined`→`x`)  | `number \| undefined` |
+| `or()`         | `false`               | `acc \|\| x`                           | `boolean`             |
+| `and()`        | `true`                | `acc && x`                             | `boolean`             |
+| `override()`   | `undefined`           | `x` (last write wins)                  | `T \| undefined`      |
+| `override(fn)` | `fn()`                | `x` (last write wins)                  | `T`                   |
 
-`override()` is the default when you call `createMetadataKey<T>()` with no argument.
-`MAX_LENGTH`/`MIN_NUMBER`/`MAX_NUMBER` are backed by the numeric reducers, which is
-why several `maxLength`/`min`/`max` calls on one path collapse to a single tight
-bound rather than fighting.
+`override()` is the default when you call `createMetadataKey<T>()` with no argument;
+`override(fn)` is the same last-write-wins merge but seeds the accumulator with a
+concrete initial instead of `undefined`. Note `min()`/`max()` seed at `undefined`
+(not `±Infinity`) and therefore read as `number | undefined` until a rule contributes.
+`MAX_LENGTH`/`MIN_NUMBER`/`MAX_NUMBER` are backed by these numeric reducers, which is
+why several `maxLength`/`min`/`max` calls on one path collapse to a single **strictest**
+bound rather than fighting - see the pairing table below.
 
 ---
 

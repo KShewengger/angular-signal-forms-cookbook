@@ -5,6 +5,14 @@ shapes in this cookbook. Pick by reuse and length, not by taste. Do not reach fo
 heaviest shape (`schema<T>()`) unless the same rules are genuinely applied more than
 once.
 
+**The `path` mirrors the model.** A schema function receives a _path tree_ whose shape is
+the model's shape - the same tree you navigate on the field. You attach a rule to a
+**location**, not a value: `required(path.name)` targets the `name` field; you never call
+the path (`path.name()` is wrong here). Navigate it exactly like the model: `path.name`,
+`path.address.city`, and array item paths inside `applyEach`. A top-level `SchemaFn` is
+typed `SchemaPathTree<T>`; a reusable per-field/per-item group is typed `SchemaFn<T>`.
+Both are plain functions - a `schema<T>()` object is only for genuine reuse (Shape 3).
+
 ## Shape 1: inline schema function
 
 A short one-form schema (roughly 1-5 lines) is inlined as the second argument to

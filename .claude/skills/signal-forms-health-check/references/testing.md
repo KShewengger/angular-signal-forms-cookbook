@@ -21,7 +21,10 @@ Every recipe spec is split into two `describe` blocks under a top-level
 - **`component (DOM)`** renders the component and asserts on what the template shows.
 
 Keep them separate. Isolated tests are fast and prove the schema; DOM tests prove the
-binding, the show-invalid gate, and accessibility.
+binding, the show-invalid gate, and accessibility. The official guide names the reason
+this split works: signal forms keep most of their logic in the schema rather than the
+template, so you can test the majority of form behaviour without rendering a component.
+Reach for the DOM block only when a test genuinely needs the template.
 
 ### Isolated: build the form directly
 
@@ -29,6 +32,12 @@ Construct the form with `form(model, schemaFn, { injector: TestBed.inject(Inject
 The schema function is imported from the app's `app.schema.ts` precisely so it is
 testable in isolation. Wrap construction in a `buildForm` helper that takes a
 `Partial<Model>` (or an array of partials) so each test states only what it cares about.
+
+`form()` needs an injection context. Passing `{ injector: TestBed.inject(Injector) }`
+supplies one; without it the `form()` call throws before the test can assert anything.
+The cookbook always passes the explicit `injector` option. The official guide also
+accepts wrapping the call in `TestBed.runInInjectionContext(() => form(model, schemaFn))`,
+but prefer the explicit option here so the `buildForm` helper stays a plain function.
 
 ```ts
 const buildBookingForm = (initial: Partial<BookingFormModel> = {}): FieldTree<BookingFormModel> => {
@@ -122,6 +131,14 @@ Do (bare validator, no custom message: kind only):
 
 ```ts
 expect(kindsOf(bookmarkForm.bookmarks[0].title)).toContain('maxLength');
+```
+
+The `kindsOf` / `messagesOf` readers are the cookbook's terse shorthand. The official
+guide asserts the same thing structurally with `expect.objectContaining`, and recipe 01
+uses that form directly; both are correct, so match whichever the recipe already uses:
+
+```ts
+expect(registrationForm.name().errors()).toEqual([expect.objectContaining({ kind: 'required' })]);
 ```
 
 Assert form-wide state through `form().valid()` / `form().invalid()`:

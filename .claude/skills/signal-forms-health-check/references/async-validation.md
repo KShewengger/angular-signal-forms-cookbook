@@ -52,7 +52,20 @@ export function bookingSchema(path: SchemaPathTree<BookingFormModel>): void {
 
 - **`request`** returns the URL (or an `HttpResourceRequest`) built from the field
   value. `value()` is a signal read, so trim/normalize it here. Recipe 04 returns a
-  bare string, which `validateHttp` issues as a `GET`.
+  bare string, which `validateHttp` issues as a `GET`. Return an `HttpResourceRequest`
+  object for anything richer - `POST` with a body, custom headers:
+
+  ```ts
+  request: ({ value }) => ({
+    url: '/api/usernames/check',
+    method: 'POST',
+    body: { username: value() },
+  }),
+  ```
+
+  Return **`undefined`** to skip the request entirely (nothing to check, or a value
+  you have already resolved) - the field is treated as valid without a round trip.
+
 - **`onSuccess`** maps the parsed response body to a validation error or `null`.
   Return `null` for valid; return `{ kind, message }` to fail. The `kind` is your
   stable error identity (`bookingNotFound`) that tests and templates key off of;
@@ -63,8 +76,19 @@ export function bookingSchema(path: SchemaPathTree<BookingFormModel>): void {
   (`networkError`) so the UI can tell "your booking does not exist" apart from
   "we could not check right now."
 
-Pair `validateHttp` with `debounce` on the same path so you fire one request per
-settled input, not one per keystroke. See `debounce-and-async-ui.md`.
+Pair `validateHttp` with the schema-level `debounce(path, ms)` on the same path so you
+fire one request per settled input, not one per keystroke - this is what recipe 04
+does. See `debounce-and-async-ui.md`.
+
+`validateHttp` also accepts its own **per-validator options** (all docs API, none used
+by recipe 04, so treat them as additive, not the cookbook pattern):
+
+- **`debounce`** (ms) - throttles just this validator, independent of the field-level
+  `debounce()` rule. Use it when one field has several async checks you want paced
+  differently; otherwise prefer the schema-level `debounce`.
+- **`options`** - HTTP request options such as `headers` (an `HttpHeaders`) and
+  `timeout` (ms).
+- **`parse`** - types/transforms the raw response body before it reaches `onSuccess`.
 
 ## Wire `provideHttpClient` or the request never runs
 
@@ -103,13 +127,73 @@ export function mockHttpInterceptor(req: HttpRequest<unknown>, next: HttpHandler
 }
 ```
 
+## `validateAsync` - non-HTTP async validation (docs API, not in the cookbook)
+
+When the check is not a plain HTTP call - an existing Observable service, a resource you
+already own, a WebSocket, a batched lookup - reach for `validateAsync`, which exposes
+Angular's resource primitive directly. Recipe 04 does not use it (its check is a single
+`GET`, so `validateHttp` is the right tool); this is the escape hatch for everything
+`validateHttp` cannot express. Its shape:
+
+```ts
+validateAsync(path.username, {
+  params: ({ value }) => value() || undefined, // undefined skips, like request
+  factory: (username) =>
+    resource({
+      params: () => username(),
+      loader: async ({ params }) => this.users.checkAvailability(params),
+    }),
+  onSuccess: (available) => (available ? null : { kind: 'taken', message: 'Username is taken.' }),
+  onError: () => ({ kind: 'networkError', message: 'Could not check.' }),
+});
+```
+
+- **`params`** derives the resource params from the field; return `undefined` to skip.
+- **`factory`** builds a resource from those params. Use `resource(...)` for a
+  promise/loader, or `rxResource(...)` from `@angular/core/rxjs-interop` to adapt an
+  Observable service (it subscribes and cancels for you as the value changes). Recipe 04
+  uses `rxResource` in its component for a booking _lookup_, which is the same primitive
+  even though that lookup is not wired as a validator.
+- **`onSuccess`** / **`onError`** map the resolved value or the failure to a validation
+  error or `null`, exactly as in `validateHttp`.
+
+`validateHttp` is `validateAsync` specialized to `httpResource` - the pending, cancel,
+and sync-first behavior below is identical for both.
+
+## Sync runs first, async only on a clean field
+
+Synchronous rules gate the request: `validateHttp` fires only once the field passes
+every sync validator on that path. A `required` failure, a format failure, anything
+synchronous short-circuits before any HTTP goes out, so you never spend a round trip
+validating a value the client can already reject. Order your schema with the cheap
+sync rules first (recipe 04 keeps `required(path.reference)` above the `validateHttp`).
+
+## Latest-wins cancellation
+
+`validateHttp` runs through a resource, so a new field value **cancels the in-flight
+request** for that field automatically before starting the next one. You never get a
+stale response landing after a newer keystroke - the framework enforces latest-wins;
+you do not wire `switchMap` or an `AbortController` yourself. Debouncing still matters
+(it decides _when_ a request starts), but correctness under fast typing is built in.
+
 ## The field's `.pending()` state while in flight
 
-While the request is outstanding the field is neither valid nor invalid: it is
-pending. Read `field.reference().pending()` to show a spinner or gate submit, and
-lean on the field's own `valid()` / `invalid()` once it resolves. Recipe 04 gates
-its "Find my booking" button on `dirty() && !invalid()` so a pending or failed
-check keeps submit disabled:
+While the request is outstanding the field is in a distinct **pending** state, neither
+valid nor invalid. Concretely, during pending:
+
+- `pending()` is `true`
+- `valid()` is `false` **and** `invalid()` is `false` (it is neither yet)
+- `errors()` is empty (no verdict has arrived)
+- `submit()` waits for it to settle before running the action **when
+  `ignoreValidators: 'none'`** (the cookbook's submit config); the default `'pending'`
+  would not wait. See `submission.md`.
+
+Read `field.reference().pending()` to show a spinner or gate submit, and lean on the
+field's own `valid()` / `invalid()` once it resolves. Because `pending()` is `true`
+while a request is outstanding, a form-level `anyPending`/`pending()` read aggregates
+every in-flight async check across the tree - use it to gate a whole form, not just one
+field. Recipe 04 gates its "Find my booking" button on `dirty() && !invalid()` so a
+pending or failed check keeps submit disabled:
 
 ```ts
 // apps/04-async-validation/src/app/app.ts
@@ -198,6 +282,14 @@ resolves `HttpClient` from the testing injector.
 - **Do** `await TestBed.inject(ApplicationRef).whenStable()` (or
   `fixture.whenStable()` in DOM tests) before asserting any async error.
 - **Do** `debounce` the same path so you fire one request per settled value.
+- **Do** put cheap synchronous rules (`required`, format) above `validateHttp` so a
+  bad value never spends a round trip; async runs only on an otherwise-valid field.
+- **Do** return `undefined` from `request` (or `validateAsync`'s `params`) to skip a
+  check you do not need to make.
+- **Do** reach for `validateHttp` first for REST checks; drop to `validateAsync` only
+  when the source is not a single HTTP call (Observable service, owned resource).
+- **Don't** hand-roll `switchMap`/`AbortController` cancellation; `validateHttp` and
+  `validateAsync` cancel the in-flight request on value change (latest-wins) for you.
 - **Don't** assert `bookingNotFound` synchronously right after `value.set(...)`;
   the resource has not resolved yet and the assertion will flake.
 - **Don't** collapse a `200 OK` "does not exist" body into the `onError` branch.
