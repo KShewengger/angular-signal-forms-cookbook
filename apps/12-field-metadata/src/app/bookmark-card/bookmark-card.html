@@ -46,9 +46,9 @@
         placeholder="Name this link"
         i18n-placeholder="@@titlePlaceholder"
         [id]="titleId()"
-        [formField]="titleField()"
+        [formField]="field().title"
       />
-      <app-validation-errors [field]="titleField()" />
+      <app-validation-errors [field]="field().title" />
     </div>
 
     <!-- URL -->
@@ -69,9 +69,9 @@
         placeholder="github.com/you/project"
         i18n-placeholder="@@urlPlaceholder"
         [id]="urlId()"
-        [formField]="urlField()"
+        [formField]="field().url"
       />
-      <app-validation-errors [field]="urlField()" />
+      <app-validation-errors [field]="field().url" />
     </div>
 
     <!-- PREVIEW -->

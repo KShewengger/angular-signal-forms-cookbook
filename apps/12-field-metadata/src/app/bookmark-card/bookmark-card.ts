@@ -51,33 +51,33 @@ export class BookmarkCard {
   protected readonly severityTone = SEVERITY_TONE;
   protected readonly severityState = SEVERITY_STATE;
 
-  protected readonly titleField = computed(() => this.field().title);
-  protected readonly urlField = computed(() => this.field().url);
+  protected readonly fieldState = computed(() => this.field()());
+  protected readonly titleState = computed(() => this.field().title());
+  protected readonly urlState = computed(() => this.field().url());
 
-  protected readonly count = computed(() => this.titleField()().value().length);
+  protected readonly count = computed(() => this.titleState().value().length);
   protected readonly limit = computed(
-    () => this.titleField()().metadata(MAX_LENGTH)?.() ?? TITLE_MAX_LENGTH,
+    () => this.titleState().metadata(MAX_LENGTH)?.() ?? TITLE_MAX_LENGTH,
   );
   protected readonly nearLimit = computed(
     () => this.count() >= this.limit() - 8 && this.count() < this.limit(),
   );
   protected readonly atLimit = computed(() => this.count() >= this.limit());
 
-  protected readonly platform = computed(() =>
-    this.urlField()().metadata(PLATFORM)?.(),
-  );
   protected readonly status = computed(() =>
-    this.field()().metadata(STATUS)?.(),
+    this.fieldState().metadata(STATUS)?.(),
+  );
+  protected readonly platform = computed(() =>
+    this.urlState().metadata(PLATFORM)?.(),
   );
   protected readonly preview = computed(() =>
-    this.urlField()().metadata(URL_PREVIEW),
+    this.urlState().metadata(URL_PREVIEW),
   );
   protected readonly help = computed(
-    () => this.urlField()().metadata(HELP)?.() ?? [],
+    () => this.urlState().metadata(HELP)?.() ?? [],
   );
 
-  protected readonly titleId = computed(
-    () => `title-${this.field()().value().id}`,
-  );
-  protected readonly urlId = computed(() => `url-${this.field()().value().id}`);
+  protected readonly bookmarkId = computed(() => this.fieldState().value().id);
+  protected readonly titleId = computed(() => `title-${this.bookmarkId()}`);
+  protected readonly urlId = computed(() => `url-${this.bookmarkId()}`);
 }
