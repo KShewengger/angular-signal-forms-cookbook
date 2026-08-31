@@ -16,6 +16,10 @@
   />
 </p>
 
+<p align="center">
+  <a href="https://kshewengger.github.io/angular-signal-forms-cookbook/06-custom-control/"><strong>▶ Live Demo</strong></a>
+</p>
+
 <p align="center">Part of the <a href="../../README.md">Angular Signal Forms Cookbook</a>.</p>
 
 ---

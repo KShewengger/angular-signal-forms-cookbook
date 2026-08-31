@@ -298,9 +298,17 @@ Full spec structure lives in the `finalize-recipe` skill. The rules that always 
 - **Debounce timer drift:** the README, the fake-timer advances, and `debounce(path, ms)` must
   agree. `debounce` only delays typed (View→model) input; a drift like 500 vs 300 breaks DOM
   debounce tests.
-- **Prev/Next / footer links are GitHub tree URLs**, never StackBlitz. Point at the correct
-  `apps/NN-name`; a Next link to a not-yet-built recipe may use `…/tree/main/apps` until that
-  folder exists.
+- **Lesson-nav links (Prev / Next / All recipes) point at the GitHub Pages demo**, never
+  StackBlitz. The site is one Pages deployment at
+  `https://kshewengger.github.io/angular-signal-forms-cookbook/` (landing at the root, each
+  recipe under `/NN-name/`); a Prev/Next points at that recipe's demo URL, and "All recipes"
+  points at the landing root. A Next link to a not-yet-built recipe may point at the landing
+  root until that folder exists. **The footer "GitHub Repo" link stays a GitHub tree URL** for
+  the recipe's own `apps/NN-name` (it is the view-source affordance, not navigation). The
+  landing cards (`apps/cookbook/src/app/app.data.ts`) and each recipe README's Live Demo link
+  use the same Pages base. Deployment is wired in `.github/workflows/deploy-pages.yml`, which
+  builds every app with a per-app `--base-href` and assembles one site; base-href is a deploy
+  concern and lives only in that workflow, never in `project.json`.
 
 ---
 

@@ -1,0 +1,90 @@
+name: Deploy to GitHub Pages
+
+# Builds every app and publishes them under one Pages site:
+# the cookbook landing at the root, each recipe under /<app-name>/.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# GITHUB_TOKEN needs write access to Pages; id-token is required by deploy-pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time, and never cancel a deploy already in flight.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Version is read from the "packageManager" field in package.json.
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # enablement: true turns Pages on for the repo on the first run
+      # (public repos only), so no manual Settings > Pages step is needed.
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      # Build the landing at the site root and each recipe under its own
+      # sub-path. --base-href must match the deploy path so every asset and
+      # router-relative URL resolves correctly on Pages.
+      - name: Build all apps
+        run: |
+          REPO="angular-signal-forms-cookbook"
+          pnpm exec nx build cookbook --base-href="/$REPO/"
+          for dir in apps/*/; do
+            name="$(basename "$dir")"
+            [ "$name" = "cookbook" ] && continue
+            pnpm exec nx build "$name" --base-href="/$REPO/$name/"
+          done
+
+      # Assemble a single artifact: cookbook at the root, each recipe in its
+      # own sub-folder. .nojekyll keeps Pages from running the output through
+      # Jekyll; the root 404 falls back to the landing page.
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          cp -R dist/apps/cookbook/browser/. _site/
+          for dir in apps/*/; do
+            name="$(basename "$dir")"
+            [ "$name" = "cookbook" ] && continue
+            mkdir -p "_site/$name"
+            cp -R "dist/apps/$name/browser/." "_site/$name/"
+          done
+          touch _site/.nojekyll
+          cp _site/index.html _site/404.html
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
