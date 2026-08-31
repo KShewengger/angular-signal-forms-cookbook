@@ -305,8 +305,9 @@ Full spec structure lives in the `finalize-recipe` skill. The rules that always 
   points at the landing root. A Next link to a not-yet-built recipe may point at the landing
   root until that folder exists. **The footer "GitHub Repo" link stays a GitHub tree URL** for
   the recipe's own `apps/NN-name` (it is the view-source affordance, not navigation). The
-  landing cards (`apps/cookbook/src/app/app.data.ts`) and each recipe README's Live Demo link
-  use the same Pages base. Deployment is wired in `.github/workflows/deploy-pages.yml`, which
+  landing cards (`apps/cookbook/src/app/app.data.ts`) link to each recipe's GitHub source
+  (`…/tree/main/apps/NN-name`, the read-the-code entry point), while each recipe README's Live
+  Demo link uses the Pages base. Deployment is wired in `.github/workflows/deploy-pages.yml`, which
   builds every app with a per-app `--base-href` and assembles one site; base-href is a deploy
   concern and lives only in that workflow, never in `project.json`.
 

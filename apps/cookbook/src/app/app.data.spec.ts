@@ -9,7 +9,7 @@ describe('SIGNAL_EXAMPLES', () => {
     for (const recipe of SIGNAL_EXAMPLES) {
       expect(recipe.title).toBeTruthy();
       expect(recipe.link).toMatch(
-        /^https:\/\/kshewengger\.github\.io\/angular-signal-forms-cookbook\/\d{2}-[a-z-]+\/$/,
+        /^https:\/\/github\.com\/KShewengger\/angular-signal-forms-cookbook\/tree\/main\/apps\/\d{2}-[a-z-]+$/,
       );
       expect(recipe.preview).toBeTruthy();
     }
