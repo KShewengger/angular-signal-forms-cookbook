@@ -37,7 +37,7 @@ import {
   SUGGESTED_PRIORITY,
 } from './app.metadata';
 import { bookmarkHubSchema } from './app.schema';
-import { patternHint, toLinkPreview } from './app.utils';
+import { patternHint, sortPriority, toLinkPreview } from './app.utils';
 
 function mockMicrolink(request: HttpRequest<unknown>, next: HttpHandlerFn) {
   if (request.url.startsWith(environment.microlinkEndpoint)) {
@@ -360,6 +360,32 @@ describe('App (12 · Field Metadata)', () => {
 
     it('falls back to the raw source for an unknown pattern', () => {
       expect(patternHint(/^\d{4}$/)).toBe('^\\d{4}$');
+    });
+  });
+
+  describe('priority ordering (sortPriority)', () => {
+    const bookmark = (over: Partial<Bookmark>): Bookmark => ({
+      id: 'a',
+      title: '',
+      url: '',
+      priority: 3,
+      tag: '',
+      pinned: false,
+      ...over,
+    });
+
+    it('keeps an in-range priority', () => {
+      expect(sortPriority(bookmark({ priority: 3 }))).toBe(3);
+    });
+
+    it('demotes an over-maximum priority so it cannot lead', () => {
+      expect(sortPriority(bookmark({ priority: 10, pinned: false }))).toBe(
+        PRIORITY_MIN,
+      );
+    });
+
+    it('honours the raised ceiling for a pinned bookmark', () => {
+      expect(sortPriority(bookmark({ priority: 10, pinned: true }))).toBe(10);
     });
   });
 

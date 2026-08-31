@@ -1,5 +1,16 @@
-import { DOMAIN_PLATFORMS, PATTERN_HINTS } from './app.data';
-import type { LinkPreview, MicrolinkResponse, Platform } from './app.model';
+import {
+  DOMAIN_PLATFORMS,
+  PATTERN_HINTS,
+  PRIORITY_MAX,
+  PRIORITY_MIN,
+  PRIORITY_PINNED_MAX,
+} from './app.data';
+import type {
+  Bookmark,
+  LinkPreview,
+  MicrolinkResponse,
+  Platform,
+} from './app.model';
 
 export function withProtocol(url: string): string {
   return /^https?:\/\//i.test(url) ? url : `https://${url}`;
@@ -28,6 +39,14 @@ export function domainOf(raw: string): string | null {
 
 export function patternHint(expression: RegExp): string {
   return PATTERN_HINTS[expression.source] ?? expression.source;
+}
+
+export function sortPriority(bookmark: Bookmark): number {
+  const max = bookmark.pinned ? PRIORITY_PINNED_MAX : PRIORITY_MAX;
+  const withinRange =
+    bookmark.priority >= PRIORITY_MIN && bookmark.priority <= max;
+
+  return withinRange ? bookmark.priority : PRIORITY_MIN;
 }
 
 export function platformOf(domain: string): Platform {

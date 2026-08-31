@@ -24,6 +24,7 @@ import { BookmarkCard } from './bookmark-card';
 import { INITIAL_COLLECTION, PRIORITY_MIN } from './app.data';
 import { BookmarkCollection } from './app.model';
 import { bookmarkHubSchema } from './app.schema';
+import { sortPriority } from './app.utils';
 
 @Component({
   selector: 'app-root',
@@ -76,7 +77,7 @@ export class App {
       .sort(
         (a, b) =>
           Number(b.bookmark.pinned) - Number(a.bookmark.pinned) ||
-          b.bookmark.priority - a.bookmark.priority,
+          sortPriority(b.bookmark) - sortPriority(a.bookmark),
       ),
   );
 
