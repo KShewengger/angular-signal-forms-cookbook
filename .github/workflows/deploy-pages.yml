@@ -37,12 +37,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # enablement: true turns Pages on for the repo on the first run
-      # (public repos only), so no manual Settings > Pages step is needed.
+      # Pages must be enabled once by hand (Settings > Pages > Source:
+      # "GitHub Actions"); the workflow token can deploy but not create the
+      # site. This step then reads that existing Pages configuration.
       - name: Configure Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       # Build the landing at the site root and each recipe under its own
       # sub-path. --base-href must match the deploy path so every asset and
