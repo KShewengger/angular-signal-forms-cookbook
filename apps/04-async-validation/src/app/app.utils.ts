@@ -28,5 +28,5 @@ export function generateMockBookingResponse(
       arrivalAt: formatDate(arrival, 'medium', 'en-PH'),
     },
     status: 'Confirmed',
-  } as const;
+  };
 }

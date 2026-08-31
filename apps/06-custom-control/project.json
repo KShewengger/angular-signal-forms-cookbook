@@ -50,6 +50,7 @@
       "continuous": true,
       "executor": "@angular/build:dev-server",
       "defaultConfiguration": "development",
+      "options": { "port": 4206 },
       "configurations": {
         "production": {
           "buildTarget": "06-custom-control:build:production"

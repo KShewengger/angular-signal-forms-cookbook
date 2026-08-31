@@ -24,21 +24,29 @@
       </div>
     }
 
-    <!-- STATUS -->
-    @if (status(); as statusHint) {
-      <span
-        nbBadge
-        class="mb-2 inline-flex w-fit items-center gap-1.5"
-        [tone]="severityTone[statusHint.level]"
-      >
+    <!-- STATUS & READINESS FLAGS -->
+    <div nbCluster gap="xs" class="mb-2 flex-wrap">
+      @if (status(); as statusHint) {
         <span
-          nbStatusDot
-          size="sm"
-          [state]="severityState[statusHint.level]"
-        ></span>
-        {{ statusHint.message }}
-      </span>
-    }
+          nbBadge
+          class="inline-flex w-fit items-center gap-1.5"
+          [tone]="severityTone[statusHint.level]"
+        >
+          <span
+            nbStatusDot
+            size="sm"
+            [state]="severityState[statusHint.level]"
+          ></span>
+          {{ statusHint.message }}
+        </span>
+      }
+      @if (needsReview()) {
+        <span nbBadge tone="warning" i18n="@@reviewFlag">Review</span>
+      }
+      @if (shareReady()) {
+        <span nbBadge tone="mint" i18n="@@shareReadyFlag">Share-ready</span>
+      }
+    </div>
 
     <!-- TITLE -->
     <div nbStack gap="xs">
@@ -103,6 +111,11 @@
       <small nbText tone="muted" size="xs" i18n="@@priorityHint">
         Higher priority sorts to the top (pinned links always lead).
       </small>
+      @if (suggestedPriority(); as suggested) {
+        <small nbText tone="muted" size="xs" i18n="@@prioritySuggested">
+          Suggested priority ≥ {{ suggested }} for pinned or reference links.
+        </small>
+      }
       <app-validation-errors [field]="field().priority" />
     </div>
 

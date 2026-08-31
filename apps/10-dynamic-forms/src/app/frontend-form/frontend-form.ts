@@ -63,7 +63,12 @@ export class FrontendForm {
   readonly form = input.required<FieldTree<Application>>();
   readonly submitting = input(false);
   readonly submitted = input(false);
+  readonly resetToken = input.required<number>();
   readonly retry = output();
+
+  protected readonly canSubmit = computed(
+    () => this.form()().valid() && !this.submitting(),
+  );
 
   protected readonly engagements = ENGAGEMENTS;
 

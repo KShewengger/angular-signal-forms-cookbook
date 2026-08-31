@@ -51,6 +51,7 @@
       "continuous": true,
       "executor": "@angular/build:dev-server",
       "defaultConfiguration": "development",
+      "options": { "port": 4204 },
       "configurations": {
         "production": {
           "buildTarget": "04-async-validation:build:production"

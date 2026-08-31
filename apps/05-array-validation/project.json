@@ -50,6 +50,7 @@
       "continuous": true,
       "executor": "@angular/build:dev-server",
       "defaultConfiguration": "development",
+      "options": { "port": 4205 },
       "configurations": {
         "production": {
           "buildTarget": "05-array-validation:build:production"

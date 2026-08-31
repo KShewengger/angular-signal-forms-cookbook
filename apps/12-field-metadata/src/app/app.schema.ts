@@ -18,6 +18,8 @@ import {
   PRIORITY_MIN,
   PRIORITY_PINNED_MAX,
   STATUS_HINTS,
+  SUGGESTED_PRIORITY_PINNED,
+  SUGGESTED_PRIORITY_REFERENCE,
   TAG_PATTERN,
   TITLE_MAX_LENGTH,
 } from './app.data';
@@ -26,11 +28,20 @@ import {
   HELP,
   PIN_NOTE,
   PLATFORM,
+  REVIEW,
+  SHARE_READY,
   STATUS,
+  SUGGESTED_PRIORITY,
   TAG_HINT,
   URL_PREVIEW,
 } from './app.metadata';
-import { domainOf, parseUrl, patternHint, platformOf } from './app.utils';
+import {
+  domainOf,
+  isInsecureUrl,
+  parseUrl,
+  patternHint,
+  platformOf,
+} from './app.utils';
 
 const titleRules: SchemaFn<Bookmark> = (item) => {
   maxLength(item.title, TITLE_MAX_LENGTH, {
@@ -123,6 +134,40 @@ const statusRules: SchemaFn<Bookmark> = (item) => {
   );
 };
 
+const readinessRules: SchemaFn<Bookmark> = (item) => {
+  metadata(item, REVIEW, ({ valueOf }) => isInsecureUrl(valueOf(item.url)));
+  metadata(item, REVIEW, ({ valueOf }) => valueOf(item.tag).trim() === '');
+
+  metadata(
+    item,
+    SHARE_READY,
+    ({ valueOf }) => valueOf(item.title).trim() !== '',
+  );
+  metadata(
+    item,
+    SHARE_READY,
+    ({ valueOf }) => domainOf(valueOf(item.url)) !== null,
+  );
+  metadata(item, SHARE_READY, ({ valueOf }) => valueOf(item.tag).trim() !== '');
+  metadata(
+    item,
+    SHARE_READY,
+    ({ valueOf }) => !isInsecureUrl(valueOf(item.url)),
+  );
+
+  metadata(item, SUGGESTED_PRIORITY, ({ valueOf }) =>
+    valueOf(item.pinned) ? SUGGESTED_PRIORITY_PINNED : undefined,
+  );
+  metadata(item, SUGGESTED_PRIORITY, ({ valueOf }) => {
+    const domain = domainOf(valueOf(item.url));
+    const platform = domain ? platformOf(domain) : undefined;
+
+    return platform === 'repo' || platform === 'docs'
+      ? SUGGESTED_PRIORITY_REFERENCE
+      : undefined;
+  });
+};
+
 const bookmarkItemSchema = schema<Bookmark>((item) => {
   titleRules(item);
   urlRules(item);
@@ -130,6 +175,7 @@ const bookmarkItemSchema = schema<Bookmark>((item) => {
   tagRules(item);
   pinnedRules(item);
   statusRules(item);
+  readinessRules(item);
 });
 
 export function bookmarkHubSchema(

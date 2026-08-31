@@ -27,6 +27,7 @@ import {
   tablerCircleArrowLeftFill,
   tablerCircleArrowRightFill,
 } from '@ng-icons/tabler-icons/fill';
+import { tablerCopyright } from '@ng-icons/tabler-icons';
 
 @Component({
   selector: 'app-root',
@@ -57,6 +58,7 @@ import {
     provideIcons({
       tablerCircleArrowRightFill,
       tablerCircleArrowLeftFill,
+      tablerCopyright,
     }),
   ],
   host: {

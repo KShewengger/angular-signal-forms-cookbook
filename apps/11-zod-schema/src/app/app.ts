@@ -182,6 +182,10 @@ export class App {
 
   protected readonly readyToFile = computed(() => this.ticketForm().valid());
 
+  protected readonly canFile = computed(
+    () => this.readyToFile() && !this.submitting(),
+  );
+
   protected readonly checks = computed(() => [
     {
       id: 'contact',

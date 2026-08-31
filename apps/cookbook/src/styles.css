@@ -20,6 +20,7 @@
   --color-nb-blue: var(--nb-blue);
   --color-nb-warning: var(--nb-warning);
   --color-nb-danger: var(--nb-danger);
+  --shadow-hard: 6px 6px 0 0 var(--nb-shadow);
 }
 
 body {

@@ -26,13 +26,7 @@ import {
   NbLabel,
 } from '@ng-brutalism/ui';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import {
-  tablerCopyright,
-  tablerArrowRight,
-  tablerUserX,
-  tablerUserCheck,
-  tablerCheck,
-} from '@ng-icons/tabler-icons';
+import { tablerCopyright, tablerCheck } from '@ng-icons/tabler-icons';
 import { INITIAL_USER, UserFormModel } from './app.model';
 import { userSchema } from './app.schema';
 import { ValidationErrors } from './validation-errors';
@@ -75,9 +69,6 @@ import {
   viewProviders: [
     provideIcons({
       tablerCopyright,
-      tablerArrowRight,
-      tablerUserX,
-      tablerUserCheck,
       tablerCheck,
       tablerCircleArrowLeftFill,
       tablerCircleArrowRightFill,
@@ -92,13 +83,7 @@ export class App {
 
   protected readonly userForm = form(this.userModel, userSchema);
 
-  protected readonly value = computed(() => this.userForm().value());
-
-  protected readonly valid = computed(
+  protected readonly showValidCheck = computed(
     () => this.userForm().dirty() && this.userForm().valid(),
   );
-
-  protected clear(): void {
-    this.userForm().reset({ ...INITIAL_USER });
-  }
 }

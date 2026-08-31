@@ -11,6 +11,7 @@ import {
   NbCard,
   NbCardContent,
   NbCheckbox,
+  NbCluster,
   NbIconButton,
   NbInput,
   NbLabel,
@@ -32,7 +33,10 @@ import {
   HELP,
   PIN_NOTE,
   PLATFORM,
+  REVIEW,
+  SHARE_READY,
   STATUS,
+  SUGGESTED_PRIORITY,
   TAG_HINT,
   URL_PREVIEW,
 } from '../app.metadata';
@@ -49,6 +53,7 @@ import { ValidationErrors } from '../validation-errors';
     NbCard,
     NbCardContent,
     NbCheckbox,
+    NbCluster,
     NbIconButton,
     NbInput,
     NbLabel,
@@ -88,6 +93,15 @@ export class BookmarkCard {
 
   protected readonly status = computed(() =>
     this.fieldState().metadata(STATUS)?.(),
+  );
+  protected readonly needsReview = computed(
+    () => this.fieldState().metadata(REVIEW)?.() ?? false,
+  );
+  protected readonly shareReady = computed(
+    () => this.fieldState().metadata(SHARE_READY)?.() ?? false,
+  );
+  protected readonly suggestedPriority = computed(() =>
+    this.fieldState().metadata(SUGGESTED_PRIORITY)?.(),
   );
   protected readonly pinNote = computed(() =>
     this.fieldState().metadata(PIN_NOTE)?.(),

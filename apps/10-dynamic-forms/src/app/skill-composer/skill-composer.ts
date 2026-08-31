@@ -1,4 +1,4 @@
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, input, linkedSignal } from '@angular/core';
 import {
   apply,
   debounce,
@@ -51,8 +51,12 @@ export class SkillComposer {
   readonly tone = input.required<'success' | 'pink'>();
   readonly draftErrorsId = input.required<string>();
   readonly skillsErrorsId = input.required<string>();
+  readonly resetToken = input.required<number>();
 
-  private readonly skillDraft = signal('');
+  private readonly skillDraft = linkedSignal({
+    source: this.resetToken,
+    computation: () => '',
+  });
 
   protected readonly skillForm = form(this.skillDraft, (path) => {
     apply(path, skillItemSchema);

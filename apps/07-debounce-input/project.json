@@ -50,6 +50,7 @@
       "continuous": true,
       "executor": "@angular/build:dev-server",
       "defaultConfiguration": "development",
+      "options": { "port": 4207 },
       "configurations": {
         "production": {
           "buildTarget": "07-debounce-input:build:production"

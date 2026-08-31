@@ -296,6 +296,24 @@ describe('App (11 · Zod Schema Validation)', () => {
       expect(host.textContent).toContain('Ready to file');
     });
 
+    it('disables File ticket while the ticket is invalid', () => {
+      const fileButton = host.querySelector<HTMLButtonElement>(
+        'button[type="submit"]',
+      );
+
+      expect(fileButton?.disabled).toBe(true);
+    });
+
+    it('enables File ticket once the ticket is valid', async () => {
+      await fillValidTicket();
+
+      const fileButton = host.querySelector<HTMLButtonElement>(
+        'button[type="submit"]',
+      );
+
+      expect(fileButton?.disabled).toBe(false);
+    });
+
     it('blocks submit and reports the errors when empty (onInvalid)', async () => {
       submitForm();
       await fixture.whenStable();

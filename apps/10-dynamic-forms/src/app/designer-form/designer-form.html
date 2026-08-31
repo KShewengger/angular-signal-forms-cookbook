@@ -274,6 +274,7 @@
             tone="pink"
             [skills]="form().skills"
             [placeholder]="skillPlaceholder"
+            [resetToken]="resetToken()"
           />
         </fieldset>
 
@@ -285,7 +286,7 @@
             type="submit"
             size="lg"
             tone="yellow"
-            [disabled]="submitting()"
+            [disabled]="!canSubmit()"
           >
             @if (submitting()) {
               <span

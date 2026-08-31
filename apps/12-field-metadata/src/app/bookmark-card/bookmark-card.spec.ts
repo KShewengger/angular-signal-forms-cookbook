@@ -159,6 +159,26 @@ describe('BookmarkCard (12 · Field Metadata)', () => {
       expect(host.textContent).toContain('priority ceiling raised to 10');
       expect(host.querySelector('nb-sticker')).not.toBeNull();
     });
+
+    it('or(): shows the Review flag when the tag is blank', async () => {
+      await render({ title: 'Repo', url: 'github.com/a', tag: '' });
+
+      expect(host.textContent).toContain('Review');
+      expect(host.textContent).not.toContain('Share-ready');
+    });
+
+    it('and(): shows Share-ready once every essential is filled', async () => {
+      await render({ title: 'Repo', url: 'github.com/a', tag: 'framework' });
+
+      expect(host.textContent).toContain('Share-ready');
+      expect(host.textContent).not.toContain('Review');
+    });
+
+    it('max(): surfaces the suggested priority floor for a reference link', async () => {
+      await render({ url: 'github.com/a' });
+
+      expect(host.textContent).toContain('Suggested priority ≥ 3');
+    });
   });
 
   describe('unreachable preview', () => {

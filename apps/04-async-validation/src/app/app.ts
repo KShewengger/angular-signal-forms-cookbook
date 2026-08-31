@@ -29,14 +29,8 @@ import { BookingFormModel, INITIAL_BOOKING } from './app.model';
 import { bookingSchema } from './app.schema';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
-  tablerUserCheck,
   tablerCopyright,
   tablerArrowRight,
-  tablerRocket,
-  tablerArrowLeft,
-  tablerPlaneDeparture,
-  tablerPlaneArrival,
-  tablerNotebook,
   tablerCheck,
 } from '@ng-icons/tabler-icons';
 import {
@@ -81,14 +75,8 @@ import { ValidationErrors } from './validation-errors';
   ],
   viewProviders: [
     provideIcons({
-      tablerUserCheck,
       tablerCopyright,
       tablerArrowRight,
-      tablerArrowLeft,
-      tablerRocket,
-      tablerNotebook,
-      tablerPlaneDeparture,
-      tablerPlaneArrival,
       tablerCheck,
       tablerCircleArrowRightFill,
       tablerCircleArrowLeftFill,

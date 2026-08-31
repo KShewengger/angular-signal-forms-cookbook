@@ -525,7 +525,7 @@
             size="lg"
             tone="warning"
             radius="full"
-            [disabled]="submitting()"
+            [disabled]="!canFile()"
           >
             @if (submitting()) {
               <span
@@ -592,7 +592,7 @@
     size="md"
     tone="success"
     radius="md"
-    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps"
+    href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/12-field-metadata"
     target="_blank"
     rel="noopener noreferrer"
     aria-label="Go to the next lesson"

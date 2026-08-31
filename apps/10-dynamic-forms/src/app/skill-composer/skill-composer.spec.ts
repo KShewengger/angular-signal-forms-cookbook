@@ -119,6 +119,7 @@ describe('SkillComposer (10 · Dynamic Forms)', () => {
         'frontend-skill-draft-errors',
       );
       fixture.componentRef.setInput('skillsErrorsId', 'frontend-skills-errors');
+      fixture.componentRef.setInput('resetToken', 0);
 
       await fixture.whenStable();
       vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
@@ -165,6 +166,18 @@ describe('SkillComposer (10 · Dynamic Forms)', () => {
       ]);
       expect(skillInput().value).toBe('');
       expect(host.textContent).toContain('Signals');
+    });
+
+    it('clears the draft when the reset token changes (retry)', async () => {
+      await typeSkill('test');
+      await settleDebounce();
+
+      expect(skillInput().value).toBe('test');
+
+      fixture.componentRef.setInput('resetToken', 1);
+      await fixture.whenStable();
+
+      expect(skillInput().value).toBe('');
     });
 
     it('flags a duplicate skill and keeps Add disabled', async () => {

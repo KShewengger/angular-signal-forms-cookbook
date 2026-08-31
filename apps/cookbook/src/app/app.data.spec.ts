@@ -1,4 +1,4 @@
-import { SIGNAL_EXAMPLES, TONE_RAIL, TONE_TINT, TONE_WAVE } from './app.data';
+import { SIGNAL_EXAMPLES } from './app.data';
 
 describe('SIGNAL_EXAMPLES', () => {
   it('defines all 12 recipes', () => {
@@ -8,10 +8,18 @@ describe('SIGNAL_EXAMPLES', () => {
   it('every recipe has the required fields', () => {
     for (const recipe of SIGNAL_EXAMPLES) {
       expect(recipe.title).toBeTruthy();
-      expect(recipe.description).toBeTruthy();
-      expect(recipe.api).toBeTruthy();
-      expect(recipe.tags.length).toBeGreaterThan(0);
-      expect(recipe.link).toMatch(/^\d{2}-[a-z-]+\/$/);
+      expect(recipe.link).toMatch(
+        /^https:\/\/github\.com\/KShewengger\/angular-signal-forms-cookbook\/tree\/main\/apps\/\d{2}-[a-z-]+$/,
+      );
+      expect(recipe.preview).toBeTruthy();
+    }
+  });
+
+  it('derives each preview path from the recipe folder in its link', () => {
+    for (const recipe of SIGNAL_EXAMPLES) {
+      const slug = recipe.link.split('/').pop();
+
+      expect(recipe.preview).toBe(`previews/${slug}.png`);
     }
   });
 
@@ -19,13 +27,5 @@ describe('SIGNAL_EXAMPLES', () => {
     const links = SIGNAL_EXAMPLES.map((r) => r.link);
 
     expect(new Set(links).size).toBe(links.length);
-  });
-
-  it('every recipe tone resolves to a class in each tone map', () => {
-    for (const recipe of SIGNAL_EXAMPLES) {
-      expect(TONE_RAIL[recipe.tone]).toBeTruthy();
-      expect(TONE_TINT[recipe.tone]).toBeTruthy();
-      expect(TONE_WAVE[recipe.tone]).toBeTruthy();
-    }
   });
 });
