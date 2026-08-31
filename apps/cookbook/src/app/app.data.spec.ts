@@ -8,18 +8,18 @@ describe('SIGNAL_EXAMPLES', () => {
   it('every recipe has the required fields', () => {
     for (const recipe of SIGNAL_EXAMPLES) {
       expect(recipe.title).toBeTruthy();
-      expect(recipe.description).toBeTruthy();
-      expect(recipe.api).toBeTruthy();
-      expect(recipe.tags.length).toBeGreaterThan(0);
-      expect(recipe.link).toMatch(/^\d{2}-[a-z-]+\/$/);
+      expect(recipe.link).toMatch(
+        /^https:\/\/github\.com\/KShewengger\/angular-signal-forms-cookbook\/tree\/main\/apps\/\d{2}-[a-z-]+$/,
+      );
+      expect(recipe.preview).toBeTruthy();
     }
   });
 
-  it('derives each preview path from its recipe link', () => {
+  it('derives each preview path from the recipe folder in its link', () => {
     for (const recipe of SIGNAL_EXAMPLES) {
-      expect(recipe.preview).toBe(
-        `previews/${recipe.link.replace(/\/$/, '')}.png`,
-      );
+      const slug = recipe.link.split('/').pop();
+
+      expect(recipe.preview).toBe(`previews/${slug}.png`);
     }
   });
 

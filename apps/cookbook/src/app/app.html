@@ -112,9 +112,9 @@
 >
   <!-- RECIPE CARD -->
   @for (example of examples; track example.link) {
-    <li class="recipe-grid__card relative h-full">
+    <li class="recipe-grid__card h-full">
       <a
-        class="group block overflow-hidden rounded-xl border-2 border-black bg-white shadow-[6px_6px_0_var(--nb-shadow)] transition-transform duration-200 motion-safe:hover:-translate-x-1 motion-safe:hover:-translate-y-1"
+        class="group block overflow-hidden rounded-xl border-2 border-black bg-white shadow-hard transition-transform duration-200 motion-safe:hover:-translate-x-1 motion-safe:hover:-translate-y-1"
         target="_blank"
         rel="noopener"
         [href]="example.link"
