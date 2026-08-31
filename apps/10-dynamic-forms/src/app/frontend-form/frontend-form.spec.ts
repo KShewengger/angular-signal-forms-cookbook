@@ -46,6 +46,7 @@ describe('FrontendForm (10 · Dynamic Forms)', () => {
     fixture.componentRef.setInput('form', applicationForm);
     fixture.componentRef.setInput('submitting', options.submitting ?? false);
     fixture.componentRef.setInput('submitted', options.submitted ?? false);
+    fixture.componentRef.setInput('resetToken', 0);
     await fixture.whenStable();
   };
 
@@ -82,11 +83,11 @@ describe('FrontendForm (10 · Dynamic Forms)', () => {
     await bindForm();
 
     const name = host.querySelector('#frontend-name') as HTMLInputElement;
-    name.value = 'Ada Lovelace';
+    name.value = 'Kristy Mae Almuete';
     name.dispatchEvent(new Event('input', { bubbles: true }));
     await fixture.whenStable();
 
-    expect(applicationForm.name().value()).toBe('Ada Lovelace');
+    expect(applicationForm.name().value()).toBe('Kristy Mae Almuete');
   });
 
   it('reveals and hides the day rate field with engagement', async () => {

@@ -61,6 +61,8 @@ export class App {
 
   protected readonly submitted = signal(false);
 
+  protected readonly resetToken = signal(0);
+
   protected readonly applicationForm = form(
     this.applicationModel,
     applicationSchema,
@@ -112,6 +114,7 @@ export class App {
   private resetApplication(role: RoleId): void {
     this.submitted.set(false);
     this.applicationForm().reset(createApplication(role));
+    this.resetToken.update((token) => token + 1);
   }
 
   private sendApplication(): Promise<boolean> {

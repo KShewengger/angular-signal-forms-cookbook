@@ -56,6 +56,7 @@ describe('DesignerForm (10 · Dynamic Forms)', () => {
     fixture.componentRef.setInput('form', applicationForm);
     fixture.componentRef.setInput('submitting', options.submitting ?? false);
     fixture.componentRef.setInput('submitted', options.submitted ?? false);
+    fixture.componentRef.setInput('resetToken', 0);
     await fixture.whenStable();
   };
 

@@ -1,6 +1,6 @@
 <main nbStack gap="md" class="relative grow p-8 pb-0 pt-20">
   <!-- CONFIRM EMAIL CARD -->
-  <article aria-labelledby="registration-title">
+  <article aria-labelledby="confirm-email-title">
     <nb-card class="relative border-t-0 pt-0!">
       <!-- HEADER -->
       <nb-card-header nbStack gap="md" class="px-0!">
@@ -17,7 +17,7 @@
             width="2048"
             height="1251"
             class="h-full w-full object-cover"
-            alt="Illustration of a an office managing an Angular books"
+            alt="Illustration of an office managing Angular books"
           />
         </div>
 
@@ -40,7 +40,7 @@
             <nb-card-title>
               <h1
                 nbDisplay
-                id="registration-title"
+                id="confirm-email-title"
                 size="lg"
                 underline="bar"
                 class="font-mono font-black uppercase leading-tight"
@@ -97,7 +97,7 @@
 
           <!-- EMAIL FORM -->
           <form novalidate nbStack gap="lg" class="mb-4 z-50">
-            <div class="grid w-full w-96 gap-2">
+            <div class="grid w-full gap-2">
               <label nbLabel for="email" i18n="@@emailLabel">Email</label>
               <nb-input-group>
                 <span nbInputPrefix>&#64;</span>
@@ -108,7 +108,7 @@
                   [formField]="userForm.email"
                 />
 
-                @if (valid()) {
+                @if (showValidCheck()) {
                   <span nbInputSuffix class="bg-white border-0! w-auto">
                     <ng-icon
                       name="tablerCheck"
@@ -121,7 +121,7 @@
               <app-validation-errors [field]="userForm.email" />
             </div>
 
-            <div class="grid w-full w-96 gap-2">
+            <div class="grid w-full gap-2">
               <label nbLabel for="confirm-email" i18n="@@confirmEmailLabel"
                 >Confirm Email</label
               >
@@ -134,7 +134,7 @@
                   [formField]="userForm.confirmEmail"
                 />
 
-                @if (valid()) {
+                @if (showValidCheck()) {
                   <span nbInputSuffix class="bg-white border-0! w-auto">
                     <ng-icon
                       name="tablerCheck"

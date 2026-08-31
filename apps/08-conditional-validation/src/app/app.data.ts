@@ -34,5 +34,5 @@ export const SEAT_LEGEND: SeatLegendItem[] = [
     swatchClass: 'bg-white',
   },
   { label: $localize`:@@seatYoursLabel:Yours`, swatchClass: 'bg-nb-blue' },
-  { label: $localize`:@@seatTakenLabel:Taken`, swatchClass: 'seat-taken' },
+  { label: $localize`:@@seatTakenLabel:Taken`, swatchClass: 'seat--taken' },
 ];

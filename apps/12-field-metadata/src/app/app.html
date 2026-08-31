@@ -1,5 +1,9 @@
 <!-- HERO -->
-<header class="relative flex flex-col gap-3" aria-label="Lesson header">
+<header
+  class="relative flex flex-col gap-3"
+  aria-label="Lesson header"
+  i18n-aria-label="@@lessonHeaderAriaLabel"
+>
   <div
     class="absolute -top-4 -right-8 z-20 origin-top-right scale-90"
     aria-hidden="true"
@@ -21,6 +25,7 @@
     size="md"
     class="w-fit"
     aria-label="Lesson 12: Field Metadata"
+    i18n-aria-label="@@lesson12AriaLabel"
   >
     <span aria-hidden="true">12</span>
     <hr nbSeparator orientation="vertical" aria-hidden="true" />
@@ -29,7 +34,13 @@
     >
   </div>
 
-  <div nbChipGroup nbCluster gap="md" aria-label="Lesson topics">
+  <div
+    nbChipGroup
+    nbCluster
+    gap="md"
+    aria-label="Lesson topics"
+    i18n-aria-label="@@lessonTopicsAriaLabel"
+  >
     <span nbChip tone="danger" i18n="@@angular22Label">Angular 22</span>
     <span nbChip tone="accent" i18n="@@signalFormsLabel">Signal Forms</span>
     <span nbChip tone="black" i18n="@@basicLabel">Ng-Brutalism</span>
@@ -47,7 +58,12 @@
 </header>
 
 <!-- YOUR LINKS -->
-<section nbStack gap="lg" aria-label="Your links">
+<section
+  nbStack
+  gap="lg"
+  aria-label="Your links"
+  i18n-aria-label="@@yourLinksAriaLabel"
+>
   <div class="flex items-center justify-between mb-4">
     <span
       nbText
@@ -97,7 +113,11 @@
 </section>
 
 <!-- LESSON NAVIGATION -->
-<nav class="mt-4 grid grid-cols-2 gap-6" aria-label="Lesson navigation">
+<nav
+  class="mt-4 grid grid-cols-2 gap-6"
+  aria-label="Lesson navigation"
+  i18n-aria-label="@@lessonNavigationAriaLabel"
+>
   <a
     nbButton
     fullWidth
@@ -107,6 +127,7 @@
     target="_blank"
     rel="noopener noreferrer"
     aria-label="Go to the previous lesson"
+    i18n-aria-label="@@prevLessonAriaLabel"
     href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps/11-zod-schema"
   >
     <span nbButtonTrailingIcon shape="circle" class="grid place-items-center">
@@ -133,6 +154,7 @@
     target="_blank"
     rel="noopener noreferrer"
     aria-label="Browse all lessons"
+    i18n-aria-label="@@allLessonsAriaLabel"
     href="https://github.com/KShewengger/angular-signal-forms-cookbook/tree/main/apps"
   >
     <span

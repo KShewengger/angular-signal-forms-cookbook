@@ -134,6 +134,7 @@
                     id="reference"
                     type="text"
                     placeholder="Enter your booking reference"
+                    i18n-placeholder="@@referencePlaceholder"
                     [formField]="bookingForm.reference"
                   />
                   @if (bookingForm.reference().valid()) {
@@ -159,6 +160,7 @@
                   id="last-name"
                   type="text"
                   placeholder="Enter your last name"
+                  i18n-placeholder="@@lastNamePlaceholder"
                   [formField]="bookingForm.lastName"
                 />
 

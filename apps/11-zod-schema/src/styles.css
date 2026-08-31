@@ -32,7 +32,7 @@
 }
 
 body {
-  @apply flex min-h-screen justify-center items-center flex-col bg-amber-50;
+  @apply flex min-h-screen justify-center items-center flex-col overflow-x-clip bg-amber-50 p-4 sm:p-6 lg:p-8;
   background-image: var(--background-grid);
   background-size: 24px 24px;
   font-family: var(--nb-font-mono);

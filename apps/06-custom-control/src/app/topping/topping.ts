@@ -68,8 +68,8 @@ export class Topping implements FormValueControl<number | undefined> {
     () => this.invalid() && (this.dirty() || this.touched()),
   );
 
-  protected update(input: HTMLInputElement) {
-    this.value.set(input.value === '' ? 0 : input.valueAsNumber);
+  protected update(el: HTMLInputElement) {
+    this.value.set(el.value === '' ? 0 : el.valueAsNumber);
   }
 
   protected increment() {
