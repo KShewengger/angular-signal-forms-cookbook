@@ -31,6 +31,10 @@
   --nb-background: #ffffff;
 }
 
+html {
+  @apply overflow-x-clip;
+}
+
 body {
   @apply flex min-h-screen justify-center items-center flex-col overflow-x-clip bg-amber-50 p-4 sm:p-6 lg:p-8;
   background-image: var(--background-grid);
