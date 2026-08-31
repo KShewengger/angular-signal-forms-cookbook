@@ -20,13 +20,22 @@ import {
   PRIORITY_MAX,
   PRIORITY_MIN,
   PRIORITY_PINNED_MAX,
+  SUGGESTED_PRIORITY_PINNED,
+  SUGGESTED_PRIORITY_REFERENCE,
   TAG_PATTERN,
   TITLE_MAX_LENGTH,
 } from './app.data';
 import { environment } from '../environments/environment';
 import { App } from './app';
 import type { Bookmark, BookmarkCollection } from './app.model';
-import { PIN_NOTE, PLATFORM, STATUS } from './app.metadata';
+import {
+  PIN_NOTE,
+  PLATFORM,
+  REVIEW,
+  SHARE_READY,
+  STATUS,
+  SUGGESTED_PRIORITY,
+} from './app.metadata';
 import { bookmarkHubSchema } from './app.schema';
 import { patternHint, toLinkPreview } from './app.utils';
 
@@ -267,6 +276,54 @@ describe('App (12 · Field Metadata)', () => {
         expect(bookmarkForm.bookmarks[0]().metadata(STATUS)?.().level).toBe(
           'ok',
         );
+      });
+    });
+
+    describe('built-in reducers (or / and / max)', () => {
+      it('or(): Review is true when the url is insecure or the tag is blank', () => {
+        const clean = buildForm([{ url: 'github.com/a', tag: 'framework' }]);
+        const insecure = buildForm([
+          { url: 'http://github.com/a', tag: 'framework' },
+        ]);
+        const untagged = buildForm([{ url: 'github.com/a', tag: '' }]);
+
+        expect(clean.bookmarks[0]().metadata(REVIEW)?.()).toBe(false);
+        expect(insecure.bookmarks[0]().metadata(REVIEW)?.()).toBe(true);
+        expect(untagged.bookmarks[0]().metadata(REVIEW)?.()).toBe(true);
+      });
+
+      it('and(): Share-ready only when title, url, tag, and https all hold', () => {
+        const ready = buildForm([
+          { title: 'Repo', url: 'github.com/a', tag: 'framework' },
+        ]);
+        const noTitle = buildForm([
+          { title: '', url: 'github.com/a', tag: 'framework' },
+        ]);
+        const insecure = buildForm([
+          { title: 'Repo', url: 'http://github.com/a', tag: 'framework' },
+        ]);
+
+        expect(ready.bookmarks[0]().metadata(SHARE_READY)?.()).toBe(true);
+        expect(noTitle.bookmarks[0]().metadata(SHARE_READY)?.()).toBe(false);
+        expect(insecure.bookmarks[0]().metadata(SHARE_READY)?.()).toBe(false);
+      });
+
+      it('max(): keeps the strongest suggested priority floor', () => {
+        const reference = buildForm([{ url: 'github.com/a', pinned: false }]);
+        const pinnedReference = buildForm([
+          { url: 'github.com/a', pinned: true },
+        ]);
+        const plain = buildForm([{ url: 'example.org', pinned: false }]);
+
+        expect(reference.bookmarks[0]().metadata(SUGGESTED_PRIORITY)?.()).toBe(
+          SUGGESTED_PRIORITY_REFERENCE,
+        );
+        expect(
+          pinnedReference.bookmarks[0]().metadata(SUGGESTED_PRIORITY)?.(),
+        ).toBe(SUGGESTED_PRIORITY_PINNED);
+        expect(
+          plain.bookmarks[0]().metadata(SUGGESTED_PRIORITY)?.(),
+        ).toBeUndefined();
       });
     });
   });

@@ -13,6 +13,9 @@ export const PRIORITY_MIN = 1;
 export const PRIORITY_MAX = 5;
 export const PRIORITY_PINNED_MAX = 10;
 
+export const SUGGESTED_PRIORITY_PINNED = 4;
+export const SUGGESTED_PRIORITY_REFERENCE = 3;
+
 export const TAG_PATTERN = /^[a-z0-9-]+$/;
 
 export const PATTERN_HINTS: Record<string, string> = {

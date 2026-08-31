@@ -40,6 +40,14 @@ export const HELP = createMetadataKey(MetadataReducer.list<string>());
 
 export const TAG_HINT = createMetadataKey(MetadataReducer.list<string>());
 
+export const REVIEW = createMetadataKey(MetadataReducer.or());
+
+export const SHARE_READY = createMetadataKey(MetadataReducer.and());
+
+export const SUGGESTED_PRIORITY = createMetadataKey(
+  MetadataReducer.max<number>(),
+);
+
 export const URL_PREVIEW = createManagedMetadataKey(
   (_state, url: Signal<string | undefined>) =>
     httpResource<LinkPreview>(

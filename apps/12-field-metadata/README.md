@@ -42,6 +42,8 @@ all projects share a single root `package.json`.
 | `createMetadataKey<T>()`              | A custom key, last write wins (the default `override` reducer)                 | `PLATFORM` (the category badge)          |
 | `createMetadataKey<T, TAcc>(reducer)` | A custom key whose contributions merge through a reducer                       | `STATUS` (custom severity reducer)       |
 | `MetadataReducer.list<T>()`           | A built-in reducer that collects contributions into a `T[]`                    | `HELP` (the url guidance hints)          |
+| `MetadataReducer.or()` / `and()`      | Built-in boolean reducers, combine contributions with logical or / and         | `REVIEW` / `SHARE_READY` flags           |
+| `MetadataReducer.min()` / `max()`     | Built-in numeric reducers, keep the smallest / largest contribution            | `SUGGESTED_PRIORITY` (advisory floor)    |
 | `createManagedMetadataKey(create)`    | A lifecycle-bound value per field; `create` runs in the field's injector       | `URL_PREVIEW` (a resource per url field) |
 | `httpResource(request, { parse })`    | A reactive HTTP request exposed as a resource, with a response mapper          | inside `URL_PREVIEW`, calls Microlink    |
 | `maxLength(path, n)`                  | Validates **and** publishes `MAX_LENGTH` metadata                              | title counter reads the limit back       |
@@ -103,8 +105,11 @@ const severityReducer: MetadataReducer<StatusHint, StatusHint> = {
 };
 export const STATUS = createMetadataKey<StatusHint, StatusHint>(severityReducer);
 
-// 3. custom key with a BUILT-IN reducer (collect contributions into an array)
-export const HELP = createMetadataKey(MetadataReducer.list<string>());
+// 3. custom keys with BUILT-IN reducers, one per contribution shape
+export const HELP = createMetadataKey(MetadataReducer.list<string>()); // T[], appends
+export const REVIEW = createMetadataKey(MetadataReducer.or()); // false, true if ANY is true
+export const SHARE_READY = createMetadataKey(MetadataReducer.and()); // true, false if ANY is false
+export const SUGGESTED_PRIORITY = createMetadataKey(MetadataReducer.max<number>()); // keeps the largest
 
 // 4. managed key: a lifecycle-bound resource, one per field
 export const URL_PREVIEW = createManagedMetadataKey((_state, url: Signal<string | undefined>) =>
@@ -129,6 +134,9 @@ export const URL_PREVIEW = createManagedMetadataKey((_state, url: Signal<string 
 | `STATUS`                    | **custom** (keep-highest)           | `Signal<StatusHint>`           | the status pill (one action)         |
 | `HELP`                      | **built-in `list()`**               | `Signal<string[]>`             | the url guidance hints               |
 | `TAG_HINT`                  | **built-in `list()`**               | `Signal<string[]>`             | the tag format hint (from `PATTERN`) |
+| `REVIEW`                    | **built-in `or()`**                 | `Signal<boolean>`              | the "Review" flag (any concern)      |
+| `SHARE_READY`               | **built-in `and()`**                | `Signal<boolean>`              | the "Share-ready" badge (all clean)  |
+| `SUGGESTED_PRIORITY`        | **built-in `max()`**                | `Signal<number \| undefined>`  | the advisory `Suggested ≥ N` hint    |
 | `URL_PREVIEW`               | managed                             | `HttpResourceRef<LinkPreview>` | the live link preview                |
 
 Two of these are reducers, on purpose:
@@ -141,14 +149,28 @@ Two of these are reducers, on purpose:
   specific page, recognized vs unknown site), which is the whole point of routing them
   through metadata instead of hardcoding text: the set recomputes as you type.
 
+The other built-in reducers pick the combine rule you want when several `metadata()` calls
+write **one key** on the item:
+
+- **`REVIEW` (built-in `or()`)** seeds `false` and lights up when **any** rule contributes
+  `true` (an insecure `http://` link, or a blank tag), so a single flag covers several soft
+  concerns. **`SHARE_READY` (built-in `and()`)** seeds `true` and holds only while **every**
+  gate stays `true` (title, url, tag, https), the complementary all-clear view of the same
+  fields. Reach for `or()` when any one thing is enough, `and()` when everything must pass.
+- **`SUGGESTED_PRIORITY` (built-in `max()`)** takes numeric suggestions from more than one
+  rule (pinned suggests ≥ 4, a reference platform ≥ 3) and keeps the **largest**;
+  `undefined` contributions are ignored, and `min()` is the mirror image. It sits beside the
+  `min`/`max` **validators** on the same field to make the distinction concrete: metadata
+  _advises_ (a nudge you can ignore), a validator _blocks_.
+
 The **Pin this bookmark** checkbox demonstrates the two ways metadata reacts:
 
-- **Dynamic (function form)** — the priority ceiling is
+- **Dynamic (function form):** the priority ceiling is
   `max(item.priority, ({ valueOf }) => (valueOf(item.pinned) ? 10 : 5))`, so `MAX_NUMBER`
   re-publishes and the `1 to 5` hint flips to `1 to 10` the instant you pin. A metadata value
   is reactive whenever its rule reads a signal; the other bounds only look fixed because
   their rules return constants.
-- **Conditional (`applyWhen`)** — `PIN_NOTE` is contributed inside
+- **Conditional (`applyWhen`):** `PIN_NOTE` is contributed inside
   `applyWhen(item, ({ value }) => value().pinned, …)`, so the note is published **only while
   pinned** and disappears when unchecked. Any rule works inside `applyWhen`, `metadata()`
   included.

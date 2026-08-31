@@ -5,6 +5,10 @@ export function withProtocol(url: string): string {
   return /^https?:\/\//i.test(url) ? url : `https://${url}`;
 }
 
+export function isInsecureUrl(raw: string): boolean {
+  return /^http:\/\//i.test(raw.trim());
+}
+
 export function parseUrl(raw: string): { domain: string; path: string } | null {
   const value = raw.trim();
   if (!value) return null;
