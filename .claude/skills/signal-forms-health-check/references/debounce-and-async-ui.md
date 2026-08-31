@@ -2,7 +2,7 @@
 
 `debounce(path, ms)` delays how fast typed input flows from the view into the model,
 so validation and downstream searches settle instead of firing on every keystroke.
-Recipe `07-debounce-input` is a live fruit search: the query field is debounced at
+Recipe [`07-debounce-input`](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/07-debounce-input/README.md) is a live fruit search: the query field is debounced at
 400ms, its settled value feeds an `rxResource` search, and status badges reflect
 loading vs resolved.
 

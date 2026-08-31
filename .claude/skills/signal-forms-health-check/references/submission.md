@@ -2,8 +2,11 @@
 
 The submission flow: mark the `<form>` as the form root, run an async action through
 `submit`, expose submitting state to the template, and route the server's errors back
-onto the fields that caused them. Grounded in recipe `09-form-submission` (a graded
-pop quiz) and `08-conditional-validation` (a cinema booking).
+onto the fields that caused them. Grounded in recipe
+[`09-form-submission`](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/09-form-submission/README.md)
+(a graded pop quiz) and
+[`08-conditional-validation`](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/08-conditional-validation/README.md)
+(a cinema booking).
 
 ---
 

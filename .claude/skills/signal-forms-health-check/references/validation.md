@@ -4,8 +4,11 @@ Validators are functions from `@angular/forms/signals` that you attach to a fiel
 a schema. Each one adds an error to that field when its rule fails. Built-in validators
 cover the common cases; `validate()` covers custom and cross-field rules.
 
-Grounded in recipe 02 (`apps/02-built-in-validations`, built-in validators) and recipe
-03 (`apps/03-cross-field-validation`, cross-field).
+Grounded in recipe 02
+([`apps/02-built-in-validations`](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/02-built-in-validations/README.md),
+built-in validators) and recipe 03
+([`apps/03-cross-field-validation`](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/03-cross-field-validation/README.md),
+cross-field).
 
 ## Built-in validators
 

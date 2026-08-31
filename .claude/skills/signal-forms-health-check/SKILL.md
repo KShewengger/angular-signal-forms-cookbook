@@ -121,17 +121,22 @@ signal-forms practice," not a stability guarantee from the framework.
 
 ## Grounding - which app teaches what
 
-| API / concept                               | Recipe                    |
-| ------------------------------------------- | ------------------------- |
-| `form()`, `[formField]`, field state        | 01 basic-form             |
-| built-in validators + messages              | 02 built-in-validations   |
-| cross-field `validate` + `valueOf`          | 03 cross-field-validation |
-| `validateHttp` + pending                    | 04 async-validation       |
-| `applyEach` + per-item rules                | 05 array-validation       |
-| `FormValueControl`, `disabled`/`hidden`     | 06 custom-control         |
-| `debounce` + live `rxResource` search       | 07 debounce-input         |
-| `applyWhenValue`, `submit`, `[formRoot]`    | 08 conditional-validation |
-| server errors back to fields                | 09 form-submission        |
-| union variants + type guards                | 10 dynamic-forms          |
-| `validateStandardSchema` (Zod)              | 11 zod-schema             |
-| `metadata`, `MetadataReducer`, managed keys | 12 field-metadata         |
+Every rule here is distilled from a runnable recipe in the cookbook repo. **If you
+downloaded this skill on its own (no clone), you don't need the source checked out to use
+it** - each recipe's **README** explains its concept, and the full source sits alongside it
+in the same `apps/NN-name/` folder on GitHub. Start from the recipe README:
+
+| API / concept                               | Recipe README                                                                                                                                |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `form()`, `[formField]`, field state        | [01 basic-form](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/01-basic-form/README.md)                         |
+| built-in validators + messages              | [02 built-in-validations](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/02-built-in-validations/README.md)     |
+| cross-field `validate` + `valueOf`          | [03 cross-field-validation](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/03-cross-field-validation/README.md) |
+| `validateHttp` + pending                    | [04 async-validation](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/04-async-validation/README.md)             |
+| `applyEach` + per-item rules                | [05 array-validation](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/05-array-validation/README.md)             |
+| `FormValueControl`, `disabled`/`hidden`     | [06 custom-control](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/06-custom-control/README.md)                 |
+| `debounce` + live `rxResource` search       | [07 debounce-input](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/07-debounce-input/README.md)                 |
+| `applyWhenValue`, `submit`, `[formRoot]`    | [08 conditional-validation](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/08-conditional-validation/README.md) |
+| server errors back to fields                | [09 form-submission](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/09-form-submission/README.md)               |
+| union variants + type guards                | [10 dynamic-forms](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/10-dynamic-forms/README.md)                   |
+| `validateStandardSchema` (Zod)              | [11 zod-schema](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/11-zod-schema/README.md)                         |
+| `metadata`, `MetadataReducer`, managed keys | [12 field-metadata](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/12-field-metadata/README.md)                 |

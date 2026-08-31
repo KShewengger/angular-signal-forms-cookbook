@@ -2,7 +2,8 @@
 
 Server-side checks that must hit an HTTP endpoint (does this booking reference
 exist?) belong in the schema via `validateHttp`, not in component code. Recipe
-`04-async-validation` verifies a booking reference against `/api/bookings/:ref`
+[`04-async-validation`](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/04-async-validation/README.md)
+verifies a booking reference against `/api/bookings/:ref`
 and surfaces a `bookingNotFound` error when the server says it does not exist.
 
 Read this before wiring any async rule. The two things people get wrong are (1)

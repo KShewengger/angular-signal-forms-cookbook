@@ -3,8 +3,10 @@
 Two ways to plug your own component into a signal form: implement a control interface
 (`FormValueControl` for a single value, `FormCheckboxControl` for a boolean) so
 `[formField]` binds the value plus its state, or accept a `FieldTree` subtree and drive
-a fragment of the form yourself. Grounded in recipe `06-custom-control`
-(a pizza-topping counter) and the container pattern from `10-dynamic-forms` /
+a fragment of the form yourself. Grounded in recipe
+[`06-custom-control`](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/06-custom-control/README.md)
+(a pizza-topping counter) and the container pattern from
+[`10-dynamic-forms`](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/10-dynamic-forms/README.md) /
 recipe 12 field-metadata.
 
 ---

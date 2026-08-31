@@ -14,7 +14,7 @@ structural layer, and no property may be `undefined` (an `undefined` field is dr
 from the tree). Updating the model signal updates the form; updating the form's fields
 updates the model signal - it is one source of truth, both ways.
 
-Grounded in recipe 01 (`apps/01-basic-form`).
+Grounded in recipe 01 ([`apps/01-basic-form`](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/01-basic-form/README.md)).
 
 ## 1. Model the form data as a signal
 

@@ -1,8 +1,11 @@
 # Conditional Logic in Signal Forms
 
 How to make validation, field state, and whole subtrees react to other field
-values with `@angular/forms/signals`. Grounded in recipe `08-conditional-validation`
-(a cinema booking) and `10-dynamic-forms` (a role-based application form).
+values with `@angular/forms/signals`. Grounded in recipe
+[`08-conditional-validation`](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/08-conditional-validation/README.md)
+(a cinema booking) and
+[`10-dynamic-forms`](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/10-dynamic-forms/README.md)
+(a role-based application form).
 
 All of these are **schema-side** APIs: call them inside the SchemaFn you pass to
 `form(model, schemaFn)`, not in the component. The component only reads field state

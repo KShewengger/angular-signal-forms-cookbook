@@ -17,7 +17,7 @@ value signal or invent a parallel `computed()` map keyed by field id when the fa
 belongs to a specific field - attach it as metadata so it travels with the field
 (including through array add/remove and `applyEach`).
 
-Everything below is grounded in `apps/12-field-metadata` (Bookmark Hub). Read
+Everything below is grounded in [`apps/12-field-metadata`](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/12-field-metadata/README.md) (Bookmark Hub). Read
 `app.metadata.ts` (key definitions), `app.schema.ts` (contribution rules),
 `bookmark-card/bookmark-card.ts` (reads), and `metadata-hints/metadata-hints.ts`
 (field-aware presentational component) alongside this doc.
@@ -277,6 +277,27 @@ concrete initial instead of `undefined`. Note `min()`/`max()` seed at `undefined
 why several `maxLength`/`min`/`max` calls on one path collapse to a single **strictest**
 bound rather than fighting - see the pairing table below.
 
+Recipe 12 uses three of these directly, each combining several rules that write **one
+key** on the item - the reducer is the whole choice:
+
+```ts
+// app.metadata.ts
+export const REVIEW = createMetadataKey(MetadataReducer.or()); // seeds false, true if ANY rule is true
+export const SHARE_READY = createMetadataKey(MetadataReducer.and()); // seeds true, false if ANY rule is false
+export const SUGGESTED_PRIORITY = createMetadataKey(MetadataReducer.max<number>());
+
+// app.schema.ts, inside readinessRules - many contributions, one merged value
+metadata(item, REVIEW, ({ valueOf }) => isInsecureUrl(valueOf(item.url)));
+metadata(item, REVIEW, ({ valueOf }) => valueOf(item.tag).trim() === '');
+metadata(item, SUGGESTED_PRIORITY, ({ valueOf }) => (valueOf(item.pinned) ? 4 : undefined));
+```
+
+`or()`/`and()` take a `boolean` from every rule (no `undefined`); `max()` takes
+`number | undefined` and ignores the `undefined` contributions. Reach for `or()` when
+**any** flag is enough, `and()` when **every** gate must pass, `min`/`max` for a numeric
+extreme. These are advisory: unlike the `min`/`max` **validators**, a metadata nudge never
+blocks submission.
+
 ---
 
 ## Dynamic metadata: a value re-computes when its rule reads a signal
@@ -323,18 +344,21 @@ metadata to genuinely not exist off-condition.
 
 ## Recipe 12 key recap
 
-| Key           | Kind                         | Reads as                | Drives                                    |
-| ------------- | ---------------------------- | ----------------------- | ----------------------------------------- |
-| `MAX_LENGTH`  | built-in (`maxLength`)       | `number`                | title `count / limit` counter             |
-| `MIN_NUMBER`  | built-in (`min`)             | `number`                | priority lower bound                      |
-| `MAX_NUMBER`  | built-in (`max`, dynamic)    | `number`                | priority upper bound (5 → 10 when pinned) |
-| `PATTERN`     | built-in (`pattern`)         | `RegExp[]`              | source for `TAG_HINT`                     |
-| `PLATFORM`    | `createMetadataKey` override | `Platform \| undefined` | platform badge on the preview             |
-| `STATUS`      | custom severity reducer      | `StatusHint`            | the status badge (highest severity wins)  |
-| `HELP`        | `list<string>`               | `string[]`              | URL help hints                            |
-| `TAG_HINT`    | `list<string>`               | `string[]`              | tag format hint                           |
-| `PIN_NOTE`    | override, via `applyWhen`    | `string \| undefined`   | pinned note (present only when pinned)    |
-| `URL_PREVIEW` | managed `httpResource`       | resource object         | link preview (loading / error / value)    |
+| Key                  | Kind                         | Reads as                | Drives                                    |
+| -------------------- | ---------------------------- | ----------------------- | ----------------------------------------- |
+| `MAX_LENGTH`         | built-in (`maxLength`)       | `number`                | title `count / limit` counter             |
+| `MIN_NUMBER`         | built-in (`min`)             | `number`                | priority lower bound                      |
+| `MAX_NUMBER`         | built-in (`max`, dynamic)    | `number`                | priority upper bound (5 → 10 when pinned) |
+| `PATTERN`            | built-in (`pattern`)         | `RegExp[]`              | source for `TAG_HINT`                     |
+| `PLATFORM`           | `createMetadataKey` override | `Platform \| undefined` | platform badge on the preview             |
+| `STATUS`             | custom severity reducer      | `StatusHint`            | the status badge (highest severity wins)  |
+| `HELP`               | `list<string>`               | `string[]`              | URL help hints                            |
+| `TAG_HINT`           | `list<string>`               | `string[]`              | tag format hint                           |
+| `REVIEW`             | `or()`                       | `boolean`               | "Review" flag (true if any concern fires) |
+| `SHARE_READY`        | `and()`                      | `boolean`               | "Share-ready" badge (every gate holds)    |
+| `SUGGESTED_PRIORITY` | `max()`                      | `number \| undefined`   | advisory "Suggested ≥ N" priority nudge   |
+| `PIN_NOTE`           | override, via `applyWhen`    | `string \| undefined`   | pinned note (present only when pinned)    |
+| `URL_PREVIEW`        | managed `httpResource`       | resource object         | link preview (loading / error / value)    |
 
 The managed `URL_PREVIEW` is read as the resource itself so the template can branch
 on its lifecycle:
@@ -391,8 +415,8 @@ all - the parent owns the read.
   `PATTERN`) from metadata instead of hardcoding the numbers/regex in the template -
   the constraint and its label then cannot drift.
 - **Do** pick the reducer that matches how contributions combine: `list` to collect,
-  `min`/`max` for tightest bound, a custom reducer for domain merges like severity,
-  `override` for a single source.
+  `or`/`and` to combine booleans, `min`/`max` for the tightest bound, a custom reducer
+  for domain merges like severity, `override` for a single source.
 - **Do** use `createManagedMetadataKey` for anything async/lifecycle-bound; read the
   resource object and branch on `isLoading()` / `error()` / `value()`.
 - **Do** return `undefined` from a `list` rule (or scope the rule inside `applyWhen`)

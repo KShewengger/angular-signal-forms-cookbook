@@ -12,7 +12,7 @@ error. Zod v4 is a Standard Schema provider, so it drops straight in - but nothi
 here is Zod-specific: any library that implements the Standard Schema interface
 (Valibot, ArkType, and others) works through the same call.
 
-Everything below is grounded in `apps/11-zod-schema` (Support Desk ticket form).
+Everything below is grounded in [`apps/11-zod-schema`](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/11-zod-schema/README.md) (Support Desk ticket form).
 Read `app.schema.ts` (the bridge), `app.model.ts` (the `Ticket` shape), and `app.ts`
 (the form wiring) alongside this doc.
 

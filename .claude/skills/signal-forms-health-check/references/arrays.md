@@ -1,7 +1,7 @@
 # Array Fields and Per-Item Validation
 
 When the form model holds a list, each item needs its own rules that can depend on
-that item's own data. Recipe `05-array-validation` is a pizza maker: the model is an
+that item's own data. Recipe [`05-array-validation`](https://github.com/KShewengger/angular-signal-forms-cookbook/blob/main/apps/05-array-validation/README.md) is a pizza maker: the model is an
 array of `{ id, count }`, and each topping's `count` must sit between `0` and a max
 that varies per topping (`mozzarella` allows 1, `pepperoni` allows 5). Use
 `applyEach` with a reusable item `schema`, not a hand-rolled loop.
