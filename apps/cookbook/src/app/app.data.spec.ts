@@ -9,7 +9,7 @@ describe('SIGNAL_EXAMPLES', () => {
     for (const recipe of SIGNAL_EXAMPLES) {
       expect(recipe.title).toBeTruthy();
       expect(recipe.link).toMatch(
-        /^https:\/\/github\.com\/KShewengger\/angular-signal-forms-cookbook\/tree\/main\/apps\/\d{2}-[a-z-]+$/,
+        /^https:\/\/kshewengger\.github\.io\/angular-signal-forms-cookbook\/\d{2}-[a-z-]+\/$/,
       );
       expect(recipe.preview).toBeTruthy();
     }
@@ -17,7 +17,7 @@ describe('SIGNAL_EXAMPLES', () => {
 
   it('derives each preview path from the recipe folder in its link', () => {
     for (const recipe of SIGNAL_EXAMPLES) {
-      const slug = recipe.link.split('/').pop();
+      const slug = recipe.link.split('/').filter(Boolean).pop();
 
       expect(recipe.preview).toBe(`previews/${slug}.png`);
     }
